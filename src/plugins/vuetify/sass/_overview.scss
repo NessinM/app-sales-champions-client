@@ -1,0 +1,43 @@
+@import "./_variables.scss";
+
+.v-list-item-title {
+  font-size: $list-item-title-font-size !important;
+  font-weight: $list-item-title-font-weight !important;
+}
+.v-list-item-subtitle {
+  font-size: $list-item-subtitle-font-size !important;
+  font-weight: $list-item-subtitle-font-weight !important;
+}
+
+.v-list-item__prepend {
+  > .v-icon {
+    margin-inline-end: $list-item-icon-margin-end !important;
+  }
+}
+
+.v-list-subheader {
+  font-size: $list-subheader-font-size !important;
+  font-weight: $list-subheader-font-weight !important;
+}
+
+.v-list-item-title {
+  line-height: $list-item-title-line-height !important;
+}
+.v-label {
+  font-size: $label-font-size !important;
+  font-weight: 600 !important;
+}
+.v-field {
+  font-size: $field-font-size !important;
+}
+
+.v-field--variant-outlined .v-field__outline__start {
+  border-radius: 4px 0 0 4px;
+}
+.v-field--variant-outlined .v-field__outline__end {
+  border-radius: 0px 4px 4px 0px;
+}
+
+// .v-label.v-field-label {
+//   top: 11px !important;
+// }

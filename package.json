@@ -1,0 +1,49 @@
+{
+  "name": "app-sales-champions-client",
+  "author": "Nesyn Meomer Alvarado Bedoya",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+    "format": "prettier . --write"
+  },
+  "dependencies": {
+    "@kyvg/vue3-notification": "^2.9.1",
+    "@mdi/js": "^7.2.96",
+    "@vueuse/core": "^10.1.2",
+    "@vueuse/integrations": "^10.1.2",
+    "animate.css": "^4.1.1",
+    "axios": "^1.4.0",
+    "pinia": "^2.0.35",
+    "pug": "^3.0.2",
+    "universal-cookie": "^4.0.4",
+    "vee-validate": "^4.9.6",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6",
+    "vue3-dropzone": "^2.0.1",
+    "vue3-perfect-scrollbar": "^1.6.1",
+    "vuetify": "^3.3.2",
+    "yup": "^1.2.0",
+    "yup-locales": "^1.2.12"
+  },
+  "devDependencies": {
+    "@prettier/plugin-pug": "^2.5.0",
+    "@vitejs/plugin-vue": "^4.1.0",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-vue": "^9.14.0",
+    "eslint-plugin-vue-pug": "^0.6.0",
+    "leaflet": "^1.9.3",
+    "postcss": "^8.4.23",
+    "prettier": "^2.8.8",
+    "sass": "^1.62.0",
+    "tailwindcss": "^3.3.2",
+    "vite": "^4.3.0",
+    "vite-plugin-eslint": "^1.8.1"
+  }
+}

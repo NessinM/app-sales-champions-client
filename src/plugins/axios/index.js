@@ -1,0 +1,38 @@
+import axios from "axios";
+import { enviroments } from "@/helps/constants";
+// import { connectionError, validationError } from "@/helps/errors";
+
+const instance = axios.create({
+  baseURL: enviroments.API_ROUTE,
+  withCredentials: true,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*"
+  },
+});
+
+instance.interceptors.response.use(({ data }) => Promise.resolve(data),
+async ({ response, config }) => {
+  const { data } = response
+  const originalConfig = config;
+
+  if (response?.status === 307) {
+    window.location.reload()
+    return
+  }
+
+  if (response?.status === 401 && !originalConfig._retry) {
+    try {
+      originalConfig._retry = true
+      await instance.get("/auth/refresh")
+      axios(originalConfig)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  } else {
+    return Promise.reject(data)
+  }
+})
+
+export default instance;
