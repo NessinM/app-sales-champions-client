@@ -45,7 +45,6 @@ v-row.my-4(v-if="state.files.length")
           src="https://www.idl.org.pe/wp-content/uploads/2019/10/IMG_34041.png",
           gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
         )
-          | {{ previewFile(image) }}
           template(#placeholder)
             .d-flex.align-center.justify-center.fill-height
               v-progress-circular(color="primary", indeterminate)
@@ -140,20 +139,19 @@ export default defineComponent({
       state.files.splice(index, 1);
     }
 
-    const previewFile = (file) => {
-      var reader = new FileReader();
-      const dataImage = "";
-      if (extencionesImagenes.value.includes(file.type)) {
-        reader.onloadend = () => (dataImage = reader.result);
-        reader.readAsDataURL(file);
-      }
-
-      return dataImage;
-    };
+     //const previewFile = (file) => {
+     //  var reader = new FileReader();
+     //  const dataImage = "";
+     //  if (extencionesImagenes.value.includes(file.type)) {
+     //    reader.onloadend = () => (dataImage = reader.result);
+     //    reader.readAsDataURL(file);
+     //  }
+ //
+     //  return dataImage;
+     //};
 
     return {
       extencionesImagenes,
-      previewFile,
       isThemeDark,
       state,
       getRootProps,
