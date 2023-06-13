@@ -3,9 +3,10 @@ v-dialog(
   v-model="isShowDialogEditCustomer",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '500'"
+  :width="isMobile ? '100%' : '650'"
 )
-  v-form-customer(:customer-id="customer.id")
+  v-card.pa-6
+    v-form-customer(:customer-id="customer.id")
 
 v-row.h-full(no-gutters)
   v-col(cols="12", lg="3 ", md="4", sm="12")

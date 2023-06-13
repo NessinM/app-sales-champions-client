@@ -1,7 +1,7 @@
 <template lang="pug">
 form(@submit.prevent="validateAndSaveChangesCustomer")
   v-row(no-gutters)
-    v-col(cols="12", lg="4", md="6", sm="12")
+    v-col(cols="12", lg="6", md="6", sm="12")
       v-select.mx-2.text-slate-600.my-1(
         v-model="tipo_documento.value.value",
         label="Tipo de documento",
@@ -13,7 +13,7 @@ form(@submit.prevent="validateAndSaveChangesCustomer")
         density="compact",
         color="primary"
       )
-    v-col(cols="12", lg="4", md="6", sm="12")
+    v-col(cols="12", lg="6", md="6", sm="12")
       v-text-field.mx-2.text-slate-600.my-1(
         v-model.number="numero_documento.value.value",
         label="Numero de documento",
@@ -42,7 +42,7 @@ form(@submit.prevent="validateAndSaveChangesCustomer")
               alt="",
               @click="obtenerDatosSunat"
             )
-    v-col(cols="12", lg="4", md="6", sm="12")
+    v-col(cols="12", lg="6", md="6", sm="12")
       v-text-field.mx-2.text-slate-600.my-1(
         v-model="razon_social.value.value",
         label="Nombre o razon social",
@@ -51,7 +51,7 @@ form(@submit.prevent="validateAndSaveChangesCustomer")
         density="compact",
         color="primary"
       )
-    v-col(cols="12", lg="4", md="6", sm="12")
+    v-col(cols="12", lg="6", md="6", sm="12")
       v-select.mx-2.text-slate-600.my-1(
         label="Sub sector",
         :items="lista_sectores",
@@ -61,7 +61,7 @@ form(@submit.prevent="validateAndSaveChangesCustomer")
         density="compact",
         color="primary"
       )
-    v-col(cols="12", lg="4", md="6", sm="12")
+    v-col(cols="12", lg="6", md="6", sm="12")
       v-select.mx-2.text-slate-600.my-1(
         v-model="tipo_cliente.value.value",
         label="Canal sales champion",
@@ -71,7 +71,7 @@ form(@submit.prevent="validateAndSaveChangesCustomer")
         density="compact",
         color="primary"
       )
-    v-col(cols="12", lg="4", md="6", sm="12")
+    v-col(cols="12", lg="6", md="6", sm="12")
       v-select.mx-2.text-slate-600.my-1(
         v-model="tipo_cliente.value.value",
         label="Sede principal",
@@ -245,6 +245,7 @@ export default defineComponent({
     const razon_social = useField("razon_social", validationSchema);
     const sub_sector = useField("sub_sector", validationSchema);
     const ubicacion_fiscal = useField("ubicacion_fiscal", validationSchema);
+    const tipo_cliente = useField("tipo_cliente", validationSchema);
     const { handleSubmit } = useForm({ validationSchema });
 
     const validateAndSaveChangesCustomer = handleSubmit(
@@ -274,6 +275,7 @@ export default defineComponent({
       razon_social,
       sub_sector,
       ubicacion_fiscal,
+      tipo_cliente,
       lista_sectores,
       lista_tipos_contribuyente,
       validateAndSaveChangesCustomer,
