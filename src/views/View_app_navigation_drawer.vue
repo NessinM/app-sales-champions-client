@@ -21,7 +21,7 @@ v-navigation-drawer.elevation-0.z-10(
       template(#prepend)
         v-avatar(color="background", size="32")
           v-logo-application
-          //- v-img(src="../../public/assets/favicon.svg")
+          //- v-img(src="/assets/favicon.svg")
   v-list(nav, color="primary")
     v-list-item.mb-2(
       v-for="(item, index) in getOptionsMenuSideBar",

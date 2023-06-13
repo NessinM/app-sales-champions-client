@@ -51,11 +51,15 @@ import {
   mdiPlusCircleOutline,
   mdiOfficeBuildingPlus,
   mdiFolderSearch,
-  mdiShieldStarOutline
+  mdiShieldStarOutline,
+  mdiPencil,
+  mdiAccountEdit
 } from "@mdi/js";
 
 export default {
   mdiAccount,
+  mdiAccountEdit,
+  mdiPencil,
   mdiAccountClockOutline,
   mdiAccountGroup,
   mdiFileTableBoxOutline,

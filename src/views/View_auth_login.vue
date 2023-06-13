@@ -117,7 +117,7 @@ export default defineComponent({
     const registerUser = async () => {
       try {
         const values = {
-          name: "Nesyn Alvarado Bedoya",
+          nombre: "Nesyn Alvarado Bedoya",
           email: "nalvarado@datacont.com",
           password: "12345678",
           passwordConfirm: "12345678",
@@ -141,7 +141,7 @@ export default defineComponent({
       form,
       isLoading,
       goToPageForgotPasswordRecovery,
-      registerUser
+      registerUser,
     };
   },
 });

@@ -40,7 +40,7 @@ v-row.my-4(v-if="state.files.length")
         v-img.align-end.text-white(
           height="100",
           :class="{ 'blur-sm': isHovering }",
-          lazy-src="../../public/assets/placeholder-sede-image.jpg",
+          lazy-src="/assets/placeholder-sede-image.jpg",
           cover,
           src="https://www.idl.org.pe/wp-content/uploads/2019/10/IMG_34041.png",
           gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
