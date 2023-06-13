@@ -1,6 +1,14 @@
 <template lang="pug">
+//- v-dialog(
+//-   v-model="isShowDialogNewLocation",
+//-   :fullscreen="isMobile",
+//-   scrollable,
+//-   :width="isMobile ? '100%' : '600'"
+//- )
+//-   v-card
+//-     span dkfjdjsf
 v-dialog(
-  v-model="showDialogNewSede",
+  v-model="isShowDialogNewLocation",
   :fullscreen="isMobile",
   scrollable,
   :width="isMobile ? '100%' : '600'"
@@ -91,53 +99,44 @@ v-dialog(
           )
       //- span ubigeo: {{ codigo_ubigeo.value.value }}
       dropzone-upload
-
     v-card-text.flex.overflow-hidden.pa-4
       v-spacer
-      v-btn(color="error", variant="text", @click="showDialogNewSede = false")
+      v-btn(
+        color="error",
+        variant="text",
+        @click="isShowDialogNewLocation = false"
+      )
         span.font-bold.text-xs cancelar
-      v-btn.ml-4(color="primary", @click="showDialogNewSede = false")
+      v-btn.ml-4(color="primary", @click="isShowDialogNewLocation = false")
         span.font-bold.text-xs Guardar cambios
-.elevation-2.bg-primary.pa-1(class="!sticky !top-0 !z-10", rounded="0", color="primary")
-  .flex.items-center.h-full
-    v-list-item
-      template(#prepend)
-        v-avatar(color="background", density="compact", size="40")
-          v-img(:src="customer.imagen_perfil")
-      v-list-item-title
-        span.text-md.font-bold {{ razon_social.value.value }}
-      v-list-item-subtitle
-        span.text-md {{ numero_documento.value.value }}
-    v-spacer
-    v-tabs.mx-6(
-      v-model="panelActual",
-      align-tabs="end",
-      density="compact",
-      color="white",
-      bg-color="primary"
-    )
-      v-tab(:value="1")
-        span.font-bold(class="text-[11px]") Datos
-      v-tab(:value="2")
-        span.font-bold(class="text-[11px]") Ubicaciones
-      v-tab(:value="3")
-        span.font-bold(class="text-[11px]") Contactos
+.bg-primary.flex.items-center.justify-center(
+  class="!sticky !top-0 !z-10 h-1/6",
+  rounded="0",
+  color="primary"
+)
+  v-list-item
+    template(#prepend)
+      v-avatar(color="background", density="compact", size="80")
+        v-img(:src="customer.imagen_perfil")
+    v-list-item-title
+      span.text-2xl.font-bold {{ razon_social.value.value }}
+    v-list-item-subtitle
+      span.text-md {{ numero_documento.value.value }} - Banca y seguros
+v-tabs.elevation-2(
+  v-model="panelActual",
+  align-tabs="end",
+  density="compact",
+  color="white",
+  bg-color="primary"
+)
+  v-tab(:value="1")
+    span.font-bold(class="text-[11px]") Datos
+  v-tab(:value="2")
+    span.font-bold(class="text-[11px]") Ubicaciones
 .py-5.px-3.h-full(v-if="panelActual === 1")
   form(@submit.prevent="validateAndSaveChangesCustomer")
     v-row(no-gutters)
-      v-col(cols="12", lg="3", md="6", sm="12")
-        v-select.mx-2.text-slate-600.my-1(
-          v-model="tipo_entidad.value.value",
-          label="Tipo de entidad",
-          :error-messages="tipo_entidad.errorMessage.value",
-          :items="lista_entidades",
-          item-title="name",
-          item-value="value",
-          variant="outlined",
-          density="compact",
-          color="primary"
-        )
-      v-col(cols="12", lg="3", md="6", sm="12")
+      v-col(cols="12", lg="4", md="6", sm="12")
         v-select.mx-2.text-slate-600.my-1(
           v-model="tipo_documento.value.value",
           label="Tipo de documento",
@@ -149,7 +148,7 @@ v-dialog(
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="3", md="6", sm="12")
+      v-col(cols="12", lg="4", md="6", sm="12")
         v-text-field.mx-2.text-slate-600.my-1(
           v-model.number="numero_documento.value.value",
           label="Numero de documento",
@@ -174,11 +173,11 @@ v-dialog(
                 v-else,
                 height="24",
                 width="24",
-                src="../../public/assets/logo_sunat.png",
+                src="/assets/logo_sunat.png",
                 alt="",
                 @click="obtenerDatosSunat"
               )
-      v-col(cols="12", lg="3", md="6", sm="12")
+      v-col(cols="12", lg="4", md="6", sm="12")
         v-text-field.mx-2.text-slate-600.my-1(
           v-model="razon_social.value.value",
           label="Nombre o razon social",
@@ -187,7 +186,7 @@ v-dialog(
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="3", md="6", sm="12")
+      v-col(cols="12", lg="4", md="6", sm="12")
         v-select.mx-2.text-slate-600.my-1(
           label="Sub sector",
           :items="lista_sectores",
@@ -197,28 +196,7 @@ v-dialog(
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="3", md="6", sm="12")
-        v-text-field.mx-2.text-slate-600.my-1(
-          v-model.number="numero_telefono.value.value",
-          label="Numero de telefono",
-          :error-messages="numero_telefono.errorMessage.value",
-          variant="outlined",
-          density="compact",
-          color="primary",
-          type="number",
-          min="0",
-          step="any"
-        )
-      v-col(cols="12", lg="3", md="6", sm="12")
-        v-text-field.mx-2.text-slate-600.my-1(
-          label="Correo coorporativo",
-          variant="outlined",
-          density="compact",
-          color="primary",
-          type="text",
-          step="any"
-        )
-      v-col(cols="12", lg="3", md="6", sm="12")
+      v-col(cols="12", lg="4", md="6", sm="12")
         v-select.mx-2.text-slate-600.my-1(
           v-model="tipo_cliente.value.value",
           label="Canal sales champion",
@@ -228,7 +206,7 @@ v-dialog(
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="3", md="6", sm="12")
+      v-col(cols="12", lg="4", md="6", sm="12")
         v-select.mx-2.text-slate-600.my-1(
           v-model="tipo_cliente.value.value",
           label="Sede principal",
@@ -253,7 +231,7 @@ v-dialog(
           :class="{ 'on-hover text-white': isHovering }",
           v-bind="props",
           :color="isHovering ? 'primary' : 'background'",
-          @click="showDialogNewSede = !showDialogNewSede"
+          @click="isShowDialogNewLocation = !isShowDialogNewLocation"
         )
           .flex.items-center.justify-center.h-full.flex-col
             v-icon(
@@ -263,9 +241,9 @@ v-dialog(
             )
             small.font-bold(
               :class="isHovering ? 'text-white' : 'text-slate-300'"
-            ) Agregar nueva sede
+            ) Agregar nueva ubicacion
     v-col(
-      v-for="(a, index) in 7",
+      v-for="(a, index) in 4",
       :key="index",
       cols="12",
       lg="3",
@@ -292,7 +270,7 @@ v-dialog(
                 v-img.align-end.text-white(
                   height="150",
                   src="https://www.idl.org.pe/wp-content/uploads/2019/10/IMG_34041.png",
-                  lazy-src="../../public/assets/placeholder-sede-image.jpg",
+                  lazy-src="/assets/placeholder-sede-image.jpg",
                   gradient="to bottom, rgba(0,0,0,.1), #2d4258de",
                   cover=""
                 )
@@ -307,8 +285,6 @@ v-dialog(
               template(#prepend="")
                 v-avatar(color="primary")
                   v-icon(color="white", icon="$mdiMapMarkerOutline")
-.py-5.px-3(v-if="panelActual === 3")
-  small contactos
 </template>
 <script>
 import { defineComponent, toRefs, watch, onMounted, ref, computed } from "vue";
@@ -347,22 +323,12 @@ export default defineComponent({
     const isLoadingSaveChanges = ref(false);
     const isLoadingOcupaciones = ref(false);
     const isLoadingSunat = ref(false);
-    const showDialogNewSede = ref(false);
+    const isShowDialogNewLocation = ref(false);
     const panelActual = ref(1);
     const departamentos = ref([]);
     const provincias = ref([]);
     const distritos = ref([]);
     const searchValueOcupacion = ref("");
-    const lista_entidades = ref([
-      {
-        name: "Persona natural - (DNI)",
-        valor: "persona natural",
-      },
-      {
-        name: "Persona juridica - (RUC)",
-        valor: "persona juridica",
-      },
-    ]);
     const lista_sectores = ref([
       {
         name: "Banca y seguros",
@@ -459,36 +425,26 @@ export default defineComponent({
         valor: "dni",
       },
       {
-        name: "Carnet de extranjeria",
+        name: "Carnet de extranjeria (CE)",
         valor: "carnet_de_extranjeria",
       },
       {
-        name: "Registro unico de contribuyentes",
+        name: "Registro unico de contribuyentes (RUC)",
         valor: "ruc",
       },
       {
-        name: "Pasaporte",
+        name: "Pasaporte (PAS)",
         valor: "pasaporte",
-      },
-      {
-        name: "Cedula diplomatica de identidad",
-        valor: "cedula_diplomatica_de_identidad",
       },
     ]);
 
     const validationSchema = yup.object({
-      tipo_entidad: yup.string().required().label("Tipo de entidad"),
       tipo_documento: yup.string().required().label("Tipo de documento"),
       email_notificacion: yup
         .string()
         .required()
         .label("Email de notificacion"),
       numero_documento: yup.number().required().label("Numero de documento"),
-      numero_telefono: yup
-        .number()
-        .required()
-        .min(9)
-        .label("Numero de telefono"),
       razon_social: yup.string().required().label("Nombre o razon social"),
       direccion_fiscal: yup.string().required().label("Direccion fiscal"),
       referencia_direccion_fiscal: yup.string().required().label("Referencia"),
@@ -594,11 +550,9 @@ export default defineComponent({
       }
     };
 
-    const tipo_entidad = useField("tipo_entidad", validationSchema);
     const tipo_documento = useField("tipo_documento", validationSchema);
     const email_notificacion = useField("email_notificacion", validationSchema);
     const numero_documento = useField("numero_documento", validationSchema);
-    const numero_telefono = useField("numero_telefono", validationSchema);
     const razon_social = useField("razon_social", validationSchema);
     const direccion_fiscal = useField("direccion_fiscal", validationSchema);
     const referencia_direccion_fiscal = useField(
@@ -630,11 +584,9 @@ export default defineComponent({
     const isMobile = computed(() => mobile.value);
 
     const setDataCustomerEdit = (aux) => {
-      tipo_entidad.value.value = aux.tipo_entidad;
       tipo_documento.value.value = aux.tipo_documento;
       email_notificacion.value.value = aux.email_notificacion;
       numero_documento.value.value = +aux.numero_documento;
-      numero_telefono.value.value = aux.numero_telefono;
       razon_social.value.value = aux.razon_social;
       direccion_fiscal.value.value = aux.direccion_fiscal;
       referencia_direccion_fiscal.value.value = aux.referencia_direccion_fiscal;
@@ -692,7 +644,6 @@ export default defineComponent({
       tipo_documento,
       email_notificacion,
       numero_documento,
-      numero_telefono,
       razon_social,
       direccion_fiscal,
       referencia_direccion_fiscal,
@@ -700,7 +651,6 @@ export default defineComponent({
       provincia,
       distrito,
       codigo_ubigeo,
-      tipo_entidad,
       tipo_cliente,
       profesion_ocupacion,
       activo,
@@ -709,11 +659,10 @@ export default defineComponent({
       isLoadingSunat,
       isLoadingOcupaciones,
       searchValueOcupacion,
-      lista_entidades,
       lista_tipos_contribuyente,
       lista_sectores,
       panelActual,
-      showDialogNewSede,
+      isShowDialogNewLocation,
       isMobile,
       changeOptionDepProvDist,
       departamentos,

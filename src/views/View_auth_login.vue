@@ -65,7 +65,7 @@ section.skewed.shadow-lg(class="shadow-slate-500/50")
     .flex.justify-center.mt-4
       span.text-xs.cursor-pointer.text-primary.underline-offset-4.font-bold.underline(
         class="hover:opacity-60",
-        @click="goToPageForgotPasswordRecovery()"
+        @click="registerUser()"
       )
         v-icon(icon="$mdiLinkVariant")
         |
@@ -93,7 +93,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const { mobile } = useDisplay();
-    const { fetchHandleLogin } = useAuthStore();
+    const { fetchHandleLogin, fetchHandleUserRegister } = useAuthStore();
 
     const isTypePassword = ref(true);
     const isLoading = ref(false);
@@ -114,19 +114,19 @@ export default defineComponent({
       }
     };
 
-    // const registerUser = async () => {
-    //   try {
-    //     const values = {
-    //       name: "Nesyn Alvarado Bedoya",
-    //       email: "nalvarado@datacont.com",
-    //       password: "12345678",
-    //       passwordConfirm: "12345678",
-    //     };
-    //     await fetchHandleUserRegister(values);
-    //   } catch (error) {
-    //     notify({ type: "error", text: error.message });
-    //   }
-    // };
+    const registerUser = async () => {
+      try {
+        const values = {
+          nombre: "Nesyn Alvarado Bedoya",
+          email: "nalvarado@datacont.com",
+          password: "12345678",
+          passwordConfirm: "12345678",
+        };
+        await fetchHandleUserRegister(values);
+      } catch (error) {
+        notify({ type: "error", text: error.message });
+      }
+    };
 
     const goToPageForgotPasswordRecovery = () =>
       router.push("/forgot-password-recovery");
@@ -141,6 +141,7 @@ export default defineComponent({
       form,
       isLoading,
       goToPageForgotPasswordRecovery,
+      registerUser,
     };
   },
 });
