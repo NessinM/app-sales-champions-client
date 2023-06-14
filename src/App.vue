@@ -2,18 +2,17 @@
 v-layout.w-screen.h-screen
   v-drawer-preferences-theme
   v-drawer-sidebar-application
-  v-navbar-application(v-if="isVisibilityApplicationBar")
+  v-navbar-application(v-if="getSessionUserLogged")
   v-main.overflow-y-auto(
-    :class="[isVisibilityApplicationBar ? `h-[calc(100vh-${getThemePreference.height_navbar_app}px)]` : 'h-full']"
+    :class="[`h-[calc(100vh-${getThemePreference.height_navbar_app}px)]`]"
   )
     router-view(v-slot="{ Component, route }")
       transition(:name="getThemePreference.router_transition")
         component(:is="Component", :key="route.path")
   v-app-notify
-  .absolute.elevation-5.overflow-hidden(
+  .absolute.elevation-5.overflow-hidden.right-0(
     v-if="getSessionUserLogged && !isMobile",
-    class="top-[40%]",
-    :class="getThemePreference.rtl ? 'left-0 !rounded-r-lg ' : 'right-0 !rounded-l-lg '"
+    class="top-[40%] !rounded-l-lg"
   )
     v-btn(icon="$mdiCogOutline", :rounded="0", @click="togglePreference")
 </template>
@@ -50,18 +49,12 @@ export default defineComponent({
       );
 
     const isMobile = computed(() => mobile.value);
-    const isVisibilityApplicationBar = computed(
-      () =>
-        (isMobile.value || getThemePreference.value.navbar_type === "sticky") &&
-        getSessionUserLogged.value
-    );
 
     return {
       isMobile,
       togglePreference,
       getThemePreference,
       getSessionUserLogged,
-      isVisibilityApplicationBar,
     };
   },
 });

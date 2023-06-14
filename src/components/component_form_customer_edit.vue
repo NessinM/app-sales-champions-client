@@ -1,12 +1,4 @@
 <template lang="pug">
-//- v-dialog(
-//-   v-model="isShowDialogNewLocation",
-//-   :fullscreen="isMobile",
-//-   scrollable,
-//-   :width="isMobile ? '100%' : '600'"
-//- )
-//-   v-card
-//-     span dkfjdjsf
 v-dialog(
   v-model="isShowDialogNewLocation",
   :fullscreen="isMobile",

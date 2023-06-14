@@ -9,7 +9,6 @@ export const useThemeStore = defineStore("theme-store", {
     settings: {
       drawer: true,
       name_current_theme: themes.default_theme,
-      navbar_type: "hidden",
       router_transition: "fade",
       callapsed_menu: true,
       hover_collapsed_menu: false,

@@ -88,19 +88,6 @@ v-navigation-drawer.elevation-6(
                   size="20",
                   icon="$mdiCheck"
                 )
-      v-list-item.mb-2
-        v-list-item-title
-          | Barra de navegacion
-        v-radio-group.mt-2(
-          v-model="getThemePreference.navbar_type",
-          inline,
-          color="primary",
-          hide-details,
-          density="comfortable",
-          :class="isThemeDark ? '' : 'text-slate-600'"
-        )
-          v-radio(label="Sticky", value="sticky")
-          v-radio(label="Ocultar", value="hidden")
       v-list-item
         v-list-item-title
           | Menu colapsado

@@ -5,7 +5,7 @@ v-dialog(
   scrollable,
   :width="isMobile ? '100%' : '500'"
 )
-  v-card.pa-4(:rounded="isMobile ? 0 : 5")
+  v-card(:rounded="isMobile ? 0 : 5")
     v-add-new-customer(
       @created="getAllCustomers",
       @close="closeDialogAddCustomer"
@@ -14,10 +14,14 @@ v-dialog(
   v-model="isShowDialogAddCustomerLocation",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '650'"
+  :width="isMobile ? '100%' : '680'"
 )
-  v-card.pa-4(:rounded="isMobile ? 0 : 5")
-    v-add-new-customer-location
+  v-card(:rounded="isMobile ? 0 : 5")
+    v-add-new-customer-location(
+      :customer-id="customer.id",
+      @created="getAllCustomers",
+      @close="closeDialogAddCustomerLocation"
+    )
 
 v-row.h-full(no-gutters)
   v-col(cols="12", lg="3 ", md="4", sm="12")
@@ -28,9 +32,9 @@ v-row.h-full(no-gutters)
           flat,
           prepend-inner-icon="$mdiFolderSearch",
           color="primary",
-          variant="filled",
+          variant="solo",
           clearable,
-          placeholder="Ingrese una razón social, ruc",
+          placeholder="Buscar por razón social, numero documento",
           type="text",
           hide-details,
           bg-color="background",
@@ -72,14 +76,12 @@ v-row.h-full(no-gutters)
             height="5"
           )
 
-        v-list.pa-0(
-          :lines="false",
-          density="compact",
+        v-list(
           mandatory,
           color="primary",
           @update:selected="actionSelectedCustomer"
         )
-          v-list-item(
+          v-list-item.py-3(
             v-for="(i, index) in customers",
             :key="index",
             :value="index"
@@ -95,37 +97,37 @@ v-row.h-full(no-gutters)
               v-chip(color="grey", density="comfortable")
                 v-icon(start, size="13", icon="$mdiShieldStarOutline")
                 small.font-medium Nuevo
-              v-btn(color="grey", icon="$mdiDotsVertical", variant="text")
-  v-col(v-if="!isMobile", cols="12", lg="9", md="8", sm="12")
+  v-col(cols="12", lg="9", md="8", sm="12")
     .items-center.flex.justify-center.h-full(v-if="!customer")
       .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
         class="h-1/3 w-1/2"
       )
         v-icon.text-slate-300(start, size="90", icon="$mdiAccountArrowLeft")
         small.text-slate-300.text-md.font-semibold.my-2 Seleccione un usuario del panel lateral izquierdo
-    .h-full(v-else)
-      .bg-primary.flex.items-center.justify-center.h-32(class="!sticky !top-0 !z-10")
+    .h-full.bg-background(v-else)
+      .bg-white.flex.items-center.justify-center.h-32(class="!sticky !top-0 !z-10")
         v-list-item
           template(#prepend)
             v-avatar(color="background", density="compact", size="75")
               v-img(:src="customer.logo_corporativo")
           v-list-item-title
-            span.text-lg.font-bold {{ customer.razon_social }}
+            span.text-lg.font-extrabold {{ customer.razon_social }}
           v-list-item-subtitle
             span.text-md {{ customer.numero_documento }} - Banca y seguros
           template(#append)
             v-btn.mx-4(icon="$mdiPencil")
-      v-tabs.elevation-2(
+      v-tabs(
         v-model="panelActual",
         align-tabs="end",
         density="compact",
-        color="white",
-        bg-color="primary"
+        color="primary",
+        bg-color="white"
       )
         v-tab(:value="1")
-          span.font-bold(class="text-[11px]") Datos
-        v-tab(:value="2")
           span.font-bold(class="text-[11px]") Ubicaciones
+        v-tab(:value="2")
+          span.font-bold(class="text-[11px]") Contactos
+      v-divider
       .pa-4
         v-row
           v-col(cols="12", lg="3", md="6", sm="12")
@@ -135,8 +137,8 @@ v-row.h-full(no-gutters)
                 :elevation="isHovering ? 4 : 1",
                 :class="{ 'on-hover text-white': isHovering }",
                 v-bind="props",
-                :color="isHovering ? 'primary' : 'background'",
-                @click="isShowDialogAddCustomerLocation = true"
+                :color="isHovering ? 'primary' : 'white'",
+                @click="openDialogAddCustomerLocation()"
               )
                 .flex.items-center.justify-center.h-full.flex-col
                   v-icon(
@@ -178,7 +180,7 @@ v-row.h-full(no-gutters)
                       v-img.align-end.text-white(
                         height="150",
                         :src="slide",
-                        gradient="to bottom, rgba(0,0,0,.1), #2d4258de",
+                        gradient="to bottom, rgba(0,0,0,.1), #2d4258a1",
                         cover=""
                       )
                         v-card-title
@@ -249,7 +251,8 @@ export default defineComponent({
 
     const getAllCustomers = async () => {
       try {
-        isShowDialogAddCustomer.value = false;
+        closeDialogAddCustomer();
+        closeDialogAddCustomerLocation();
         isLoading.value = true;
         const response = await fetchGetListCustomers();
         filteredCustomers.value = response.customers;
@@ -261,13 +264,14 @@ export default defineComponent({
       }
     };
 
-    const isVisibilityApplicationBar = computed(
-      () => isMobile.value || getThemePreference.value.navbar_type === "sticky"
-    );
-
     const closeDialogAddCustomer = () =>
       (isShowDialogAddCustomer.value = false);
     const openDialogAddCustomer = () => (isShowDialogAddCustomer.value = true);
+
+    const closeDialogAddCustomerLocation = () =>
+      (isShowDialogAddCustomerLocation.value = false);
+    const openDialogAddCustomerLocation = () =>
+      (isShowDialogAddCustomerLocation.value = true);
 
     return {
       searchValue,
@@ -284,8 +288,9 @@ export default defineComponent({
       isShowDialogAddCustomerLocation,
       closeDialogAddCustomer,
       openDialogAddCustomer,
-      isVisibilityApplicationBar,
       getThemePreference,
+      closeDialogAddCustomerLocation,
+      openDialogAddCustomerLocation,
     };
   },
 });

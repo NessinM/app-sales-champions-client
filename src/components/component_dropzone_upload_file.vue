@@ -7,7 +7,7 @@ v-card.flex.items-center.justify-center.w-full.dropzone(
   @click="() => {}"
 )
   .flex.flex-col.items-center.justify-center.w-full.h-54.border-2.border-dashed.rounded-lg.cursor-pointer(
-    :class="isThemeDark ? 'border-slate-600' : 'border-slate-300'"
+    :class="isThemeDark ? 'border-slate-600' : 'border-slate-200'"
   )
     input(v-bind="getInputProps()")
     .flex.flex-col.items-center.justify-center.pt-5.pb-6
@@ -139,16 +139,16 @@ export default defineComponent({
       state.files.splice(index, 1);
     }
 
-     //const previewFile = (file) => {
-     //  var reader = new FileReader();
-     //  const dataImage = "";
-     //  if (extencionesImagenes.value.includes(file.type)) {
-     //    reader.onloadend = () => (dataImage = reader.result);
-     //    reader.readAsDataURL(file);
-     //  }
- //
-     //  return dataImage;
-     //};
+    //const previewFile = (file) => {
+    //  var reader = new FileReader();
+    //  const dataImage = "";
+    //  if (extencionesImagenes.value.includes(file.type)) {
+    //    reader.onloadend = () => (dataImage = reader.result);
+    //    reader.readAsDataURL(file);
+    //  }
+    //
+    //  return dataImage;
+    //};
 
     return {
       extencionesImagenes,

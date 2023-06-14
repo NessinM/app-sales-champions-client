@@ -1,90 +1,93 @@
 <template lang="pug">
-v-form(ref="formRef")
-  .flex.items-center.pb-4
-    span.font-extrabold.text-lg Nuevo cliente
-  v-row(no-gutters)
-    v-col(cols="12", lg="12", md="12", sm="12")
-      v-autocomplete.mx-2.text-slate-600.my-1(
-        v-model="customer.tipo_documento",
-        label="Tipo de documento",
-        :items="lista_tipos_contribuyente",
-        :rules="validationForm.tipo_documento",
-        placeholder="Seleccione una opcion de la lista",
-        item-title="name",
-        item-value="value",
-        variant="outlined",
-        density="compact",
-        color="primary"
-      )
-    v-col(
-      cols="12",
-      :lg="customer.tipo_documento === 'RUC' ? 8 : 12",
-      md="12",
-      sm="12"
-    )
-      v-text-field.mx-2.text-slate-600.my-1(
-        v-model="customer.numero_documento",
-        :loading="isLoadingGetSunat",
-        :rules="validationForm.numero_documento",
-        label="Numero de documento",
-        variant="outlined",
-        density="compact",
-        color="primary",
-        type="number",
-        :disabled="isLoadingGetSunat"
-      )
-        template(#append-inner)
-          v-fade-transition(leave-absolute="")
-            v-progress-circular(
-              v-if="isLoadingGetSunat",
-              color="primary",
-              indeterminate="",
-              size="20"
-            )
-    v-col(
-      v-if="customer.tipo_documento === 'RUC'",
-      cols="12",
-      lg="4",
-      md="12",
-      sm="12"
-    )
-      .flex
-        v-btn.mt-1.flex-1.mx-2(
-          color="white",
-          :rounded="5",
-          :class="{ 'mb-5': isMobile }",
-          @click="customer.numero_documento ? obtenerDatosSunat() : ''"
+v-card-title.flex.items-center.py-4.mx-2
+  span.font-extrabold.text-lg Nuevo cliente
+v-card-text
+  v-form(ref="formRef")
+    v-row(no-gutters)
+      v-col(cols="12", lg="12", md="12", sm="12")
+        v-autocomplete.mx-2.text-slate-600.my-1(
+          v-model="customer.tipo_documento",
+          label="Tipo de documento",
+          :items="lista_tipos_contribuyente",
+          :rules="validationForm.tipo_documento",
+          placeholder="Seleccione una opcion de la lista",
+          item-title="name",
+          item-value="value",
+          variant="outlined",
+          density="compact",
+          color="primary"
         )
-          img.cursor-pointer.mr-1(
-            height="24",
-            width="20",
-            src="/assets/logo_sunat.png",
-            alt=""
-          )
-          small.text-xs.font-bold SUNAT
-    v-col(cols="12", lg="12", md="12", sm="12")
-      v-text-field.mx-2.text-slate-600.my-1(
-        v-model="customer.razon_social",
-        :rules="validationForm.razon_social",
-        label="Nombre o razon social",
-        variant="outlined",
-        density="compact",
-        color="primary"
+      v-col(
+        cols="12",
+        :lg="customer.tipo_documento === 'RUC' ? 8 : 12",
+        md="12",
+        sm="12"
       )
-  .flex.pa-1(:class="{ 'flex-col': isMobile, 'justify-end': !isMobile }")
-    v-btn.ml-2.font-bold.mb-4(
-      color="error",
-      :rounded="5",
-      variant="text",
-      @click="emitCloseComponent"
-    )
-      span.text-xs.font-bold cancelar
-    v-btn.ml-2.font-bold(
-      color="primary",
-      :rounded="5",
-      @click="validateAndCreateCustomer()"
-    )
-      small.text-xs.font-bold Crear cliente
+        v-text-field.mx-2.text-slate-600.my-1(
+          v-model="customer.numero_documento",
+          :loading="isLoadingGetSunat",
+          :rules="validationForm.numero_documento",
+          label="Numero de documento",
+          variant="outlined",
+          density="compact",
+          color="primary",
+          type="number",
+          :disabled="isLoadingGetSunat"
+        )
+          template(#append-inner)
+            v-fade-transition(leave-absolute="")
+              v-progress-circular(
+                v-if="isLoadingGetSunat",
+                color="primary",
+                indeterminate="",
+                size="20"
+              )
+      v-col(
+        v-if="customer.tipo_documento === 'RUC'",
+        cols="12",
+        lg="4",
+        md="12",
+        sm="12"
+      )
+        .flex
+          v-btn.mt-1.flex-1.mx-2(
+            color="white",
+            :rounded="5",
+            :class="{ 'mb-5': isMobile }",
+            @click="customer.numero_documento ? obtenerDatosSunat() : ''"
+          )
+            img.cursor-pointer.mr-1(
+              height="24",
+              width="20",
+              src="/assets/logo_sunat.png",
+              alt=""
+            )
+            small.text-xs.font-bold SUNAT
+      v-col(cols="12", lg="12", md="12", sm="12")
+        v-text-field.mx-2.text-slate-600.my-1(
+          v-model="customer.razon_social",
+          :rules="validationForm.razon_social",
+          label="Nombre o razon social",
+          variant="outlined",
+          density="compact",
+          color="primary"
+        )
+.flex.pa-1.px-6.pb-6.mx-2(
+  :class="{ 'flex-col': isMobile, 'justify-end': !isMobile }"
+)
+  v-btn.ml-2.font-bold(
+    color="error",
+    :rounded="5",
+    variant="text",
+    @click="emitCloseComponent"
+  )
+    span.text-xs.font-bold cancelar
+  v-btn.ml-2.font-bold(
+    color="primary",
+    :rounded="5",
+    @click="validateAndCreateCustomer()"
+  )
+    small.text-xs.font-bold Crear cliente
 </template>
 <script>
 import { computed, defineComponent, ref } from "vue";

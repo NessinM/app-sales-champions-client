@@ -12,8 +12,20 @@ v-app-bar.elevation-2.rounded-0(
   v-app-bar-title(v-if="getThemePreference.callapsed_menu")
     strong.text-sm.font-bold {{ enviroments.APP_NAME }}
   v-spacer
-  v-avatar.mx-4(color="white")
-    span.text-sm.font-bold.text-primary NA
+  v-menu(rounded)
+    template(#activator="{ props }")
+      v-avatar.mx-4(color="white", v-bind="props")
+        span.text-sm.font-bold.text-primary NA
+    v-card.elevation-2
+      v-list.pa-0.ma-0(density="compact")
+        v-list-item(@click="() => {}")
+          v-list-item-title
+            v-icon.mr-2(icon="$mdiImageSyncOutline")
+            span.text-xs Preferencias
+        v-list-item(@click="distroySession()")
+          v-list-item-title.text-error
+            v-icon.mr-2(icon="$mdiTrashCanOutline")
+            span.text-xs Cerrar sesión
 </template>
 <script>
 import { computed, defineComponent } from "vue";
@@ -28,16 +40,11 @@ export default defineComponent({
     const { mobile } = useDisplay();
     const { getThemePreference, getOptionsMenuSideBar } = storeToRefs(store);
 
-    const isVisibilityApplicationBar = computed(
-      () => getThemePreference.value.navbar_type === "sticky"
-    );
-
     const isMobile = computed(() => mobile.value);
 
     return {
       getThemePreference,
       isMobile,
-      isVisibilityApplicationBar,
       enviroments,
       getOptionsMenuSideBar,
     };
