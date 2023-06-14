@@ -3,10 +3,21 @@ v-dialog(
   v-model="isShowDialogAddCustomer",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '450'"
+  :width="isMobile ? '100%' : '500'"
 )
-  v-card.pa-4
-    v-add-new-customer(@created="getAllCustomers")
+  v-card.pa-4(:rounded="isMobile ? 0 : 5")
+    v-add-new-customer(
+      @created="getAllCustomers",
+      @close="closeDialogAddCustomer"
+    )
+v-dialog(
+  v-model="isShowDialogAddCustomerLocation",
+  :fullscreen="isMobile",
+  scrollable,
+  :width="isMobile ? '100%' : '650'"
+)
+  v-card.pa-4(:rounded="isMobile ? 0 : 5")
+    v-add-new-customer-location
 
 v-row.h-full(no-gutters)
   v-col(cols="12", lg="3 ", md="4", sm="12")
@@ -39,11 +50,11 @@ v-row.h-full(no-gutters)
           color="success",
           rounded="3",
           variant="elevated",
-          @click="isShowDialogAddCustomer = true"
+          @click="openDialogAddCustomer"
         )
           v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
           small.font-bold.text-white Agregar nuevo cliente
-      perfect-scrollbar.overflow-y-auto.pb-5(class="h-[calc(100vh-115px)]")
+      perfect-scrollbar.overflow-y-auto.pb-5(class="h-[calc(100vh-170px)]")
         v-alert.ma-4(
           v-if="!customers.length && !isLoading",
           variant="outlined",
@@ -85,7 +96,7 @@ v-row.h-full(no-gutters)
                 v-icon(start, size="13", icon="$mdiShieldStarOutline")
                 small.font-medium Nuevo
               v-btn(color="grey", icon="$mdiDotsVertical", variant="text")
-  v-col(cols="12", lg="9", md="8", sm="12")
+  v-col(v-if="!isMobile", cols="12", lg="9", md="8", sm="12")
     .items-center.flex.justify-center.h-full(v-if="!customer")
       .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
         class="h-1/3 w-1/2"
@@ -93,7 +104,7 @@ v-row.h-full(no-gutters)
         v-icon.text-slate-300(start, size="90", icon="$mdiAccountArrowLeft")
         small.text-slate-300.text-md.font-semibold.my-2 Seleccione un usuario del panel lateral izquierdo
     .h-full(v-else)
-      .bg-primary.flex.items-center.justify-center(class="!sticky !top-0 !z-10 h-1/6")
+      .bg-primary.flex.items-center.justify-center.h-32(class="!sticky !top-0 !z-10")
         v-list-item
           template(#prepend)
             v-avatar(color="background", density="compact", size="75")
@@ -124,7 +135,8 @@ v-row.h-full(no-gutters)
                 :elevation="isHovering ? 4 : 1",
                 :class="{ 'on-hover text-white': isHovering }",
                 v-bind="props",
-                :color="isHovering ? 'primary' : 'background'"
+                :color="isHovering ? 'primary' : 'background'",
+                @click="isShowDialogAddCustomerLocation = true"
               )
                 .flex.items-center.justify-center.h-full.flex-col
                   v-icon(
@@ -136,7 +148,7 @@ v-row.h-full(no-gutters)
                     :class="isHovering ? 'text-white' : 'text-slate-300'"
                   ) Agregar nueva ubicacion
           v-col(
-            v-for="(a, index) in 4",
+            v-for="(location, index) in customer.ubicaciones",
             :key="index",
             cols="12",
             lg="3",
@@ -154,54 +166,65 @@ v-row.h-full(no-gutters)
                   height="150",
                   hide-delimiters,
                   :show-arrows="false",
-                  :interval="3000",
+                  :interval="4500",
                   cycle,
                   touch
                 )
-                  v-carousel-item(v-for="(slide, i) in 5", :key="i")
+                  v-carousel-item(
+                    v-for="(slide, i) in [location.imagen_uno, location.imagen_dos, location.imagen_tres, location.imagen_cuatro]",
+                    :key="i"
+                  )
                     v-card.mx-auto.cursor-pointer(:rounded="0")
                       v-img.align-end.text-white(
                         height="150",
-                        src="https://www.idl.org.pe/wp-content/uploads/2019/10/IMG_34041.png",
-                        lazy-src="/assets/placeholder-sede-image.jpg",
+                        :src="slide",
                         gradient="to bottom, rgba(0,0,0,.1), #2d4258de",
                         cover=""
                       )
                         v-card-title
-                          .text-sm.font-bold San juan de lurigancho
+                          .text-xs.font-bold {{ location.distrito }} - {{ location.provincia }} - {{ location.departamento }}
                 v-list
                   v-list-item
                     v-list-item-title
-                      span.font-bold.text-xs AV. REPUBLICA DE PANAMA NRO. 3517 INT. 9 URB. EL PALOMAR - LIMA LIMA SAN ISIDRO
+                      span.font-bold.text-xs {{ location.direccion }}
                     v-list-item-subtitle
-                      span jksdghfjkgsdghs
+                      span {{ location.referencia_direccion }}
                     template(#prepend="")
                       v-avatar(color="primary")
                         v-icon(color="white", icon="$mdiMapMarkerOutline")
 </template>
 <script>
 import { computed, defineComponent, ref, onMounted } from "vue";
-import { useAppStore } from "@/store";
+import { useAppStore, useThemeStore } from "@/store";
 import { useDisplay, useTheme } from "vuetify";
 import { notify } from "@kyvg/vue3-notification";
 import AddNewCustomerFormComponent from "@/components/add_customer_form_component.vue";
+import AddNewCustomerLocationFormComponent from "@/components/add_customer_location_form_component.vue";
+// import { storeToRefs } from "pinia";
 export default defineComponent({
   name: "ViewCustomerManager",
   components: {
     "v-add-new-customer": AddNewCustomerFormComponent,
+    "v-add-new-customer-location": AddNewCustomerLocationFormComponent,
   },
   setup() {
     const { mobile } = useDisplay();
+    // const authStore = useAuthStore();
+    const { getThemePreference } = useThemeStore();
     const { fetchGetListCustomers } = useAppStore();
 
     const theme = useTheme();
+
     const customers = ref([]);
     const customer = ref(null);
     const filteredCustomers = ref([]);
     const isLoading = ref(true);
     const isShowDialogAddCustomer = ref(false);
+    const isShowDialogAddCustomerLocation = ref(false);
     const searchValue = ref("");
     const panelActual = ref(1);
+
+    // const { getSessionUserLogged } = storeToRefs(authStore);
 
     onMounted(() => getAllCustomers());
 
@@ -238,6 +261,14 @@ export default defineComponent({
       }
     };
 
+    const isVisibilityApplicationBar = computed(
+      () => isMobile.value || getThemePreference.value.navbar_type === "sticky"
+    );
+
+    const closeDialogAddCustomer = () =>
+      (isShowDialogAddCustomer.value = false);
+    const openDialogAddCustomer = () => (isShowDialogAddCustomer.value = true);
+
     return {
       searchValue,
       isThemeDark,
@@ -250,6 +281,11 @@ export default defineComponent({
       getAllCustomers,
       actionSelectedCustomer,
       isShowDialogAddCustomer,
+      isShowDialogAddCustomerLocation,
+      closeDialogAddCustomer,
+      openDialogAddCustomer,
+      isVisibilityApplicationBar,
+      getThemePreference,
     };
   },
 });

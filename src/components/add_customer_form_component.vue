@@ -71,8 +71,13 @@ v-form(ref="formRef")
         density="compact",
         color="primary"
       )
-  .flex.justify-end.pa-1
-    v-btn.ml-2.font-bold(color="error", :rounded="5", variant="text")
+  .flex.pa-1(:class="{ 'flex-col': isMobile, 'justify-end': !isMobile }")
+    v-btn.ml-2.font-bold.mb-4(
+      color="error",
+      :rounded="5",
+      variant="text",
+      @click="emitCloseComponent"
+    )
       span.text-xs.font-bold cancelar
     v-btn.ml-2.font-bold(
       color="primary",
@@ -298,6 +303,7 @@ export default defineComponent({
     };
 
     const isMobile = computed(() => mobile.value);
+    const emitCloseComponent = () => emit("close");
     return {
       isLoading,
       formRef,
@@ -309,6 +315,7 @@ export default defineComponent({
       obtenerDatosSunat,
       isLoadingGetSunat,
       validateAndCreateCustomer,
+      emitCloseComponent,
     };
   },
 });
