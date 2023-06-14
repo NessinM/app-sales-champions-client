@@ -117,7 +117,7 @@ v-dialog(
   v-list-item
     template(#prepend)
       v-avatar(color="background", density="compact", size="80")
-        v-img(:src="customer.imagen_perfil")
+        v-img(:src="customer.logo_corporativo")
     v-list-item-title
       span.text-2xl.font-bold {{ razon_social.value.value }}
     v-list-item-subtitle

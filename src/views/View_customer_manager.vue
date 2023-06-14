@@ -1,12 +1,12 @@
 <template lang="pug">
 v-dialog(
-  v-model="isShowDialogEditCustomer",
+  v-model="isShowDialogAddCustomer",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '650'"
+  :width="isMobile ? '100%' : '450'"
 )
-  v-card.pa-6
-    v-form-customer(:customer-id="customer.id")
+  v-card.pa-4
+    v-add-new-customer(@created="getAllCustomers")
 
 v-row.h-full(no-gutters)
   v-col(cols="12", lg="3 ", md="4", sm="12")
@@ -39,7 +39,7 @@ v-row.h-full(no-gutters)
           color="success",
           rounded="3",
           variant="elevated",
-          @click="getAllCustomers()"
+          @click="isShowDialogAddCustomer = true"
         )
           v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
           small.font-bold.text-white Agregar nuevo cliente
@@ -75,9 +75,9 @@ v-row.h-full(no-gutters)
           )
             template(#prepend)
               v-avatar(color="background", density="compact")
-                v-img(:src="i.imagen_perfil")
+                v-img(:src="i.logo_corporativo")
             v-list-item-title
-              span.font-extrabold.text-md {{ i.razon_social }}
+              span.font-extrabold.text-xs {{ i.razon_social }}
             v-list-item-subtitle
               span.text-xs {{ i.numero_documento }} - {{ i.sub_sector }}
             template(#append)
@@ -90,121 +90,105 @@ v-row.h-full(no-gutters)
       .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
         class="h-1/3 w-1/2"
       )
-        v-icon.text-slate-300(
-          start,
-          size="90",
-          icon="$mdiAccountArrowLeft",
-          color="white"
-        )
+        v-icon.text-slate-300(start, size="90", icon="$mdiAccountArrowLeft")
         small.text-slate-300.text-md.font-semibold.my-2 Seleccione un usuario del panel lateral izquierdo
-    .bg-primary.flex.items-center.justify-center(
-      v-else,
-      class="!sticky !top-0 !z-10 h-1/6",
-      rounded="0",
-      color="primary"
-    )
-      v-list-item
-        template(#prepend)
-          v-avatar(color="background", density="compact", size="80")
-            v-img(:src="customer.imagen_perfil")
-        v-list-item-title
-          span.text-2xl.font-bold {{ customer.razon_social }}
-        v-list-item-subtitle
-          span.text-md {{ customer.numero_documento }} - Banca y seguros
-        template(#append)
-          v-btn.mx-4(
-            icon="$mdiPencil",
-            @click="isShowDialogEditCustomer = true"
-          )
-          //- v-avatar(color="background", density="compact", size="80")
-          //-   v-img(:src="customer.imagen_perfil")
-        //- v-list-item-action
-    v-tabs.elevation-2(
-      v-model="panelActual",
-      align-tabs="end",
-      density="compact",
-      color="white",
-      bg-color="primary"
-    )
-      v-tab(:value="1")
-        span.font-bold(class="text-[11px]") Datos
-      v-tab(:value="2")
-        span.font-bold(class="text-[11px]") Ubicaciones
-    .pa-4
-      v-row
-        v-col(cols="12", lg="3", md="6", sm="12")
-          v-hover(v-slot="{ isHovering, props }")
-            v-card.mx-auto.pa-4(
-              height="215",
-              :elevation="isHovering ? 4 : 1",
-              :class="{ 'on-hover text-white': isHovering }",
-              v-bind="props",
-              :color="isHovering ? 'primary' : 'background'"
-            )
-              .flex.items-center.justify-center.h-full.flex-col
-                v-icon(
-                  size="70",
-                  icon="$mdiOfficeBuildingPlus",
-                  :class="isHovering ? 'text-white' : 'text-slate-300'"
-                )
-                small.font-bold(
-                  :class="isHovering ? 'text-white' : 'text-slate-300'"
-                ) Agregar nueva ubicacion
-        v-col(
-          v-for="(a, index) in 4",
-          :key="index",
-          cols="12",
-          lg="3",
-          md="6",
-          sm="12"
-        )
-          v-hover(v-slot="{ isHovering, props }")
-            v-card.mx-auto(
-              :elevation="isHovering ? 6 : 2",
-              :class="{ 'on-hover bg-background': isHovering }",
-              v-bind="props",
-              @click="() => {}"
-            )
-              v-carousel(
-                height="150",
-                hide-delimiters,
-                :show-arrows="false",
-                :interval="3000",
-                cycle,
-                touch
+    .h-full(v-else)
+      .bg-primary.flex.items-center.justify-center(class="!sticky !top-0 !z-10 h-1/6")
+        v-list-item
+          template(#prepend)
+            v-avatar(color="background", density="compact", size="75")
+              v-img(:src="customer.logo_corporativo")
+          v-list-item-title
+            span.text-lg.font-bold {{ customer.razon_social }}
+          v-list-item-subtitle
+            span.text-md {{ customer.numero_documento }} - Banca y seguros
+          template(#append)
+            v-btn.mx-4(icon="$mdiPencil")
+      v-tabs.elevation-2(
+        v-model="panelActual",
+        align-tabs="end",
+        density="compact",
+        color="white",
+        bg-color="primary"
+      )
+        v-tab(:value="1")
+          span.font-bold(class="text-[11px]") Datos
+        v-tab(:value="2")
+          span.font-bold(class="text-[11px]") Ubicaciones
+      .pa-4
+        v-row
+          v-col(cols="12", lg="3", md="6", sm="12")
+            v-hover(v-slot="{ isHovering, props }")
+              v-card.mx-auto.pa-4(
+                height="215",
+                :elevation="isHovering ? 4 : 1",
+                :class="{ 'on-hover text-white': isHovering }",
+                v-bind="props",
+                :color="isHovering ? 'primary' : 'background'"
               )
-                v-carousel-item(v-for="(slide, i) in 5", :key="i")
-                  v-card.mx-auto.cursor-pointer(:rounded="0")
-                    v-img.align-end.text-white(
-                      height="150",
-                      src="https://www.idl.org.pe/wp-content/uploads/2019/10/IMG_34041.png",
-                      lazy-src="/assets/placeholder-sede-image.jpg",
-                      gradient="to bottom, rgba(0,0,0,.1), #2d4258de",
-                      cover=""
-                    )
-                      v-card-title
-                        .text-sm.font-bold San juan de lurigancho
-              v-list
-                v-list-item
-                  v-list-item-title
-                    span.font-bold.text-xs AV. REPUBLICA DE PANAMA NRO. 3517 INT. 9 URB. EL PALOMAR - LIMA LIMA SAN ISIDRO
-                  v-list-item-subtitle
-                    span jksdghfjkgsdghs
-                  template(#prepend="")
-                    v-avatar(color="primary")
-                      v-icon(color="white", icon="$mdiMapMarkerOutline")
-        //- vc-form-customer-edit(v-else, :customer="customer")
+                .flex.items-center.justify-center.h-full.flex-col
+                  v-icon(
+                    size="70",
+                    icon="$mdiOfficeBuildingPlus",
+                    :class="isHovering ? 'text-white' : 'text-slate-300'"
+                  )
+                  small.font-bold(
+                    :class="isHovering ? 'text-white' : 'text-slate-300'"
+                  ) Agregar nueva ubicacion
+          v-col(
+            v-for="(a, index) in 4",
+            :key="index",
+            cols="12",
+            lg="3",
+            md="6",
+            sm="12"
+          )
+            v-hover(v-slot="{ isHovering, props }")
+              v-card.mx-auto(
+                :elevation="isHovering ? 6 : 2",
+                :class="{ 'on-hover bg-background': isHovering }",
+                v-bind="props",
+                @click="() => {}"
+              )
+                v-carousel(
+                  height="150",
+                  hide-delimiters,
+                  :show-arrows="false",
+                  :interval="3000",
+                  cycle,
+                  touch
+                )
+                  v-carousel-item(v-for="(slide, i) in 5", :key="i")
+                    v-card.mx-auto.cursor-pointer(:rounded="0")
+                      v-img.align-end.text-white(
+                        height="150",
+                        src="https://www.idl.org.pe/wp-content/uploads/2019/10/IMG_34041.png",
+                        lazy-src="/assets/placeholder-sede-image.jpg",
+                        gradient="to bottom, rgba(0,0,0,.1), #2d4258de",
+                        cover=""
+                      )
+                        v-card-title
+                          .text-sm.font-bold San juan de lurigancho
+                v-list
+                  v-list-item
+                    v-list-item-title
+                      span.font-bold.text-xs AV. REPUBLICA DE PANAMA NRO. 3517 INT. 9 URB. EL PALOMAR - LIMA LIMA SAN ISIDRO
+                    v-list-item-subtitle
+                      span jksdghfjkgsdghs
+                    template(#prepend="")
+                      v-avatar(color="primary")
+                        v-icon(color="white", icon="$mdiMapMarkerOutline")
 </template>
 <script>
 import { computed, defineComponent, ref, onMounted } from "vue";
 import { useAppStore } from "@/store";
 import { useDisplay, useTheme } from "vuetify";
 import { notify } from "@kyvg/vue3-notification";
-import FormCustomer from "@/components/component_form_customer.vue";
+import AddNewCustomerFormComponent from "@/components/add_customer_form_component.vue";
 export default defineComponent({
   name: "ViewCustomerManager",
   components: {
-    "v-form-customer": FormCustomer,
+    "v-add-new-customer": AddNewCustomerFormComponent,
   },
   setup() {
     const { mobile } = useDisplay();
@@ -215,7 +199,7 @@ export default defineComponent({
     const customer = ref(null);
     const filteredCustomers = ref([]);
     const isLoading = ref(true);
-    const isShowDialogEditCustomer = ref(false);
+    const isShowDialogAddCustomer = ref(false);
     const searchValue = ref("");
     const panelActual = ref(1);
 
@@ -242,6 +226,7 @@ export default defineComponent({
 
     const getAllCustomers = async () => {
       try {
+        isShowDialogAddCustomer.value = false;
         isLoading.value = true;
         const response = await fetchGetListCustomers();
         filteredCustomers.value = response.customers;
@@ -264,7 +249,7 @@ export default defineComponent({
       isLoading,
       getAllCustomers,
       actionSelectedCustomer,
-      isShowDialogEditCustomer,
+      isShowDialogAddCustomer,
     };
   },
 });

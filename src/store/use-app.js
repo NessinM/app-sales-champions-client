@@ -29,16 +29,28 @@ export const useAppStore = defineStore("app-store", {
   },
   actions: {
     async fetchGetListCustomers (payload) {
-      const { data } = await http.get("/customers", payload)
+      const { data } = await http.get("/customer", payload)
       return data
     },
-    async fetchSaveChangesCustomer (id, payload) {
-      const { data } = await http.put(`/customers/${id}`, payload)
+    async fetchGetOneCustomer (customerId) {
+      const { data } = await http.get(`/customer/${customerId}`, {})
+      return data
+    },
+    async fetchCreateCustomer (payload) {
+      const { data } = await http.post(`/customer/`, payload)
+      return data
+    },
+    async fetchEditCustomer (customerId, payload) {
+      const { data } = await http.put(`/customer/${customerId}`, payload)
       return data
     },
     async fetchGetCustomeroOfSunat (document_number) {
-      const { data } = await http.get(`/customers/search/sunat/${document_number}`, {})
+      const { data } = await http.get(`/customer/search/sunat/${document_number}`, {})
       return data
-    }
+    },
+    async fetchCreateCustomerLocation (customerId, payload) {
+      const { data } = await http.post(`/customer-location/`, { customerId, ...payload })
+      return data
+    },
   },
 });
