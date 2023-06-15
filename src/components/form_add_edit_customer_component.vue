@@ -101,7 +101,7 @@ export default defineComponent({
     const { mobile } = useDisplay();
     const {
       fetchCreateCustomer,
-      fetchEditCustomer,
+      fetchUpdateCustomer,
       fetchGetCustomeroOfSunat,
       fetchCreateCustomerLocation,
     } = useAppStore();
@@ -287,7 +287,7 @@ export default defineComponent({
               customerCreated.id,
               location.value
             );
-            await fetchEditCustomer(customerCreated.id, {
+            await fetchUpdateCustomer(customerCreated.id, {
               ubicacionId: customerLocationCreated.id,
             });
           }

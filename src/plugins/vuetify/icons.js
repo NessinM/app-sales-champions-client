@@ -55,11 +55,17 @@ import {
   mdiPencil,
   mdiNumeric1BoxMultipleOutline,
   mdiImageMultipleOutline,
-  mdiAccountEdit
+  mdiAccountEdit,
+  mdiArrowDownCircle,
+  mdiImagePlusOutline,
+  mdiViewAgenda
 } from "@mdi/js";
 
 export default {
   mdiAccount,
+  mdiViewAgenda,
+  mdiImagePlusOutline,
+  mdiArrowDownCircle,
   mdiAccountEdit,
   mdiNumeric1BoxMultipleOutline,
   mdiImageMultipleOutline,

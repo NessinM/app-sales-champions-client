@@ -21,7 +21,13 @@ export const useAppStore = defineStore("app-store", {
         title: 'Mapa de seguimiento',
         icon: '$mdiMapMarkerPath',
         to:'/seguimiento-de-usuarios'
-      }
+      },
+      {
+        subtitle: 'Programacion de visita',
+        title: 'Programacion de visita',
+        icon: '$mdiViewAgenda',
+        to:'/programacion-de-visita'
+      },
     ]
   }),
   getters: {
@@ -29,27 +35,35 @@ export const useAppStore = defineStore("app-store", {
   },
   actions: {
     async fetchGetListCustomers (payload) {
-      const { data } = await http.get("/customer", payload)
+      const { data } = await http.API_ROUTE.get("/customer/", payload)
       return data
     },
     async fetchGetOneCustomer (customerId) {
-      const { data } = await http.get(`/customer/${customerId}`, {})
+      const { data } = await http.API_ROUTE.get(`/customer/${customerId}`, {})
       return data
     },
     async fetchCreateCustomer (payload) {
-      const { data } = await http.post(`/customer/`, payload)
+      const { data } = await http.API_ROUTE.post(`/customer/`, payload)
       return data
     },
-    async fetchEditCustomer (customerId, payload) {
-      const { data } = await http.put(`/customer/${customerId}`, payload)
+    async fetchUpdateCustomer (customerId, payload) {
+      const { data } = await http.API_ROUTE.put(`/customer/${customerId}`, payload)
       return data
     },
     async fetchGetCustomeroOfSunat (document_number) {
-      const { data } = await http.get(`/customer/search/sunat/${document_number}`, {})
+      const { data } = await http.API_ROUTE.get(`/customer/search/sunat/${document_number}`, {})
       return data
     },
     async fetchCreateCustomerLocation (customerId, payload) {
-      const { data } = await http.post(`/customer-location/`, { customerId, ...payload })
+      const { data } = await http.API_ROUTE.post(`/customer-location/`, { customerId, ...payload })
+      return data
+    },
+    async fecthUpdateCustomerLocation (customerLocationId, payload) {
+      const { data } = await http.API_ROUTE.put(`/customer-location/${customerLocationId}`, payload )
+      return data
+    },
+    async fetchGetOneCustomerLocation (customerLocationId) {
+      const { data } = await http.API_ROUTE.get(`/customer-location/${customerLocationId}`, {})
       return data
     },
   },

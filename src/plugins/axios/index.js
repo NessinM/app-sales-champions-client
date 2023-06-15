@@ -2,7 +2,7 @@ import axios from "axios";
 import { enviroments } from "@/helps/constants";
 // import { connectionError, validationError } from "@/helps/errors";
 
-const instance = axios.create({
+const API_ROUTE = axios.create({
   baseURL: enviroments.API_ROUTE,
   withCredentials: true,
   headers: {
@@ -12,7 +12,17 @@ const instance = axios.create({
   },
 });
 
-instance.interceptors.response.use(({ data }) => Promise.resolve(data),
+const API_UPLOAD = axios.create({
+  baseURL: enviroments.API_ROUTE_UPLOAD,
+  withCredentials: false,
+  headers: {
+    Accept: "multipart/form-data",
+    "Content-Type": "multipart/form-data",
+    "Access-Control-Allow-Origin": "*"
+  },
+});
+
+API_ROUTE.interceptors.response.use(({ data }) => Promise.resolve(data),
 async ({ response, config }) => {
   const { data } = response
   const originalConfig = config;
@@ -25,7 +35,7 @@ async ({ response, config }) => {
   if (response?.status === 401 && !originalConfig._retry) {
     try {
       originalConfig._retry = true
-      await instance.get("/auth/refresh")
+      await API_ROUTE.get("/auth/refresh")
       axios(originalConfig)
     } catch (error) {
       return Promise.reject(error)
@@ -35,4 +45,4 @@ async ({ response, config }) => {
   }
 })
 
-export default instance;
+export default { API_ROUTE, API_UPLOAD };

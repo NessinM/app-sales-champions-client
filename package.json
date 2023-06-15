@@ -21,14 +21,11 @@
     "pinia": "^2.0.35",
     "pug": "^3.0.2",
     "universal-cookie": "^4.0.4",
-    "vee-validate": "^4.9.6",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6",
     "vue3-dropzone": "^2.0.1",
     "vue3-perfect-scrollbar": "^1.6.1",
-    "vuetify": "^3.3.2",
-    "yup": "^1.2.0",
-    "yup-locales": "^1.2.12"
+    "vuetify": "^3.3.2"
   },
   "devDependencies": {
     "@prettier/plugin-pug": "^2.5.0",

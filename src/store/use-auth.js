@@ -15,17 +15,17 @@ export const useAuthStore = defineStore("auth-store", {
   },
   actions: {
     async fetchHandleLogin(payload) {
-      await http.post("/auth/login", payload)
+      await http.API_ROUTE.post("/auth/login", payload)
     },
     async fetchHandleLogout() {
-      await http.get("/auth/logout")
+      await http.API_ROUTE.get("/auth/logout")
     },
     async fetchHandleUserRegister(payload) {
-      const response = await http.post("/auth/register", payload)
+      const response = await http.API_ROUTE.post("/auth/register", payload)
       console.log('response -> fetchHandleUserRegister', response)
     },
     async fetchHandleGetRefreshToken() {
-      const response = await http.get("/auth/refresh", { __RTkn: 'asdfasdfdsf' })
+      const response = await http.API_ROUTE.get("/auth/refresh", { __RTkn: this.$state.__ATkn })
       console.log('response -> fetchHandleGetRefreshToken', response)
     }
   },

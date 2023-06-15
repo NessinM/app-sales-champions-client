@@ -1,13 +1,8 @@
 export const enviroments = {
   APP_NAME: import.meta.env.VITE_APP_NAME ?? "no_definido",
   API_ROUTE: import.meta.env.VITE_API_ROUTE ?? "no_definido",
+  API_ROUTE_UPLOAD: import.meta.env.VITE_API_ROUTE_UPLOAD ?? "no_definido",
 };
-
-export const departamentos = [];
-
-export const provincias = [];
-
-export const distritos = [];
 
 export const ubigeos = [
   {

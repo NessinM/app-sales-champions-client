@@ -6,7 +6,7 @@ v-dialog(
   :width="isMobile ? '100%' : '500'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
-    v-add-new-customer(
+    v-form-add-edit-customer(
       @created="getAllCustomers",
       @close="closeDialogAddCustomer"
     )
@@ -14,11 +14,12 @@ v-dialog(
   v-model="isShowDialogAddCustomerLocation",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '680'"
+  :width="isMobile ? '100%' : '700'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
-    v-add-new-customer-location(
+    v-form-add-edit-customer-location(
       :customer-id="customer.id",
+      :customer-location-id="locationId",
       @created="getAllCustomers",
       @close="closeDialogAddCustomerLocation"
     )
@@ -150,7 +151,7 @@ v-row.h-full(no-gutters)
                     :class="isHovering ? 'text-white' : 'text-slate-300'"
                   ) Agregar nueva ubicacion
           v-col(
-            v-for="(location, index) in customer.ubicaciones",
+            v-for="(l, index) in customer.ubicaciones",
             :key="index",
             cols="12",
             lg="3",
@@ -162,18 +163,18 @@ v-row.h-full(no-gutters)
                 :elevation="isHovering ? 6 : 2",
                 :class="{ 'on-hover bg-background': isHovering }",
                 v-bind="props",
-                @click="() => {}"
+                @click="openDialogAddCustomerLocation(l.id)"
               )
                 v-carousel(
                   height="150",
                   hide-delimiters,
                   :show-arrows="false",
-                  :interval="4500",
+                  :interval="5000",
                   cycle,
                   touch
                 )
                   v-carousel-item(
-                    v-for="(slide, i) in [location.imagen_uno, location.imagen_dos, location.imagen_tres, location.imagen_cuatro]",
+                    v-for="(slide, i) in [l.imagen_uno, l.imagen_dos, l.imagen_tres, l.imagen_cuatro]",
                     :key="i"
                   )
                     v-card.mx-auto.cursor-pointer(:rounded="0")
@@ -184,13 +185,13 @@ v-row.h-full(no-gutters)
                         cover=""
                       )
                         v-card-title
-                          .text-xs.font-bold {{ location.distrito }} - {{ location.provincia }} - {{ location.departamento }}
+                          .text-sm.font-bold {{ l.nombre }}
                 v-list
                   v-list-item
                     v-list-item-title
-                      span.font-bold.text-xs {{ location.direccion }}
+                      span.font-bold.text-sm {{ l.direccion }}
                     v-list-item-subtitle
-                      span {{ location.referencia_direccion }}
+                      span.text-xs {{ l.distrito }} - {{ l.provincia }} - {{ l.departamento }}
                     template(#prepend="")
                       v-avatar(color="primary")
                         v-icon(color="white", icon="$mdiMapMarkerOutline")
@@ -200,18 +201,16 @@ import { computed, defineComponent, ref, onMounted } from "vue";
 import { useAppStore, useThemeStore } from "@/store";
 import { useDisplay, useTheme } from "vuetify";
 import { notify } from "@kyvg/vue3-notification";
-import AddNewCustomerFormComponent from "@/components/add_customer_form_component.vue";
-import AddNewCustomerLocationFormComponent from "@/components/add_customer_location_form_component.vue";
-// import { storeToRefs } from "pinia";
+import FormAddOrEditCustomerComponent from "@/components/form_add_edit_customer_component.vue";
+import FormAddOrEditCustomerLocationComponent from "@/components/form_add_edit_customer_location_component.vue";
 export default defineComponent({
   name: "ViewCustomerManager",
   components: {
-    "v-add-new-customer": AddNewCustomerFormComponent,
-    "v-add-new-customer-location": AddNewCustomerLocationFormComponent,
+    "v-form-add-edit-customer": FormAddOrEditCustomerComponent,
+    "v-form-add-edit-customer-location": FormAddOrEditCustomerLocationComponent,
   },
   setup() {
     const { mobile } = useDisplay();
-    // const authStore = useAuthStore();
     const { getThemePreference } = useThemeStore();
     const { fetchGetListCustomers } = useAppStore();
 
@@ -219,14 +218,13 @@ export default defineComponent({
 
     const customers = ref([]);
     const customer = ref(null);
+    const locationId = ref("");
     const filteredCustomers = ref([]);
     const isLoading = ref(true);
     const isShowDialogAddCustomer = ref(false);
     const isShowDialogAddCustomerLocation = ref(false);
     const searchValue = ref("");
     const panelActual = ref(1);
-
-    // const { getSessionUserLogged } = storeToRefs(authStore);
 
     onMounted(() => getAllCustomers());
 
@@ -240,7 +238,7 @@ export default defineComponent({
         customers.value = customers.value.filter(
           (item) =>
             item.razon_social.toLowerCase().includes(searchTerm) ||
-            item.email_notificacion.toLowerCase().includes(searchTerm)
+            item.correo_electronico.toLowerCase().includes(searchTerm)
         );
       }
     };
@@ -270,8 +268,10 @@ export default defineComponent({
 
     const closeDialogAddCustomerLocation = () =>
       (isShowDialogAddCustomerLocation.value = false);
-    const openDialogAddCustomerLocation = () =>
-      (isShowDialogAddCustomerLocation.value = true);
+    const openDialogAddCustomerLocation = (id) => {
+      locationId.value = id;
+      isShowDialogAddCustomerLocation.value = true;
+    };
 
     return {
       searchValue,
@@ -291,6 +291,7 @@ export default defineComponent({
       getThemePreference,
       closeDialogAddCustomerLocation,
       openDialogAddCustomerLocation,
+      locationId,
     };
   },
 });
