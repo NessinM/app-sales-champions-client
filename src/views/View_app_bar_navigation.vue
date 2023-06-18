@@ -14,18 +14,18 @@ v-app-bar.elevation-2.rounded-0(
   v-spacer
   v-menu(rounded)
     template(#activator="{ props }")
-      v-avatar.mx-4(color="white", v-bind="props")
+      v-avatar.mx-4.cursor-pointer(color="white", v-bind="props")
         span.text-sm.font-bold.text-primary NA
     v-card.elevation-2
       v-list.pa-0.ma-0(density="compact")
         v-list-item(@click="() => {}")
           v-list-item-title
             v-icon.mr-2(icon="$mdiImageSyncOutline")
-            span.text-xs Preferencias
+            span.text-md.font-bold Preferencias
         v-list-item(@click="distroySession()")
           v-list-item-title.text-error
             v-icon.mr-2(icon="$mdiTrashCanOutline")
-            span.text-xs Cerrar sesión
+            span.text-md.font-bold Cerrar sesión
 </template>
 <script>
 import { computed, defineComponent } from "vue";

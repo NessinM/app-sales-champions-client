@@ -7,7 +7,7 @@ v-dialog(
 )
   v-card(:rounded="isMobile ? 0 : 5")
     v-form-add-edit-customer(
-      @created="getAllCustomers",
+      @created="getListCustomerAndSelected",
       @close="closeDialogAddCustomer"
     )
 v-dialog(
@@ -20,84 +20,104 @@ v-dialog(
     v-form-add-edit-customer-location(
       :customer-id="customer.id",
       :customer-location-id="locationId",
-      @created="getAllCustomers",
+      @created="getListCustomerAndSelected",
+      @updated="getListCustomerAndSelected",
       @close="closeDialogAddCustomerLocation"
+    )
+v-dialog(
+  v-model="isShowDialogAddCustomerContact",
+  :fullscreen="isMobile",
+  scrollable,
+  :width="isMobile ? '100%' : '700'"
+)
+  v-card(:rounded="isMobile ? 0 : 5")
+    v-form-add-edit-customer-contact(
+      :customer-id="customer.id",
+      :customer-contact-id="locationId",
+      @created="getListCustomerAndSelected",
+      @updated="getListCustomerAndSelected",
+      @close="closeDialogAddCustomerContact"
     )
 
 v-row.h-full(no-gutters)
   v-col(cols="12", lg="3 ", md="4", sm="12")
-    .flex.flex-col
-      .flex.align-center.justify-center
-        v-text-field(
-          v-model="searchValue",
-          flat,
-          prepend-inner-icon="$mdiFolderSearch",
+    .flex.align-center.justify-center
+      v-text-field(
+        v-model="searchValue",
+        flat,
+        prepend-inner-icon="$mdiFolderSearch",
+        color="primary",
+        variant="solo",
+        clearable,
+        placeholder="Buscar por razón social, numero documento",
+        type="text",
+        hide-details,
+        @input="filterData"
+      )
+        template(#append-inner)
+          v-fade-transition.ml-2(leave-absolute)
+            v-btn(
+              icon="$mdiSync",
+              size="small",
+              color="primary",
+              variant="elevated",
+              @click="getAllCustomers()"
+            )
+    v-divider(v-if="!isThemeDark")
+    .p-2
+      v-btn.w-full(
+        color="success",
+        rounded="3",
+        variant="elevated",
+        @click="openDialogAddCustomer"
+      )
+        v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
+        small.font-bold.text-white Agregar nuevo cliente
+    perfect-scrollbar.overflow-y-auto.pb-5(class="h-[calc(100vh-170px)]")
+      v-alert(
+        v-if="!customers.length && !isLoading",
+        variant="outlined",
+        density="compact",
+        color="error"
+      )
+        v-icon(start, size="20", icon="$mdiFolderSearch")
+        small.text-xs.font-medium No existen datos coincidentes para esta busqueda
+      .flex.flex-col.pa-8.items-center(v-if="isLoading")
+        small.text-xs.text-primary.font-bold.italic Obteniendo listado de clientes...
+        v-progress-linear.mt-2(
           color="primary",
-          variant="solo",
-          clearable,
-          placeholder="Buscar por razón social, numero documento",
-          type="text",
-          hide-details,
-          bg-color="background",
-          @input="filterData"
+          indeterminate,
+          rounded,
+          height="5"
         )
-          template(#append-inner)
-            v-fade-transition.ml-2(leave-absolute)
-              v-btn(
-                icon="$mdiSync",
-                size="small",
-                color="primary",
-                variant="elevated",
-                @click="getAllCustomers()"
-              )
-      .p-2
-        v-btn.w-full(
-          color="success",
-          rounded="3",
-          variant="elevated",
-          @click="openDialogAddCustomer"
-        )
-          v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
-          small.font-bold.text-white Agregar nuevo cliente
-      perfect-scrollbar.overflow-y-auto.pb-5(class="h-[calc(100vh-170px)]")
-        v-alert.ma-4(
-          v-if="!customers.length && !isLoading",
-          variant="outlined",
-          density="compact",
-          color="error"
-        )
-          v-icon(start, size="20", icon="$mdiFolderSearch")
-          small.text-xs.font-medium No existen datos coincidentes para esta busqueda
-        .flex.flex-col.pa-8.items-center(v-if="isLoading")
-          small.text-xs.text-primary.font-bold.italic Obteniendo listado de clientes...
-          v-progress-linear.mt-2(
-            color="primary",
-            indeterminate,
-            rounded,
-            height="5"
-          )
 
-        v-list(
-          mandatory,
-          color="primary",
-          @update:selected="actionSelectedCustomer"
+      v-list(
+        mandatory,
+        color="primary",
+        @update:selected="actionSelectedCustomer"
+      )
+        v-list-item.py-3(
+          v-for="(i, index) in customers",
+          :key="index",
+          :value="index"
         )
-          v-list-item.py-3(
-            v-for="(i, index) in customers",
-            :key="index",
-            :value="index"
-          )
-            template(#prepend)
-              v-avatar(color="background", density="compact")
-                v-img(:src="i.logo_corporativo")
-            v-list-item-title
-              span.font-extrabold.text-xs {{ i.razon_social }}
-            v-list-item-subtitle
-              span.text-xs {{ i.numero_documento }} - {{ i.sub_sector }}
-            template(#append)
-              v-chip(color="grey", density="comfortable")
-                v-icon(start, size="13", icon="$mdiShieldStarOutline")
-                small.font-medium Nuevo
+          template(#prepend)
+            v-avatar(v-if="i.logo_corporativo", color="background", :size="40")
+              v-img(:src="i.logo_corporativo")
+            v-square-avatar-of-text(
+              v-else,
+              :text="i.razon_social",
+              text-size="sm",
+              :avatar-size="40"
+            )
+          v-list-item-title
+            span.font-extrabold.text-xs {{ i.razon_social }}
+          v-list-item-subtitle
+            span.text-xs {{ i.numero_documento }} - {{ i.sub_sector }}
+          template(#append)
+            v-chip(color="grey", density="comfortable")
+              v-icon(start, size="13", icon="$mdiShieldStarOutline")
+              small.font-bold Fiscal
   v-col(cols="12", lg="9", md="8", sm="12")
     .items-center.flex.justify-center.h-full(v-if="!customer")
       .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
@@ -105,40 +125,54 @@ v-row.h-full(no-gutters)
       )
         v-icon.text-slate-300(start, size="90", icon="$mdiAccountArrowLeft")
         small.text-slate-300.text-md.font-semibold.my-2 Seleccione un usuario del panel lateral izquierdo
-    .h-full.bg-background(v-else)
-      .bg-white.flex.items-center.justify-center.h-32(class="!sticky !top-0 !z-10")
-        v-list-item
-          template(#prepend)
-            v-avatar(color="background", density="compact", size="75")
-              v-img(:src="customer.logo_corporativo")
-          v-list-item-title
-            span.text-lg.font-extrabold {{ customer.razon_social }}
-          v-list-item-subtitle
-            span.text-md {{ customer.numero_documento }} - Banca y seguros
-          template(#append)
-            v-btn.mx-4(icon="$mdiPencil")
-      v-tabs(
-        v-model="panelActual",
-        align-tabs="end",
-        density="compact",
-        color="primary",
-        bg-color="white"
-      )
-        v-tab(:value="1")
-          span.font-bold(class="text-[11px]") Ubicaciones
-        v-tab(:value="2")
-          span.font-bold(class="text-[11px]") Contactos
-      v-divider
-      .pa-4
+    .h-full(v-else)
+      .bg-primary.elevation-4(class="!sticky !top-0 !z-10")
+        .h-36.flex.items-center.justify-center
+          v-list-item
+            template(#prepend)
+              v-avatar(
+                v-if="customer.logo_corporativo",
+                color="background",
+                density="compact",
+                size="55"
+              )
+                v-img(:src="customer.logo_corporativo")
+              v-square-avatar-of-text(
+                v-else,
+                :text="customer.razon_social",
+                :avatar-size="55",
+                text-size="lg",
+                bg-color="white",
+                text-color="primary"
+              )
+            v-list-item-title
+              span.text-lg.font-extrabold {{ customer.razon_social }}
+            v-list-item-subtitle
+              span.text-md {{ customer.numero_documento }} -
+              span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
+            template(#append)
+              v-btn.mx-4(icon="$mdiPencil")
+        v-tabs(
+          v-model="panelActual",
+          align-tabs="end",
+          density="compact",
+          color="white",
+          bg-color="primary"
+        )
+          v-tab(:value="1")
+            span.font-bold(class="text-[10px]") Ubicaciones
+          v-tab(:value="2")
+            span.font-bold(class="text-[10px]") Contactos
+      .pa-4(v-if="panelActual === 1")
         v-row
           v-col(cols="12", lg="3", md="6", sm="12")
             v-hover(v-slot="{ isHovering, props }")
               v-card.mx-auto.pa-4(
-                height="215",
-                :elevation="isHovering ? 4 : 1",
+                height="225",
+                :elevation="isHovering ? 6 : 1",
                 :class="{ 'on-hover text-white': isHovering }",
                 v-bind="props",
-                :color="isHovering ? 'primary' : 'white'",
+                :color="isHovering ? 'primary' : 'background'",
                 @click="openDialogAddCustomerLocation()"
               )
                 .flex.items-center.justify-center.h-full.flex-col
@@ -166,7 +200,7 @@ v-row.h-full(no-gutters)
                 @click="openDialogAddCustomerLocation(l.id)"
               )
                 v-carousel(
-                  height="150",
+                  height="160",
                   hide-delimiters,
                   :show-arrows="false",
                   :interval="5000",
@@ -174,40 +208,115 @@ v-row.h-full(no-gutters)
                   touch
                 )
                   v-carousel-item(
-                    v-for="(slide, i) in [l.imagen_uno, l.imagen_dos, l.imagen_tres, l.imagen_cuatro]",
+                    v-for="(slide, i) in slidesImages(l)",
                     :key="i"
                   )
                     v-card.mx-auto.cursor-pointer(:rounded="0")
                       v-img.align-end.text-white(
-                        height="150",
+                        height="160",
                         :src="slide",
                         gradient="to bottom, rgba(0,0,0,.1), #2d4258a1",
                         cover=""
                       )
                         v-card-title
-                          .text-sm.font-bold {{ l.nombre }}
+                          .text-xs.font-bold {{ l.nombre }}
                 v-list
                   v-list-item
                     v-list-item-title
-                      span.font-bold.text-sm {{ l.direccion }}
+                      span.font-extrabold.text-xs {{ l.direccion }}
                     v-list-item-subtitle
                       span.text-xs {{ l.distrito }} - {{ l.provincia }} - {{ l.departamento }}
                     template(#prepend="")
                       v-avatar(color="primary")
                         v-icon(color="white", icon="$mdiMapMarkerOutline")
+      .pa-4(v-if="panelActual === 2")
+        v-row
+          v-col(cols="12", lg="3", md="6", sm="12")
+            v-hover(v-slot="{ isHovering, props }")
+              v-card.mx-auto.pa-4(
+                height="225",
+                :elevation="isHovering ? 6 : 1",
+                :class="{ 'on-hover text-white': isHovering }",
+                v-bind="props",
+                :color="isHovering ? 'primary' : 'background'",
+                @click="openDialogAddCustomerContact()"
+              )
+                .flex.items-center.justify-center.h-full.flex-col
+                  v-icon(
+                    size="70",
+                    icon="$mdiAccountMultiplePlus",
+                    :class="isHovering ? 'text-white' : 'text-slate-300'"
+                  )
+                  small.font-bold(
+                    :class="isHovering ? 'text-white' : 'text-slate-300'"
+                  ) Agregar nuevo contacto
+          v-col(
+            v-for="(c, index) in customer.contactos",
+            :key="index",
+            cols="12",
+            lg="3",
+            md="6",
+            sm="12"
+          )
+            v-hover(v-slot="{ isHovering, props }")
+              v-card.mx-auto(
+                :elevation="isHovering ? 6 : 2",
+                :class="{ 'on-hover bg-background': isHovering }",
+                v-bind="props",
+                @click="openDialogAddCustomerContact(c.id)"
+              )
+                v-card.elevation-5(
+                  :rounded="0",
+                  height="160",
+                  color="background"
+                )
+                  .flex.items-center.justify-center.h-full
+                    div
+                      v-btn.mx-2(icon="$mdiPhone", color="blue")
+                      v-btn.mx-2.text-white(
+                        icon="$mdiWhatsapp",
+                        color="success"
+                      )
+
+                v-list
+                  v-list-item
+                    v-list-item-title
+                      span.font-extrabold.text-md {{ c.nombre }}
+                    v-list-item-subtitle
+                      span.text-xs.capitalize {{ c.cargo }}
+                    template(#prepend="")
+                      v-avatar(
+                        v-if="c.imagen_perfil",
+                        color="background",
+                        density="compact",
+                        size="40"
+                      )
+                        v-img(:src="c.imagen_perfil")
+                      v-square-avatar-of-text(
+                        v-else,
+                        :text="c.nombre",
+                        :avatar-size="40",
+                        text-size="sm",
+                        bg-color="primary",
+                        text-color="white "
+                      )
 </template>
 <script>
 import { computed, defineComponent, ref, onMounted } from "vue";
 import { useAppStore, useThemeStore } from "@/store";
 import { useDisplay, useTheme } from "vuetify";
 import { notify } from "@kyvg/vue3-notification";
-import FormAddOrEditCustomerComponent from "@/components/form_add_edit_customer_component.vue";
+import SquareAvatarOfTextComponent from "@/components/square_avatar_of_text_component.vue";
+import FormAddOrEditCustomerComponent from "@/components/form_add_customer_component.vue";
 import FormAddOrEditCustomerLocationComponent from "@/components/form_add_edit_customer_location_component.vue";
+import FormAddOrEditCustomerContactComponent from "@/components/form_add_edit_customer_contact_component.vue";
 export default defineComponent({
   name: "ViewCustomerManager",
   components: {
+    "v-square-avatar-of-text": SquareAvatarOfTextComponent,
     "v-form-add-edit-customer": FormAddOrEditCustomerComponent,
     "v-form-add-edit-customer-location": FormAddOrEditCustomerLocationComponent,
+    "v-form-add-edit-customer-contact": FormAddOrEditCustomerContactComponent,
   },
   setup() {
     const { mobile } = useDisplay();
@@ -223,6 +332,7 @@ export default defineComponent({
     const isLoading = ref(true);
     const isShowDialogAddCustomer = ref(false);
     const isShowDialogAddCustomerLocation = ref(false);
+    const isShowDialogAddCustomerContact = ref(false);
     const searchValue = ref("");
     const panelActual = ref(1);
 
@@ -249,8 +359,8 @@ export default defineComponent({
 
     const getAllCustomers = async () => {
       try {
-        closeDialogAddCustomer();
-        closeDialogAddCustomerLocation();
+        filteredCustomers.value = [];
+        customers.value = [];
         isLoading.value = true;
         const response = await fetchGetListCustomers();
         filteredCustomers.value = response.customers;
@@ -272,6 +382,34 @@ export default defineComponent({
       locationId.value = id;
       isShowDialogAddCustomerLocation.value = true;
     };
+    const closeDialogAddCustomerContact = () =>
+      (isShowDialogAddCustomerContact.value = false);
+    const openDialogAddCustomerContact = (id) => {
+      locationId.value = id;
+      isShowDialogAddCustomerContact.value = true;
+    };
+
+    const getListCustomerAndSelected = async (customerIdEmmited) => {
+      await getAllCustomers();
+      const customerExist = customers.value.find(
+        (e) => e.id === customerIdEmmited
+      );
+      customer.value = customerExist;
+    };
+
+    const slidesImages = ({
+      imagen_uno,
+      imagen_dos,
+      imagen_tres,
+      imagen_cuatro,
+    }) => {
+      const slides = [];
+      if (imagen_uno) slides.push(imagen_uno);
+      if (imagen_dos) slides.push(imagen_dos);
+      if (imagen_tres) slides.push(imagen_tres);
+      if (imagen_cuatro) slides.push(imagen_cuatro);
+      return slides;
+    };
 
     return {
       searchValue,
@@ -286,12 +424,17 @@ export default defineComponent({
       actionSelectedCustomer,
       isShowDialogAddCustomer,
       isShowDialogAddCustomerLocation,
+      isShowDialogAddCustomerContact,
+      closeDialogAddCustomerContact,
+      openDialogAddCustomerContact,
       closeDialogAddCustomer,
       openDialogAddCustomer,
       getThemePreference,
       closeDialogAddCustomerLocation,
       openDialogAddCustomerLocation,
       locationId,
+      getListCustomerAndSelected,
+      slidesImages,
     };
   },
 });

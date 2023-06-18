@@ -7,10 +7,10 @@
   v-hover(v-slot="{ isHovering, props }")
     v-card.w-full.relative.overflow-hidden(
       v-bind="props",
-      :class="{ 'elevation-5': isHovering }"
+      :class="{ 'elevation-2': isHovering }"
     )
       v-img.align-end.text-white(
-        height="128",
+        height="126",
         :class="{ 'blur-sm': isHovering }",
         lazy-src="/assets/placeholder-location-image.jpg",
         cover,
@@ -21,19 +21,13 @@
           .d-flex.align-center.justify-center.fill-height
             v-progress-circular(color="primary", indeterminate)
         v-card-title
-          //- .text-xs.opacity-1 {{ file.name }}
-          .text-xs.opacity-1 sadsadsa
+          .text-xs.opacity-1 {{ fileName }}
       slot
-      //- v-btn.w-full(
-      //-   color="error",
-      //-   :rounded="0",
-      //-   @click="handleClickDeleteFile()"
-      //- )
-      //-   span.font-bold.text-xs Eliminar
 </template>
 <script>
 import { computed, defineComponent, onMounted, ref, toRefs } from "vue";
 import { useTheme } from "vuetify/lib/framework.mjs";
+import { formatSizeBytes } from "@/helps/converts";
 export default defineComponent({
   name: "ComponentLogoApplication",
   props: {
@@ -51,11 +45,15 @@ export default defineComponent({
 
     const file = ref();
     const sizeFile = ref("");
+    const fileName = ref("");
     const extencionesImagenes = ref(["image/png", "image/jpg", "image/jpeg"]);
 
     onMounted(() => {
       if (urlImage.value) {
         file.value = urlImage.value;
+        fileName.value = urlImage.value.substring(
+          urlImage.value.lastIndexOf("/") + 1
+        );
         return;
       }
 
@@ -65,29 +63,18 @@ export default defineComponent({
           reader.onload = (e) => (file.value = e.target.result);
           reader.readAsDataURL(fileBuffer.value);
         }
-        sizeFile.value = formatBytes(fileBuffer.value.size);
+        sizeFile.value = formatSizeBytes(fileBuffer.value.size);
+        fileName.value = fileBuffer.value.name;
       }
     });
-
-    const formatBytes = (bytes, decimals = 2) => {
-      if (!+bytes) return "0 Bytes";
-
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-      return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
-    };
 
     const isThemeDark = computed(() => theme.current.value.dark);
 
     return {
       isThemeDark,
-      formatBytes,
       file,
       sizeFile,
+      fileName,
     };
   },
 });

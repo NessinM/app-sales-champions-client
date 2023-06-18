@@ -25,13 +25,18 @@ v-navigation-drawer.elevation-0.z-10(
     v-list-item.mb-2(
       v-for="(item, index) in getOptionsMenuSideBar",
       :key="index",
-      :prepend-icon="item.icon",
-      :value="item.value",
-      :title="item.title",
-      :subtitle="item.subtitle",
       :to="item.to",
+      :value="item.value",
       exact
     )
+      template(#prepend)
+        v-icon(:icon="item.icon")
+      v-list-item-title
+        span.text-md.font-bold {{ item.title }}
+      v-list-item-subtitle
+        span.text-xs {{ item.subtitle }}
+      //- template(#append)
+      //-   v-btn(icon="$mdiPencil", density="compact")
 </template>
 <script>
 import { ref, defineComponent, computed } from "vue";
@@ -39,7 +44,7 @@ import { useDisplay } from "vuetify";
 import { useAppStore, useAuthStore, useThemeStore } from "@/store";
 import { storeToRefs } from "pinia";
 import { enviroments } from "@/helps/constants";
-import { notify } from "@kyvg/vue3-notification";
+// import { notify } from "@kyvg/vue3-notification";
 import LogoApplication from "@/components/component_logo_application.vue";
 export default defineComponent({
   name: "ViewAppNavigationDrawer",
@@ -68,14 +73,14 @@ export default defineComponent({
       rail.value = !rail.value;
     };
 
-    const distroySession = async () => {
-      try {
-        await fetchHandleLogout();
-        window.location.reload();
-      } catch ({ message }) {
-        notify({ type: "error", text: message });
-      }
-    };
+    // const distroySession = async () => {
+    //   try {
+    //     await fetchHandleLogout();
+    //     window.location.reload();
+    //   } catch ({ message }) {
+    //     notify({ type: "error", text: message });
+    //   }
+    // };
 
     const isMobile = computed(() => mobile.value);
 
@@ -92,7 +97,7 @@ export default defineComponent({
       enviroments,
       fetchHandleLogout,
       getOptionsMenuSideBar,
-      distroySession,
+      // distroySession,
       getSessionUserLogged,
     };
   },

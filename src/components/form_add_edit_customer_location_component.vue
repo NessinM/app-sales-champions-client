@@ -1,9 +1,9 @@
 <template lang="pug">
 v-card-title.flex.items-center.py-4.px-6
-  span.font-extrabold.text-lg Nueva ubicación
+  span.font-extrabold.text-lg {{ customerLocationId ? "Editar ubicación" : "Nueva ubicación" }}
 v-divider(v-if="isMobile")
 v-card-text.py-0
-  v-form(ref="formRef")
+  v-form(ref="formRef", :disabled="isLoading")
     v-row(no-gutters)
       v-col(cols="12", lg="6", md="12", sm="12")
         v-text-field.mx-2.text-slate-600.my-1(
@@ -39,7 +39,7 @@ v-card-text.py-0
           label="Tipo de via",
           item-title="name",
           item-value="value",
-          :items="tipos_de_via",
+          :items="typesOfVia",
           variant="outlined",
           density="compact",
           color="primary"
@@ -185,15 +185,18 @@ v-divider(v-if="isMobile")
     color="error",
     variant="text",
     :rounded="5",
+    :disabled="isLoading",
     @click="emitCloseComponent()"
   )
     span.font-bold.text-xs cancelar
   v-btn.ml-4(
-    color="primary",
+    color="success",
     :rounded="5",
+    :disabled="isLoading",
+    :loading="isLoading",
     @click="validateAndCreateCustomerLocation()"
   )
-    span.font-bold.text-xs Guardar cambios
+    span.font-bold.text-xs.text-white {{ customerLocationId ? "Guardar cambios" : "Crear ubicación" }}
 </template>
 
 <script>
@@ -207,7 +210,7 @@ import {
   toRefs,
 } from "vue";
 import { useAppStore, useUploadStore } from "@/store";
-import { ubigeos } from "@/helps/constants";
+import { ubigeous, typesOfVia } from "@/helps/constants";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import SquareUploadImageCustomerLocation from "./square_upload_image_customer_location_component.vue";
 import SquarePreviewImageCustomerLocation from "./square_preview_image_customer_location_component.vue";
@@ -225,7 +228,7 @@ export default defineComponent({
       type: String,
     },
   },
-  emits: ["created", "close"],
+  emits: ["created", "updated", "close"],
   setup(props, { emit }) {
     const { customerId, customerLocationId } = toRefs(props);
     const {
@@ -252,24 +255,6 @@ export default defineComponent({
     const provincias = ref([]);
     const distritos = ref([]);
     let filesTemporaryToUpload = reactive([]);
-    const tipos_de_via = ref([
-      {
-        name: "Avenida",
-        value: "AV",
-      },
-      {
-        name: "Urbanización",
-        value: "URB",
-      },
-      {
-        name: "Jiron",
-        value: "JR",
-      },
-      {
-        name: "Calle",
-        value: "CA",
-      },
-    ]);
     const customerLocation = ref({
       nombre: "",
       direccion: "",
@@ -295,33 +280,34 @@ export default defineComponent({
         const { valid } = await formRef.value.validate();
         if (valid) {
           isLoading.value = true;
+          for (const item of filesTemporaryToUpload) {
+            const { file, numberImage } = item;
+            const { ruta } = await fetchSaveImageCustomersLocation(
+              "user-generic",
+              file
+            );
+
+            if (numberImage === 1) customerLocation.value.imagen_uno = ruta;
+            else if (numberImage === 2)
+              customerLocation.value.imagen_dos = ruta;
+            else if (numberImage === 3)
+              customerLocation.value.imagen_tres = ruta;
+            else if (numberImage === 4)
+              customerLocation.value.imagen_cuatro = ruta;
+          }
           if (customerLocationId.value) {
-            const customerLocationCreated = await fecthUpdateCustomerLocation(
+            await fecthUpdateCustomerLocation(
               customerLocationId.value,
               customerLocation.value
             );
             notify({
               type: "success",
-              text: "El cliente se generó correctamente.",
+              text: "Los cambios se guardarón correctamente.",
             });
-            emit("created", customerLocationCreated);
+            emit("updated", customerId.value);
+            emit("close");
           } else {
-            for (const item of filesTemporaryToUpload) {
-              const { file, numberImage } = item;
-              const { ruta } = await fetchSaveImageCustomersLocation(
-                "user-generic",
-                file
-              );
-
-              if (numberImage === 1) customerLocation.value.imagen_uno = ruta;
-              else if (numberImage === 2)
-                customerLocation.value.imagen_dos = ruta;
-              else if (numberImage === 3)
-                customerLocation.value.imagen_tres = ruta;
-              else if (numberImage === 4)
-                customerLocation.value.imagen_cuatro = ruta;
-            }
-            const customerLocationCreated = await fetchCreateCustomerLocation(
+            await fetchCreateCustomerLocation(
               customerId.value,
               customerLocation.value
             );
@@ -329,7 +315,8 @@ export default defineComponent({
               type: "success",
               text: "El cliente se generó correctamente.",
             });
-            emit("created", customerLocationCreated);
+            emit("created", customerId.value);
+            emit("close");
           }
         }
       } catch (error) {
@@ -350,20 +337,20 @@ export default defineComponent({
         customerLocation.value.distrito = "";
       }
 
-      for (var i = 0; i < ubigeos.length; i++) {
+      for (var i = 0; i < ubigeous.length; i++) {
         if (tipo === "departamento") {
           if (
-            customerLocation.value.departamento === ubigeos[i].departamento &&
-            !provincias.value.includes(ubigeos[i].provincia)
+            customerLocation.value.departamento === ubigeous[i].departamento &&
+            !provincias.value.includes(ubigeous[i].provincia)
           ) {
-            provincias.value.push(ubigeos[i].provincia);
+            provincias.value.push(ubigeous[i].provincia);
           }
         } else if (tipo === "provincia") {
           if (
-            customerLocation.value.provincia === ubigeos[i].provincia &&
-            !distritos.value.includes(ubigeos[i].distrito)
+            customerLocation.value.provincia === ubigeous[i].provincia &&
+            !distritos.value.includes(ubigeous[i].distrito)
           ) {
-            distritos.value.push(ubigeos[i].distrito);
+            distritos.value.push(ubigeous[i].distrito);
           }
         }
       }
@@ -373,7 +360,7 @@ export default defineComponent({
         customerLocation.value.provincia &&
         customerLocation.value.distrito
       ) {
-        customerLocation.value.codigo_ubigeo = ubigeos.find(
+        customerLocation.value.codigo_ubigeo = ubigeous.find(
           (e) =>
             e.descripcion ===
             `${customerLocation.value.departamento}-${customerLocation.value.provincia}-${customerLocation.value.distrito}`
@@ -419,10 +406,10 @@ export default defineComponent({
           notify({ type: "error", text: error.message });
         }
       } else {
-        customerLocation.value.tipo_via = tipos_de_via.value[0].value;
-        for (let i = 0; i < ubigeos.length; i++) {
-          if (!departamentos.value.includes(ubigeos[i].departamento)) {
-            departamentos.value.push(ubigeos[i].departamento);
+        customerLocation.value.tipo_via = typesOfVia[0].value;
+        for (let i = 0; i < ubigeous.length; i++) {
+          if (!departamentos.value.includes(ubigeous[i].departamento)) {
+            departamentos.value.push(ubigeous[i].departamento);
           }
         }
       }
@@ -444,13 +431,14 @@ export default defineComponent({
       customerLocation,
       validateAndCreateCustomerLocation,
       emitCloseComponent,
-      tipos_de_via,
+      typesOfVia,
       changeOptionDepProvDist,
       isMobile,
       getImageLoaded,
       getImageDelete,
       filesTemporaryToUpload,
       deleteImagenCustomerLocation,
+      isLoading,
     };
   },
 });

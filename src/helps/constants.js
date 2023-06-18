@@ -3,8 +3,176 @@ export const enviroments = {
   API_ROUTE: import.meta.env.VITE_API_ROUTE ?? "no_definido",
   API_ROUTE_UPLOAD: import.meta.env.VITE_API_ROUTE_UPLOAD ?? "no_definido",
 };
+export const listPositionsInCompany = [
+  {
+    name: "Director ejecutivo",
+    value: "director ejecutivo",
+  },
+  {
+    name: "Gerente Financiero",
+    value: "gerente financiero",
+  },
+  {
+    name: "Gerente Comercial (CSO)",
+    value: "gerente comercial cso)",
+  },
+  {
+    name: "Gerente de Servicios Administrativos",
+    value: "gerente de servicios administrativos",
+  },
+  {
+    name: "Gerente de Marketing",
+    value: "gerente de marketing",
+  },
+  {
+    name: "Gerente de Recursos Humanos",
+    value: "gerente de recursos humanos",
+  },
+  {
+    name: "Gerente de TI (Tecnología de la Información)",
+    value: "Gerente de ti",
+  },
+  {
+    name: "Gerente de Operaciones (COO)",
+    value: "gerente de operaciones coo",
+  },
+  {
+    name: "Gerente de Comunicaciones",
+    value: "gerente de comunicaciones",
+  },
+  {
+    name: "Gerente de Logística",
+    value: "gerente de logistica",
+  },
+];
 
-export const ubigeos = [
+export const listTypesOfTaxpayers = [
+  {
+    name: "Registro unico de contribuyentes (RUC)",
+    value: "RUC",
+  },
+  {
+    name: "Documento nacional de identidad (DNI)",
+    value: "DNI",
+  },
+  {
+    name: "Carnet de extranjeria (CE)",
+    value: "CE",
+  },
+  {
+    name: "Pasaporte (PAS)",
+    value: "PAS",
+  },
+];
+export const typesOfVia = [
+  {
+    name: "Avenida",
+    value: "AV",
+  },
+  {
+    name: "Urbanización",
+    value: "URB",
+  },
+  {
+    name: "Jiron",
+    value: "JR",
+  },
+  {
+    name: "Calle",
+    value: "CA",
+  },
+];
+export const businessSectorsList = [
+  {
+    name: "Banca y seguros",
+    value: "banca y seguros",
+  },
+  {
+    name: "Centros fotograficos",
+    value: "centros fotograficos",
+  },
+  {
+    name: "Club wide format",
+    value: "club wide format",
+  },
+  {
+    name: "Comercios minoristas",
+    value: "comercios minoristas",
+  },
+  {
+    name: "Construccion e inmobiliarias",
+    value: "construccion e inmobiliarias",
+  },
+  {
+    name: "Copistas",
+    value: "copistas",
+  },
+  {
+    name: "Cuentas estrategicas",
+    value: "cuentas estrategicas",
+  },
+  {
+    name: "Distribuidor premium",
+    value: "Distribuidor premium",
+  },
+  {
+    name: "Distribuidor top",
+    value: "Distribuidor top",
+  },
+  {
+    name: "Distribuidores",
+    value: "distribuidores",
+  },
+  {
+    name: "Educacion",
+    value: "educacion",
+  },
+  {
+    name: "Gobierno",
+    value: "gobierno",
+  },
+  {
+    name: "Imprentas y servicios de impresion",
+    value: "imprentas y servicios de impresion",
+  },
+  {
+    name: "Logistica",
+    value: "logistica",
+  },
+  {
+    name: "Manufactura y comercio",
+    value: "manufactura y comercio",
+  },
+  {
+    name: "Mayorista",
+    value: "mayorista",
+  },
+  {
+    name: "Mineria, energia y petroleo",
+    value: "mineria, energia y petroleo",
+  },
+  {
+    name: "Notarias, servicios contables y consultoras",
+    value: "notarias, servicios contables y consultoras",
+  },
+  {
+    name: "Retail",
+    value: "retail",
+  },
+  {
+    name: "Salud y farmaceutica",
+    value: "salud y farmaceutica",
+  },
+  {
+    name: "Telecomunicaciones y medios de comunicacion",
+    value: "telecomunicaciones y medios de comunicacion",
+  },
+  {
+    name: "Usuario final",
+    value: "usuario final",
+  },
+];
+export const ubigeous = [
   {
     ubigeo: "010517",
     departamento: "AMAZONAS",

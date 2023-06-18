@@ -58,11 +58,20 @@ import {
   mdiAccountEdit,
   mdiArrowDownCircle,
   mdiImagePlusOutline,
-  mdiViewAgenda
+  mdiViewAgenda,
+  mdiAccountMultiplePlus,
+  mdiContacts,
+  mdiCalendarBadgeOutline,
+  mdiPhone,
+  mdiWhatsapp,
 } from "@mdi/js";
 
 export default {
   mdiAccount,
+  mdiPhone,
+  mdiWhatsapp,
+  mdiCalendarBadgeOutline,
+  mdiContacts,
   mdiViewAgenda,
   mdiImagePlusOutline,
   mdiArrowDownCircle,
@@ -121,5 +130,6 @@ export default {
   mdiPlusCircleOutline,
   mdiOfficeBuildingPlus,
   mdiFolderSearch,
-  mdiShieldStarOutline
+  mdiShieldStarOutline,
+  mdiAccountMultiplePlus,
 };

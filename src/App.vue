@@ -3,12 +3,11 @@ v-layout.w-screen.h-screen
   v-drawer-preferences-theme
   v-drawer-sidebar-application
   v-navbar-application(v-if="getSessionUserLogged")
-  v-main.overflow-y-auto(
-    :class="[`h-[calc(100vh-${getThemePreference.height_navbar_app}px)]`]"
-  )
-    router-view(v-slot="{ Component, route }")
-      transition(:name="getThemePreference.router_transition")
-        component(:is="Component", :key="route.path")
+  //- v-main.overflow-y-auto(
+  //-   :class="[`h-[calc(100vh-${getThemePreference.height_navbar_app}px)]`]"
+  //- )
+  v-main.overflow-y-auto
+    router-view
   v-app-notify
   .absolute.elevation-5.overflow-hidden.right-0(
     v-if="getSessionUserLogged && !isMobile",

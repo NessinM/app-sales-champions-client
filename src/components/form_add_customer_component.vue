@@ -8,7 +8,7 @@ v-card-text
         v-autocomplete.mx-2.text-slate-600.my-1(
           v-model="customer.tipo_documento",
           label="Tipo de documento",
-          :items="lista_tipos_contribuyente",
+          :items="listTypesOfTaxpayers",
           :rules="validationForm.tipo_documento",
           placeholder="Seleccione una opcion de la lista",
           item-title="name",
@@ -72,6 +72,18 @@ v-card-text
           density="compact",
           color="primary"
         )
+      v-col(cols="12", lg="12", md="12", sm="12")
+        v-autocomplete.mx-2.text-slate-600.my-1(
+          v-model="customer.sub_sector",
+          label="Sub sector",
+          :items="businessSectorsList",
+          placeholder="Seleccione una opcion de la lista",
+          item-title="name",
+          item-value="value",
+          variant="outlined",
+          density="compact",
+          color="primary"
+        )
 .flex.pa-1.px-6.pb-6.mx-2(
   :class="{ 'flex-col': isMobile, 'justify-end': !isMobile }"
 )
@@ -79,21 +91,23 @@ v-card-text
     color="error",
     :rounded="5",
     variant="text",
+    :class="{ 'mb-3': isMobile }",
     @click="emitCloseComponent"
   )
     span.text-xs.font-bold cancelar
   v-btn.ml-2.font-bold(
-    color="primary",
+    color="success",
     :rounded="5",
     @click="validateAndCreateCustomer()"
   )
-    small.text-xs.font-bold Crear cliente
+    small.text-xs.font-bold.text-white Crear cliente
 </template>
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { useAppStore } from "../store";
 import { notify } from "@kyvg/vue3-notification";
+import { listTypesOfTaxpayers, businessSectorsList } from "@/helps/constants";
 export default defineComponent({
   name: "ComponentFormCustomer",
   emits: ["created", "close"],
@@ -108,10 +122,7 @@ export default defineComponent({
 
     const validationForm = {
       tipo_documento: [(v) => !!v || "El tipo de documento e requerido"],
-      numero_documento: [
-        (v) => !!v || "El numero de documento es requerido",
-        (v) => validateForDocumentNumber(v),
-      ],
+      numero_documento: [(v) => validateForDocumentNumber(v)],
       razon_social: [(v) => !!v || "La razon social es requerido"],
     };
 
@@ -124,6 +135,7 @@ export default defineComponent({
       razon_social: "",
     });
     const location = ref({
+      nombre: "Direccion fiscal",
       direccion: "",
       referencia_direccion: "",
       tipo_via: "",
@@ -132,115 +144,8 @@ export default defineComponent({
       provincia: "",
       distrito: "",
       codigo_ubigeo: "",
+      sub_sector: "",
     });
-    const lista_sectores = ref([
-      {
-        name: "Banca y seguros",
-        value: "banca y seguros",
-      },
-      {
-        name: "Centros fotograficos",
-        value: "centros fotograficos",
-      },
-      {
-        name: "Club wide format",
-        value: "club wide format",
-      },
-      {
-        name: "Comercios minoristas",
-        value: "comercios minoristas",
-      },
-      {
-        name: "Construccion e inmobiliarias",
-        value: "construccion e inmobiliarias",
-      },
-      {
-        name: "Copistas",
-        value: "copistas",
-      },
-      {
-        name: "Cuentas estrategicas",
-        value: "cuentas estrategicas",
-      },
-      {
-        name: "Distribuidor premium",
-        value: "Distribuidor premium",
-      },
-      {
-        name: "Distribuidor top",
-        value: "Distribuidor top",
-      },
-      {
-        name: "Distribuidores",
-        value: "distribuidores",
-      },
-      {
-        name: "Educacion",
-        value: "educacion",
-      },
-      {
-        name: "Gobierno",
-        value: "gobierno",
-      },
-      {
-        name: "Imprentas y servicios de impresion",
-        value: "imprentas y servicios de impresion",
-      },
-      {
-        name: "Logistica",
-        value: "logistica",
-      },
-      {
-        name: "Manufactura y comercio",
-        value: "manufactura y comercio",
-      },
-      {
-        name: "Mayorista",
-        value: "mayorista",
-      },
-      {
-        name: "Mineria, energia y petroleo",
-        value: "mineria, energia y petroleo",
-      },
-      {
-        name: "Notarias, servicios contables y consultoras",
-        value: "notarias, servicios contables y consultoras",
-      },
-      {
-        name: "Retail",
-        value: "retail",
-      },
-      {
-        name: "Salud y farmaceutica",
-        value: "salud y farmaceutica",
-      },
-      {
-        name: "Telecomunicaciones y medios de comunicacion",
-        value: "telecomunicaciones y medios de comunicacion",
-      },
-      {
-        name: "Usuario final",
-        value: "usuario final",
-      },
-    ]);
-    const lista_tipos_contribuyente = ref([
-      {
-        name: "Registro unico de contribuyentes (RUC)",
-        value: "RUC",
-      },
-      {
-        name: "Documento nacional de identidad (DNI)",
-        value: "DNI",
-      },
-      {
-        name: "Carnet de extranjeria (CE)",
-        value: "CE",
-      },
-      {
-        name: "Pasaporte (PAS)",
-        value: "PAS",
-      },
-    ]);
 
     const obtenerDatosSunat = async () => {
       try {
@@ -266,6 +171,8 @@ export default defineComponent({
     };
 
     const validateForDocumentNumber = (v) => {
+      if (!customer.value.tipo_documento)
+        return "El numero de documento es requerido";
       if (customer.value.tipo_documento === "DNI" && v.length < 8)
         return "El numero de DNI no ser menor a 8 caracteres";
       if (customer.value.tipo_documento === "DNI" && v.length > 8)
@@ -296,7 +203,8 @@ export default defineComponent({
             text: "El cliente se generó correctamente.",
           });
           // await formRef.value.reset();
-          emit("created", customerCreated);
+          emit("created", customerCreated.id);
+          emit("close");
         }
       } catch (error) {
         notify({ type: "error", text: error.message });
@@ -312,8 +220,8 @@ export default defineComponent({
       formRef,
       customer,
       validationForm,
-      lista_sectores,
-      lista_tipos_contribuyente,
+      businessSectorsList,
+      listTypesOfTaxpayers,
       isMobile,
       obtenerDatosSunat,
       isLoadingGetSunat,

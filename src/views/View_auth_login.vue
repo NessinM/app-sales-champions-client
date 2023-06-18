@@ -1,9 +1,9 @@
 <template lang="pug">
 section.skewed.shadow-lg(class="shadow-slate-500/50")
-.flex.h-screen.w-screen.justify-center.align-center.flex-col.bg-background
+.flex.h-full.w-full.justify-center.align-center.flex-col.bg-background
   v-card-title.text-white.z-10
     .flex.flex-col.justify-center.items-center
-      strong.font-extrabold.text-2xl {{ enviroments.APP_NAME }}
+      strong.font-extrabold.text-3xl {{ enviroments.APP_NAME }}
       span.font-light.text-xs Sistema de gestión y seguimiento comercial
   v-card.pa-6(
     :width="isMobile ? '350' : '400'",
@@ -19,15 +19,11 @@ section.skewed.shadow-lg(class="shadow-slate-500/50")
         indeterminate
       )
     v-card.flex.align-center.justify-center.mb-8(
-      height="200",
+      height="150",
       color="background",
       elevation="0"
     )
-      v-img.align-center(
-        src="/assets/background_login_maps.jpg",
-        height="250",
-        cover
-      )
+      v-img.align-center(src="/assets/background_login_maps.jpg", cover)
     v-form(@submit.prevent="fetchAuthenticateCredentials()")
       v-text-field.text-slate-400(
         v-model="form.email",
@@ -70,6 +66,7 @@ section.skewed.shadow-lg(class="shadow-slate-500/50")
         v-icon(icon="$mdiLinkVariant")
         |
         | Si olvidaste tu contraseña o la deseas cambiar
+  v-divider
   blockquote.text-xs.font-medium.italic.text-center.text-slate-400.absolute.bottom-0.right-0.py-4.px-4
     | © {{ new Date().getFullYear() }} -
     span.relative.inline-block.mx-2(
