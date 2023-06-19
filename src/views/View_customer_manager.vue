@@ -102,13 +102,13 @@ v-row.h-full(no-gutters)
           :value="index"
         )
           template(#prepend)
-            v-avatar(v-if="i.logo_corporativo", color="background", :size="40")
+            v-avatar(v-if="i.logo_corporativo", color="background", :size="35")
               v-img(:src="i.logo_corporativo")
             v-square-avatar-of-text(
               v-else,
               :text="i.razon_social",
               text-size="sm",
-              :avatar-size="40"
+              :avatar-size="35"
             )
           v-list-item-title
             span.font-extrabold.text-xs {{ i.razon_social }}
@@ -118,16 +118,49 @@ v-row.h-full(no-gutters)
             v-chip(color="grey", density="comfortable")
               v-icon(start, size="13", icon="$mdiShieldStarOutline")
               small.font-bold Fiscal
-  v-col(cols="12", lg="9", md="8", sm="12")
-    .items-center.flex.justify-center.h-full(v-if="!customer")
+
+  v-col(
+    cols="12",
+    lg="9",
+    md="8",
+    sm="12",
+    :class="{ 'absolute z-10': isMobile }"
+  )
+    .items-center.flex.justify-center.h-full(v-if="!customer && !isMobile")
       .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
         class="h-1/3 w-1/2"
       )
         v-icon.text-slate-300(start, size="90", icon="$mdiAccountArrowLeft")
         small.text-slate-300.text-md.font-semibold.my-2 Seleccione un usuario del panel lateral izquierdo
-    .h-full(v-else)
+    v-card.h-full(v-if="customer", rounded="0", elevation="0")
+      v-toolbar(v-if="isMobile", color="primary")
+        v-btn.hidden-xs-only(icon="", @click="customer = null")
+          v-icon(icon="$mdiArrowLeft", color="white")
+        v-toolbar-title(class="!ms-0")
+          v-list-item.px-2
+            template(#prepend)
+              v-avatar(
+                v-if="customer.logo_corporativo",
+                color="background",
+                density="compact",
+                size="40"
+              )
+                v-img(:src="customer.logo_corporativo")
+              v-square-avatar-of-text(
+                v-else,
+                :text="customer.razon_social",
+                :avatar-size="40",
+                text-size="sm",
+                bg-color="white",
+                text-color="primary"
+              )
+            v-list-item-title
+              span.text-sm.font-extrabold {{ customer.razon_social }}
+            v-list-item-subtitle
+              span.text-md {{ customer.numero_documento }} -
+              span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
       .bg-primary.elevation-4(class="!sticky !top-0 !z-10")
-        .h-36.flex.items-center.justify-center
+        .h-24.flex.items-center.justify-center(v-if="!isMobile")
           v-list-item
             template(#prepend)
               v-avatar(
@@ -146,7 +179,7 @@ v-row.h-full(no-gutters)
                 text-color="primary"
               )
             v-list-item-title
-              span.text-lg.font-extrabold {{ customer.razon_social }}
+              span.text-sm.font-extrabold {{ customer.razon_social }}
             v-list-item-subtitle
               span.text-md {{ customer.numero_documento }} -
               span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
@@ -163,12 +196,15 @@ v-row.h-full(no-gutters)
             span.font-bold(class="text-[10px]") Ubicaciones
           v-tab(:value="2")
             span.font-bold(class="text-[10px]") Contactos
-      .pa-4(v-if="panelActual === 1")
+      perfect-scrollbar.overflow-y-auto.pa-4(
+        v-if="panelActual === 1",
+        :class="isMobile ? 'h-[calc(100vh-157px)]' : 'h-[calc(100vh-190px)]'"
+      )
         v-row
           v-col(cols="12", lg="3", md="6", sm="12")
             v-hover(v-slot="{ isHovering, props }")
               v-card.mx-auto.pa-4(
-                height="225",
+                :height="isMobile ? 160 : 225",
                 :elevation="isHovering ? 6 : 1",
                 :class="{ 'on-hover text-white': isHovering }",
                 v-bind="props",
@@ -177,7 +213,7 @@ v-row.h-full(no-gutters)
               )
                 .flex.items-center.justify-center.h-full.flex-col
                   v-icon(
-                    size="70",
+                    :size="isMobile ? 50 : 70",
                     icon="$mdiOfficeBuildingPlus",
                     :class="isHovering ? 'text-white' : 'text-slate-300'"
                   )
@@ -229,12 +265,15 @@ v-row.h-full(no-gutters)
                     template(#prepend="")
                       v-avatar(color="primary")
                         v-icon(color="white", icon="$mdiMapMarkerOutline")
-      .pa-4(v-if="panelActual === 2")
+      perfect-scrollbar.overflow-y-auto.pa-4(
+        v-if="panelActual === 2",
+        :class="isMobile ? 'h-[calc(100vh-157px)]' : 'h-[calc(100vh-190px)]'"
+      )
         v-row
           v-col(cols="12", lg="3", md="6", sm="12")
             v-hover(v-slot="{ isHovering, props }")
               v-card.mx-auto.pa-4(
-                height="225",
+                :height="isMobile ? 160 : 225",
                 :elevation="isHovering ? 6 : 1",
                 :class="{ 'on-hover text-white': isHovering }",
                 v-bind="props",
@@ -243,7 +282,7 @@ v-row.h-full(no-gutters)
               )
                 .flex.items-center.justify-center.h-full.flex-col
                   v-icon(
-                    size="70",
+                    :size="isMobile ? 50 : 70",
                     icon="$mdiAccountMultiplePlus",
                     :class="isHovering ? 'text-white' : 'text-slate-300'"
                   )
@@ -289,13 +328,13 @@ v-row.h-full(no-gutters)
                         v-if="c.imagen_perfil",
                         color="background",
                         density="compact",
-                        size="40"
+                        size="35"
                       )
                         v-img(:src="c.imagen_perfil")
                       v-square-avatar-of-text(
                         v-else,
                         :text="c.nombre",
-                        :avatar-size="40",
+                        :avatar-size="35",
                         text-size="sm",
                         bg-color="primary",
                         text-color="white "

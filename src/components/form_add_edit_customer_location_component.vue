@@ -1,8 +1,17 @@
 <template lang="pug">
-v-card-title.flex.items-center.py-4.px-6
+v-card-title.flex.items-center.py-2.px-6(
+  :class="{ 'bg-primary elevation-4': isMobile }"
+)
+  v-btn.mr-3(
+    v-if="isMobile",
+    icon="",
+    flat,
+    color="primary",
+    @click="emitCloseComponent()"
+  )
+    v-icon(icon="$mdiArrowLeft", size="30 ")
   span.font-extrabold.text-lg {{ customerLocationId ? "Editar ubicación" : "Nueva ubicación" }}
-v-divider(v-if="isMobile")
-v-card-text.py-0
+v-card-text(:class="isMobile ? '' : 'py-0'")
   v-form(ref="formRef", :disabled="isLoading")
     v-row(no-gutters)
       v-col(cols="12", lg="6", md="12", sm="12")
@@ -182,6 +191,7 @@ v-card-text.py-0
 v-divider(v-if="isMobile")
 .flex.justify-end.px-6.py-6.mx-2
   v-btn(
+    v-if="!isMobile",
     color="error",
     variant="text",
     :rounded="5",
@@ -189,7 +199,8 @@ v-divider(v-if="isMobile")
     @click="emitCloseComponent()"
   )
     span.font-bold.text-xs cancelar
-  v-btn.ml-4(
+  v-btn(
+    :class="isMobile ? 'flex-1' : 'ml-4'",
     color="success",
     :rounded="5",
     :disabled="isLoading",

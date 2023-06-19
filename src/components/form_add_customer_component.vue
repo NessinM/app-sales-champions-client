@@ -116,7 +116,7 @@ export default defineComponent({
     const {
       fetchCreateCustomer,
       fetchUpdateCustomer,
-      fetchGetCustomeroOfSunat,
+      fetchGetCustomerOfSunat,
       fetchCreateCustomerLocation,
     } = useAppStore();
 
@@ -150,7 +150,7 @@ export default defineComponent({
     const obtenerDatosSunat = async () => {
       try {
         isLoadingGetSunat.value = true;
-        const responseSunat = await fetchGetCustomeroOfSunat(
+        const responseSunat = await fetchGetCustomerOfSunat(
           customer.value.numero_documento
         );
 

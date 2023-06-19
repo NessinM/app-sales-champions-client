@@ -64,10 +64,12 @@ import {
   mdiCalendarBadgeOutline,
   mdiPhone,
   mdiWhatsapp,
+  mdiArrowLeft,
 } from "@mdi/js";
 
 export default {
   mdiAccount,
+  mdiArrowLeft,
   mdiPhone,
   mdiWhatsapp,
   mdiCalendarBadgeOutline,

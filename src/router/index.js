@@ -42,6 +42,15 @@ const router = createRouter({
       },
     },
     {
+      path: "/event-manager",
+      name: "event-manager",
+      component: () => import("@/views/View_app_event_manager.vue"),
+      meta: {
+        isRequiredAuth: true,
+        title: "Programacion de eventos",
+      },
+    },
+    {
       path: "/seguimiento-de-usuarios",
       name: "seguimiento-de-usuarios",
       component: () => import("@/views/View_app_seguimiento_de_usuarios.vue"),

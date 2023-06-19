@@ -20,7 +20,7 @@ export const useAppStore = defineStore("app-store", {
         subtitle: "Programacion de visita",
         title: "Programacion de visita",
         icon: "$mdiCalendarBadgeOutline",
-        to: "/programacion-de-visita",
+        to: "/event-manager",
       },
       {
         subtitle: "Seguimiento de usuarios",
@@ -36,9 +36,7 @@ export const useAppStore = defineStore("app-store", {
   actions: {
     async fetchGetListCustomers(payload) {
       const { data } = await http.API_ROUTE.get("/customer/", payload);
-      console.log("response -> fetchGetListCustomers", data);
       return data;
-      // return { customers: [] };
     },
     async fetchGetOneCustomer(customerId) {
       const { data } = await http.API_ROUTE.get(`/customer/${customerId}`, {});
@@ -55,7 +53,7 @@ export const useAppStore = defineStore("app-store", {
       );
       return data;
     },
-    async fetchGetCustomeroOfSunat(document_number) {
+    async fetchGetCustomerOfSunat(document_number) {
       const { data } = await http.API_ROUTE.get(
         `/customer/search/sunat/${document_number}`,
         {}
@@ -102,6 +100,10 @@ export const useAppStore = defineStore("app-store", {
         `/customer-contact/${customerContactId}`,
         {}
       );
+      return data;
+    },
+    async fetchGetListEvents(payload) {
+      const { data } = await http.API_ROUTE.get("/event/", payload);
       return data;
     },
   },
