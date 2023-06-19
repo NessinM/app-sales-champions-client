@@ -1,5 +1,6 @@
 <template lang="pug">
 v-app-bar.elevation-2.rounded-0(
+  v-if="getSessionUserLogged && isMobile",
   color="primary",
   :height="getThemePreference.height_navbar_app",
   rounded="0"
@@ -30,15 +31,18 @@ v-app-bar.elevation-2.rounded-0(
 <script>
 import { computed, defineComponent } from "vue";
 import { storeToRefs } from "pinia";
-import { useThemeStore } from "@/store";
+import { useAuthStore, useThemeStore } from "@/store";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { enviroments } from "@/helps/constants";
 export default defineComponent({
   name: "ViewAppBarNavigation",
   setup() {
-    const store = useThemeStore();
+    const storeTheme = useThemeStore();
+    const authStore = useAuthStore();
     const { mobile } = useDisplay();
-    const { getThemePreference, getOptionsMenuSideBar } = storeToRefs(store);
+    const { getThemePreference, getOptionsMenuSideBar } =
+      storeToRefs(storeTheme);
+    const { getSessionUserLogged } = storeToRefs(authStore);
 
     const isMobile = computed(() => mobile.value);
 
@@ -47,6 +51,7 @@ export default defineComponent({
       isMobile,
       enviroments,
       getOptionsMenuSideBar,
+      getSessionUserLogged,
     };
   },
 });

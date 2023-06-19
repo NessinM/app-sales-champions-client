@@ -75,6 +75,7 @@ v-row.h-full(no-gutters)
       )
         v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
         small.font-bold.text-white Agregar nuevo cliente
+    v-divider(v-if="!isThemeDark")
     perfect-scrollbar.overflow-y-auto.pb-5(class="h-[calc(100vh-170px)]")
       v-alert(
         v-if="!customers.length && !isLoading",
@@ -93,7 +94,7 @@ v-row.h-full(no-gutters)
           height="5"
         )
 
-      v-list(
+      v-list.py-0(
         mandatory,
         color="primary",
         @update:selected="actionSelectedCustomer"

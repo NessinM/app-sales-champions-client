@@ -2,7 +2,7 @@
 v-layout.w-screen.h-screen
   v-drawer-preferences-theme
   v-drawer-sidebar-application
-  v-navbar-application(v-if="getSessionUserLogged")
+  v-navbar-application
   //- v-main.overflow-y-auto(
   //-   :class="[`h-[calc(100vh-${getThemePreference.height_navbar_app}px)]`]"
   //- )

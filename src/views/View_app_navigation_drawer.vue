@@ -8,8 +8,7 @@ v-navigation-drawer.elevation-0.z-10(
   :expand-on-hover="getThemePreference.hover_collapsed_menu",
   :theme="getThemePreference.semi_dark_menu ? `${getThemePreference.name_current_theme}-dark` : getThemePreference.name_current_theme",
   color="background",
-  width="320",
-  floating
+  width="320"
 )
   v-list.bg-primary.elevation-2.pa-0(
     nav,
