@@ -106,7 +106,7 @@ import { useAppStore } from "@/store";
 import { useDisplay, useTheme } from "vuetify";
 import { notify } from "@kyvg/vue3-notification";
 import SquareAvatarOfTextComponent from "@/components/square_avatar_of_text_component.vue";
-import FormAddOrEditCustomerComponent from "@/components/form_add_customer_component.vue";
+import FormAddOrEditCustomerComponent from "@/components/form_add_edit_customer_component.vue";
 export default defineComponent({
   name: "ViewAppEventManager",
   components: {

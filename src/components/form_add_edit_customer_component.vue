@@ -1,6 +1,6 @@
 <template lang="pug">
 v-card-title.flex.items-center.py-4.mx-2
-  span.font-extrabold.text-lg Nuevo cliente
+  span.font-extrabold.text-lg {{ customerId ? "Editar cliente" : "Nuevo cliente" }}
 v-card-text
   v-form(ref="formRef")
     v-row(no-gutters)
@@ -72,7 +72,7 @@ v-card-text
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="12", md="12", sm="12")
+      v-col(v-if="customerId", cols="12", lg="12", md="12", sm="12")
         v-autocomplete.mx-2.text-slate-600.my-1(
           v-model="customer.sub_sector",
           label="Sub sector",
@@ -100,40 +100,45 @@ v-card-text
     :rounded="5",
     @click="validateAndCreateCustomer()"
   )
-    small.text-xs.font-bold.text-white Crear cliente
+    small.text-xs.font-bold.text-white {{ customerId ? "Guardar cambios" : "Crear cliente" }}
 </template>
 <script>
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, toRefs } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { useAppStore } from "../store";
 import { notify } from "@kyvg/vue3-notification";
 import { listTypesOfTaxpayers, businessSectorsList } from "@/helps/constants";
 export default defineComponent({
   name: "ComponentFormCustomer",
-  emits: ["created", "close"],
+  props: {
+    customerId: {
+      type: String,
+      default: "",
+    },
+  },
+  emits: ["created", "updated", "close"],
   setup(props, { emit }) {
+    const { customerId } = toRefs(props);
     const { mobile } = useDisplay();
     const {
+      fetchGetOneCustomer,
       fetchCreateCustomer,
       fetchUpdateCustomer,
       fetchGetCustomerOfSunat,
       fetchCreateCustomerLocation,
     } = useAppStore();
 
-    const validationForm = {
-      tipo_documento: [(v) => !!v || "El tipo de documento e requerido"],
-      numero_documento: [(v) => validateForDocumentNumber(v)],
-      razon_social: [(v) => !!v || "La razon social es requerido"],
-    };
-
     const isLoading = ref(false);
     const isLoadingGetSunat = ref(false);
     const formRef = ref(null);
     const customer = ref({
-      tipo_documento: "RUC",
+      tipo_documento: "",
       numero_documento: "",
       razon_social: "",
     });
+
+    onMounted(() => checkEditOrCreateCustomer());
+
     const location = ref({
       nombre: "Direccion fiscal",
       direccion: "",
@@ -170,6 +175,12 @@ export default defineComponent({
       }
     };
 
+    const validationForm = {
+      tipo_documento: [(v) => !!v || "El tipo de documento e requerido"],
+      numero_documento: [(v) => validateForDocumentNumber(v)],
+      razon_social: [(v) => !!v || "La razon social es requerido"],
+    };
+
     const validateForDocumentNumber = (v) => {
       if (!customer.value.tipo_documento)
         return "El numero de documento es requerido";
@@ -188,28 +199,53 @@ export default defineComponent({
         const { valid } = await formRef.value.validate();
         if (valid) {
           isLoading.value = true;
-          const customerCreated = await fetchCreateCustomer(customer.value);
-          if (location.value.direccion && location.value.codigo_ubigeo) {
-            const customerLocationCreated = await fetchCreateCustomerLocation(
-              customerCreated.id,
-              location.value
-            );
-            await fetchUpdateCustomer(customerCreated.id, {
-              ubicacionId: customerLocationCreated.id,
+          if (customerId.value) {
+            await fetchUpdateCustomer(customerId.value, customer.value);
+            notify({
+              type: "success",
+              text: "Los cambios se guardarón correctamente.",
             });
+            emit("updated", customerId.value);
+            emit("close");
+          } else {
+            const customerCreated = await fetchCreateCustomer(customer.value);
+            if (location.value.direccion && location.value.codigo_ubigeo) {
+              const customerLocationCreated = await fetchCreateCustomerLocation(
+                customerCreated.id,
+                location.value
+              );
+              await fetchUpdateCustomer(customerCreated.id, {
+                ubicacionId: customerLocationCreated.id,
+              });
+            }
+            notify({
+              type: "success",
+              text: "El cliente se generó correctamente.",
+            });
+            emit("created", customerCreated.id);
+            emit("close");
           }
-          notify({
-            type: "success",
-            text: "El cliente se generó correctamente.",
-          });
-          // await formRef.value.reset();
-          emit("created", customerCreated.id);
-          emit("close");
         }
       } catch (error) {
         notify({ type: "error", text: error.message });
       } finally {
         isLoading.value = false;
+      }
+    };
+
+    const checkEditOrCreateCustomer = async () => {
+      if (customerId.value) {
+        try {
+          const customerGet = await fetchGetOneCustomer(customerId.value);
+          customer.value.tipo_documento = customerGet.tipo_documento;
+          customer.value.numero_documento = customerGet.numero_documento;
+          customer.value.razon_social = customerGet.razon_social;
+          customer.value.sub_sector = customerGet.sub_sector;
+        } catch (error) {
+          notify({ type: "error", text: error.message });
+        }
+      } else {
+        customer.value.tipo_documento = "RUC";
       }
     };
 

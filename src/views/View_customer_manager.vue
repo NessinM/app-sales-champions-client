@@ -1,42 +1,44 @@
 <template lang="pug">
 v-dialog(
-  v-model="isShowDialogAddCustomer",
+  v-model="isShowDialogAddOrUpdateCustomer",
   :fullscreen="isMobile",
   scrollable,
   :width="isMobile ? '100%' : '500'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
     v-form-add-edit-customer(
+      :customer-id="customerIdUpdate",
       @created="getListCustomerAndSelected",
-      @close="closeDialogAddCustomer"
+      @updated="getListCustomerAndSelected",
+      @close="closeDialogAddOrUpdateCustomer"
     )
 v-dialog(
-  v-model="isShowDialogAddCustomerLocation",
+  v-model="isShowDialogAddOrUpdateCustomerLocation",
   :fullscreen="isMobile",
   scrollable,
   :width="isMobile ? '100%' : '700'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
     v-form-add-edit-customer-location(
-      :customer-id="customer.id",
+      :customer-id="customer?.id",
       :customer-location-id="locationId",
       @created="getListCustomerAndSelected",
       @updated="getListCustomerAndSelected",
-      @close="closeDialogAddCustomerLocation"
+      @close="closeDialogAddOrUpdateCustomerLocation"
     )
 v-dialog(
-  v-model="isShowDialogAddCustomerContact",
+  v-model="isShowDialogAddOrUpdateCustomerContact",
   :fullscreen="isMobile",
   scrollable,
   :width="isMobile ? '100%' : '700'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
     v-form-add-edit-customer-contact(
-      :customer-id="customer.id",
+      :customer-id="customer?.id",
       :customer-contact-id="locationId",
       @created="getListCustomerAndSelected",
       @updated="getListCustomerAndSelected",
-      @close="closeDialogAddCustomerContact"
+      @close="closeDialogAddOrUpdateCustomerContact"
     )
 
 v-row.h-full(no-gutters)
@@ -69,7 +71,7 @@ v-row.h-full(no-gutters)
         color="success",
         rounded="3",
         variant="elevated",
-        @click="openDialogAddCustomer"
+        @click="openDialogAddOrUpdateCustomer()"
       )
         v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
         small.font-bold.text-white Agregar nuevo cliente
@@ -184,7 +186,10 @@ v-row.h-full(no-gutters)
               span.text-md {{ customer.numero_documento }} -
               span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
             template(#append)
-              v-btn.mx-4(icon="$mdiPencil")
+              v-btn.mx-4(
+                icon="$mdiPencil",
+                @click="openDialogAddOrUpdateCustomer(customer?.id)"
+              )
         v-tabs(
           v-model="panelActual",
           align-tabs="end",
@@ -209,7 +214,7 @@ v-row.h-full(no-gutters)
                 :class="{ 'on-hover text-white': isHovering }",
                 v-bind="props",
                 :color="isHovering ? 'primary' : 'background'",
-                @click="openDialogAddCustomerLocation()"
+                @click="openDialogAddOrUpdateCustomerLocation()"
               )
                 .flex.items-center.justify-center.h-full.flex-col
                   v-icon(
@@ -233,7 +238,7 @@ v-row.h-full(no-gutters)
                 :elevation="isHovering ? 6 : 2",
                 :class="{ 'on-hover bg-background': isHovering }",
                 v-bind="props",
-                @click="openDialogAddCustomerLocation(l.id)"
+                @click="openDialogAddOrUpdateCustomerLocation(l.id)"
               )
                 v-carousel(
                   height="160",
@@ -278,7 +283,7 @@ v-row.h-full(no-gutters)
                 :class="{ 'on-hover text-white': isHovering }",
                 v-bind="props",
                 :color="isHovering ? 'primary' : 'background'",
-                @click="openDialogAddCustomerContact()"
+                @click="openDialogAddOrUpdateCustomerContact()"
               )
                 .flex.items-center.justify-center.h-full.flex-col
                   v-icon(
@@ -302,7 +307,7 @@ v-row.h-full(no-gutters)
                 :elevation="isHovering ? 6 : 2",
                 :class="{ 'on-hover bg-background': isHovering }",
                 v-bind="props",
-                @click="openDialogAddCustomerContact(c.id)"
+                @click="openDialogAddOrUpdateCustomerContact(c.id)"
               )
                 v-card.elevation-5(
                   :rounded="0",
@@ -346,7 +351,7 @@ import { useAppStore, useThemeStore } from "@/store";
 import { useDisplay, useTheme } from "vuetify";
 import { notify } from "@kyvg/vue3-notification";
 import SquareAvatarOfTextComponent from "@/components/square_avatar_of_text_component.vue";
-import FormAddOrEditCustomerComponent from "@/components/form_add_customer_component.vue";
+import FormAddOrEditCustomerComponent from "@/components/form_add_edit_customer_component.vue";
 import FormAddOrEditCustomerLocationComponent from "@/components/form_add_edit_customer_location_component.vue";
 import FormAddOrEditCustomerContactComponent from "@/components/form_add_edit_customer_contact_component.vue";
 export default defineComponent({
@@ -367,11 +372,12 @@ export default defineComponent({
     const customers = ref([]);
     const customer = ref(null);
     const locationId = ref("");
+    const customerIdUpdate = ref("");
     const filteredCustomers = ref([]);
     const isLoading = ref(true);
-    const isShowDialogAddCustomer = ref(false);
-    const isShowDialogAddCustomerLocation = ref(false);
-    const isShowDialogAddCustomerContact = ref(false);
+    const isShowDialogAddOrUpdateCustomer = ref(false);
+    const isShowDialogAddOrUpdateCustomerLocation = ref(false);
+    const isShowDialogAddOrUpdateCustomerContact = ref(false);
     const searchValue = ref("");
     const panelActual = ref(1);
 
@@ -411,21 +417,26 @@ export default defineComponent({
       }
     };
 
-    const closeDialogAddCustomer = () =>
-      (isShowDialogAddCustomer.value = false);
-    const openDialogAddCustomer = () => (isShowDialogAddCustomer.value = true);
-
-    const closeDialogAddCustomerLocation = () =>
-      (isShowDialogAddCustomerLocation.value = false);
-    const openDialogAddCustomerLocation = (id) => {
-      locationId.value = id;
-      isShowDialogAddCustomerLocation.value = true;
+    const closeDialogAddOrUpdateCustomer = () => {
+      customerIdUpdate.value = "";
+      isShowDialogAddOrUpdateCustomer.value = false;
     };
-    const closeDialogAddCustomerContact = () =>
-      (isShowDialogAddCustomerContact.value = false);
-    const openDialogAddCustomerContact = (id) => {
+    const openDialogAddOrUpdateCustomer = (value = "") => {
+      customerIdUpdate.value = value;
+      isShowDialogAddOrUpdateCustomer.value = true;
+    };
+
+    const closeDialogAddOrUpdateCustomerLocation = () =>
+      (isShowDialogAddOrUpdateCustomerLocation.value = false);
+    const openDialogAddOrUpdateCustomerLocation = (id) => {
       locationId.value = id;
-      isShowDialogAddCustomerContact.value = true;
+      isShowDialogAddOrUpdateCustomerLocation.value = true;
+    };
+    const closeDialogAddOrUpdateCustomerContact = () =>
+      (isShowDialogAddOrUpdateCustomerContact.value = false);
+    const openDialogAddOrUpdateCustomerContact = (id) => {
+      locationId.value = id;
+      isShowDialogAddOrUpdateCustomerContact.value = true;
     };
 
     const getListCustomerAndSelected = async (customerIdEmmited) => {
@@ -461,19 +472,20 @@ export default defineComponent({
       isLoading,
       getAllCustomers,
       actionSelectedCustomer,
-      isShowDialogAddCustomer,
-      isShowDialogAddCustomerLocation,
-      isShowDialogAddCustomerContact,
-      closeDialogAddCustomerContact,
-      openDialogAddCustomerContact,
-      closeDialogAddCustomer,
-      openDialogAddCustomer,
+      isShowDialogAddOrUpdateCustomer,
+      isShowDialogAddOrUpdateCustomerLocation,
+      isShowDialogAddOrUpdateCustomerContact,
+      closeDialogAddOrUpdateCustomerContact,
+      openDialogAddOrUpdateCustomerContact,
+      closeDialogAddOrUpdateCustomer,
+      openDialogAddOrUpdateCustomer,
       getThemePreference,
-      closeDialogAddCustomerLocation,
-      openDialogAddCustomerLocation,
+      closeDialogAddOrUpdateCustomerLocation,
+      openDialogAddOrUpdateCustomerLocation,
       locationId,
       getListCustomerAndSelected,
       slidesImages,
+      customerIdUpdate,
     };
   },
 });
