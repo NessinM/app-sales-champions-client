@@ -1,13 +1,15 @@
 <template lang="pug">
 v-dialog(
-  v-model="isShowDialogAddEvent",
+  v-model="isShowDialogAddOrUpdateEvent",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '500'"
+  :width="isMobile ? '100%' : '600'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
-    v-form-add-edit-customer(
+    v-form-add-edit-event(
+      :event-id="customerIdUpdate",
       @created="getListCustomerAndSelected",
+      @updated="getListCustomerAndSelected",
       @close="closeDialogAddCustomer"
     )
 
@@ -106,12 +108,12 @@ import { useAppStore } from "@/store";
 import { useDisplay, useTheme } from "vuetify";
 import { notify } from "@kyvg/vue3-notification";
 import SquareAvatarOfTextComponent from "@/components/square_avatar_of_text_component.vue";
-import FormAddOrEditCustomerComponent from "@/components/form_add_edit_customer_component.vue";
+import FormAddOrEditEventComponent from "@/components/form_add_edit_event_component.vue";
 export default defineComponent({
   name: "ViewAppEventManager",
   components: {
     "v-square-avatar-of-text": SquareAvatarOfTextComponent,
-    "v-form-add-edit-customer": FormAddOrEditCustomerComponent,
+    "v-form-add-edit-event": FormAddOrEditEventComponent,
   },
   setup() {
     const { mobile } = useDisplay();
@@ -121,9 +123,10 @@ export default defineComponent({
 
     const events = ref([]);
     const event = ref(null);
+    const customerIdUpdate = ref("");
     const filteredEvents = ref([]);
     const isLoading = ref(true);
-    const isShowDialogAddEvent = ref(false);
+    const isShowDialogAddOrUpdateEvent = ref(false);
     const searchValue = ref("");
     const panelActual = ref(1);
 
@@ -163,8 +166,10 @@ export default defineComponent({
       }
     };
 
-    const closeDialogAddCustomer = () => (isShowDialogAddEvent.value = false);
-    const openDialogAddCustomer = () => (isShowDialogAddEvent.value = true);
+    const closeDialogAddCustomer = () =>
+      (isShowDialogAddOrUpdateEvent.value = false);
+    const openDialogAddCustomer = () =>
+      (isShowDialogAddOrUpdateEvent.value = true);
 
     const getListCustomerAndSelected = async (customerIdEmmited) => {
       await getAllEvents();
@@ -185,10 +190,11 @@ export default defineComponent({
       isLoading,
       getAllEvents,
       actionSelectedEvent,
-      isShowDialogAddEvent,
+      isShowDialogAddOrUpdateEvent,
       closeDialogAddCustomer,
       openDialogAddCustomer,
       getListCustomerAndSelected,
+      customerIdUpdate,
     };
   },
 });

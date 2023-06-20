@@ -15,7 +15,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
   v-form(ref="formRef", :disabled="isLoading")
     v-row(no-gutters)
       v-col(cols="12", lg="6", md="12", sm="12")
-        v-text-field.mx-2.text-slate-600.my-1(
+        v-text-field.mx-2.text-slate-500.my-1(
           v-model="customerLocation.nombre",
           :rules="validationForm.nombre",
           label="Nombre para la ubicaciòn",
@@ -24,7 +24,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           color="primary"
         )
       v-col(cols="12", lg="6", md="12", sm="12")
-        v-text-field.mx-2.text-slate-600.my-1(
+        v-text-field.mx-2.text-slate-500.my-1(
           v-model="customerLocation.direccion",
           :rules="validationForm.direccion",
           label="Dirección",
@@ -33,7 +33,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           color="primary"
         )
       v-col(cols="12", lg="6", md="12", sm="12")
-        v-text-field.mx-2.text-slate-600.my-1(
+        v-text-field.mx-2.text-slate-500.my-1(
           v-model="customerLocation.referencia_direccion",
           :rules="validationForm.referencia_direccion",
           label="Referencia",
@@ -42,7 +42,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           color="primary"
         )
       v-col(cols="12", lg="3", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-600.my-1(
+        v-autocomplete.mx-2.text-slate-500.my-1(
           v-model="customerLocation.tipo_via",
           :rules="validationForm.tipo_via",
           label="Tipo de via",
@@ -54,7 +54,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           color="primary"
         )
       v-col(cols="12", lg="3", md="6", sm="12")
-        v-text-field.mx-2.text-slate-600.my-1(
+        v-text-field.mx-2.text-slate-500.my-1(
           v-model="customerLocation.calle_numero",
           label="Numero",
           variant="outlined",
@@ -62,7 +62,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           color="primary"
         )
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-600.my-1(
+        v-text-field.mx-2.text-slate-500.my-1(
           v-model="customerLocation.correo_electronico",
           label="Correo electronico",
           variant="outlined",
@@ -70,7 +70,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           color="primary"
         )
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-600.my-1(
+        v-text-field.mx-2.text-slate-500.my-1(
           v-model="customerLocation.numero_telefono",
           label="Numero de telefono",
           variant="outlined",
@@ -78,7 +78,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           color="primary"
         )
       v-col(cols="12", lg="4", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-600.my-1(
+        v-autocomplete.mx-2.text-slate-500.my-1(
           v-model="customerLocation.departamento",
           :rules="validationForm.departamento",
           :items="departamentos",
@@ -91,7 +91,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           @update:model-value="($event) => changeOptionDepProvDist('departamento')"
         )
       v-col(cols="12", lg="4", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-600.my-1(
+        v-autocomplete.mx-2.text-slate-500.my-1(
           v-model="customerLocation.provincia",
           :rules="validationForm.provincia",
           :items="provincias",
@@ -104,7 +104,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           @update:model-value="($event) => changeOptionDepProvDist('provincia')"
         )
       v-col(cols="12", lg="4", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-600.my-1(
+        v-autocomplete.mx-2.text-slate-500.my-1(
           v-model="customerLocation.distrito",
           :rules="validationForm.distrito",
           :items="distritos",

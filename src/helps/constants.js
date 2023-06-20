@@ -3,6 +3,21 @@ export const enviroments = {
   API_ROUTE: import.meta.env.VITE_API_ROUTE ?? "no_definido",
   API_ROUTE_UPLOAD: import.meta.env.VITE_API_ROUTE_UPLOAD ?? "no_definido",
 };
+export const listReasonsForEvent = [
+  {
+    name: "Cerrar un negocio",
+    value: "cerrar un negocio",
+  },
+  {
+    name: "Ofrecer productos",
+    value: "ofrecer productos",
+  },
+  {
+    name: "Otro asunto",
+    value: "otro asunto",
+  },
+]
+
 export const listPositionsInCompany = [
   {
     name: "Director ejecutivo",
