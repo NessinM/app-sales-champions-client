@@ -65,10 +65,14 @@ import {
   mdiPhone,
   mdiWhatsapp,
   mdiArrowLeft,
+  mdiCrosshairsGps,
+  mdiDirections
 } from "@mdi/js";
 
 export default {
   mdiAccount,
+  mdiDirections,
+  mdiCrosshairsGps,
   mdiArrowLeft,
   mdiPhone,
   mdiWhatsapp,
