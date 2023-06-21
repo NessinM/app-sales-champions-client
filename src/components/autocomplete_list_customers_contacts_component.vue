@@ -8,20 +8,20 @@ v-autocomplete.mx-2.text-slate-500(
   :error-messages="errorMessage ? errorMessage : ''",
   color="primary",
   :label="label",
-  item-title="razon_social",
+  item-title="nombre",
   item-value="id",
   multiple,
-  density="compact",
   variant="outlined",
+  density="compact",
   hide-details="auto"
 )
   template(#chip="{ item }")
-    //- v-chip.mx-1(
+    //- v-chip(
     //-   v-bind="props",
     //-   color="primary",
     //-   @click:close="onClickRemoveFromChip(item.raw.id, index)"
     //- )
-    small.font-extrabold.text-primary {{ item.raw.razon_social }}
+    small.font-extrabold.uppercase.text-primary {{ item.raw.nombre }}
   template(#item="{ item, index }")
     v-list-item.py-2(
       :active="list[index].active",
@@ -30,26 +30,26 @@ v-autocomplete.mx-2.text-slate-500(
     )
       template(#prepend)
         v-avatar(
-          v-if="item?.raw?.logo_corporativo",
+          v-if="item?.raw?.imagen_perfil",
           color="background",
           :size="32"
         )
-          v-img(:src="item?.raw?.logo_corporativo")
+          v-img(:src="item?.raw?.imagen_perfil")
         v-square-avatar-of-text(
           v-else,
-          :text="item?.raw?.razon_social",
+          :text="item?.raw?.nombre",
           text-size="xs",
           :avatar-size="32"
         )
       v-list-item-title
-        span.font-extrabold.text-xs {{ item?.raw?.razon_social }}
+        span.font-extrabold.text-xs {{ item?.raw?.nombre }}
       v-list-item-subtitle
-        span.font-bold.text-xs {{ item?.raw?.numero_documento }} - {{ item?.raw?.sub_sector }}
+        span.font-xs.font-bold {{ item?.raw?.numero_documento }} - {{ item?.raw?.cargo }}
 </template>
 
 <script>
 import { notify } from "@kyvg/vue3-notification";
-import { defineComponent, onMounted, ref, toRefs } from "vue";
+import { defineComponent, onMounted, ref, toRefs, watch } from "vue";
 import { useAppStore } from "@/store";
 import SquareAvatarOfTextComponent from "./square_avatar_of_text_component.vue";
 export default defineComponent({
@@ -58,42 +58,34 @@ export default defineComponent({
     "v-square-avatar-of-text": SquareAvatarOfTextComponent,
   },
   props: {
+    errorMessage: {
+      type: String,
+      default: "",
+    },
+    customerId: {
+      type: String,
+      default: "",
+    },
     multiple: {
       type: Boolean,
       default: false,
     },
     label: {
       type: String,
-      default: "Listado de clientes",
-    },
-    errorMessage: {
-      type: String,
-      default: "",
+      default: "Listado de contactos",
     },
   },
   emits: ["updated"],
   setup(props, { emit }) {
-    const { multiple } = toRefs(props);
+    const { multiple, customerId } = toRefs(props);
+
     const isLoading = ref(false);
     const selected = ref([]);
     const list = ref([]);
-    const { fetchGetListCustomers } = useAppStore();
+    const { fetchGetListCustomerContacts } = useAppStore();
 
-    // const validation = {
-    //   items: [(v) => !!v || "El asunto para el evento es requerido"],
-    // };
-
-    onMounted(async () => {
-      try {
-        isLoading.value = true;
-        const { customers } = await fetchGetListCustomers();
-        list.value = customers;
-      } catch (error) {
-        notify({ type: "error", text: error.message });
-      } finally {
-        isLoading.value = false;
-      }
-    });
+    onMounted(async () => getContactsOfCustomer());
+    watch(customerId, () => getContactsOfCustomer());
 
     const addOrRemoveItemToSelected = (id, index) => {
       const indexInList = list.value.findIndex((e) => e.id === id);
@@ -132,6 +124,22 @@ export default defineComponent({
       const indexList = list.value.findIndex((e) => e.id === id);
       if (indexList !== -1) {
         list.value[indexList].active = false;
+      }
+    };
+
+    const getContactsOfCustomer = async () => {
+      if (!customerId.value) return;
+
+      try {
+        isLoading.value = true;
+        const { contacts } = await fetchGetListCustomerContacts(
+          customerId.value
+        );
+        list.value = contacts;
+      } catch (error) {
+        notify({ type: "error", text: error.message });
+      } finally {
+        isLoading.value = false;
       }
     };
 

@@ -3,7 +3,7 @@ v-dialog(
   v-model="isShowDialogAddOrUpdateEvent",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '600'"
+  :width="isMobile ? '100%' : '500'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
     v-form-add-edit-event(
@@ -76,22 +76,19 @@ v-row.h-full(no-gutters)
           :value="index"
         )
           template(#prepend)
-            v-avatar(v-if="i.logo_corporativo", color="background", :size="35")
-              v-img(:src="i.logo_corporativo")
             v-square-avatar-of-text(
-              v-else,
-              :text="i.razon_social",
+              :text="i.asunto",
               text-size="sm",
               :avatar-size="35"
             )
           v-list-item-title
-            span.font-extrabold.text-xs {{ i.razon_social }}
+            span.font-extrabold.text-xs {{ i.asunto }}
           v-list-item-subtitle
-            span.text-xs {{ i.numero_documento }} - {{ i.sub_sector }}
+            span.text-xs {{ i.cliente.razon_social }} - {{ i.contacto.nombre }}
           template(#append)
-            v-chip(color="grey", density="comfortable")
+            v-chip(color="warning", density="comfortable")
               v-icon(start, size="13", icon="$mdiShieldStarOutline")
-              small.font-bold Fiscal
+              small.font-bold Pendiente
   v-col(cols="12", lg="9", md="8", sm="12")
     .items-center.flex.justify-center.h-full(v-if="!event")
       .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
@@ -141,7 +138,7 @@ export default defineComponent({
       if (searchValue.value) {
         events.value = events.value.filter(
           (item) =>
-            item.razon_social.toLowerCase().includes(searchTerm) ||
+            item.asunto.toLowerCase().includes(searchTerm) ||
             item.correo_electronico.toLowerCase().includes(searchTerm)
         );
       }

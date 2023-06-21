@@ -1,5 +1,5 @@
 <template lang="pug">
-v-navigation-drawer.elevation-0.z-10(
+v-navigation-drawer.elevation-1.z-10(
   v-if="getSessionUserLogged",
   v-model="getThemePreference.drawer",
   density="compact",
@@ -8,7 +8,8 @@ v-navigation-drawer.elevation-0.z-10(
   :expand-on-hover="getThemePreference.hover_collapsed_menu",
   :theme="getThemePreference.semi_dark_menu ? `${getThemePreference.name_current_theme}-dark` : getThemePreference.name_current_theme",
   color="background",
-  width="320"
+  width="320",
+  :floating="true"
 )
   v-list.bg-primary.elevation-2.pa-0(
     nav,

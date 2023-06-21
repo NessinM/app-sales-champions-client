@@ -23,6 +23,7 @@
     "@vueuse/integrations": "^10.1.2",
     "animate.css": "^4.1.1",
     "axios": "^1.4.0",
+    "mapbox-gl": "^2.15.0",
     "pinia": "^2.0.35",
     "pug": "^3.0.2",
     "universal-cookie": "^4.0.4",

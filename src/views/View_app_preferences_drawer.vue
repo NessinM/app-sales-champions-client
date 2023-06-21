@@ -6,9 +6,9 @@ v-navigation-drawer.elevation-6(
   location="right",
   temporary,
   floating,
-  :color="isThemeDark ? 'background' : 'white'",
-  :scrim="false"
+  :color="isThemeDark ? 'background' : 'white'"
 )
+  //- :scrim="false"
   v-card.pa-1.elevation-4(
     rounded="0",
     flat,
@@ -29,7 +29,7 @@ v-navigation-drawer.elevation-6(
         )
   //- perfect-scrollbar( class="h-[calc(100vh-70px)]" )
   //- perfect-scrollbar
-  v-list.pa-2.h-full(:bg-color="isThemeDark ? 'background' : 'white'")
+  v-list.pa-2(:bg-color="isThemeDark ? 'background' : 'white'")
     v-list-item.mb-2
       v-list-item-title
         | Temas

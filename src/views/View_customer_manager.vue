@@ -94,34 +94,31 @@ v-row.h-full(no-gutters)
           height="5"
         )
 
-      v-list.py-0(
-        mandatory,
-        color="primary",
-        @update:selected="actionSelectedCustomer"
-      )
-        v-list-item.py-3(
+      v-list.py-0(mandatory, color="primary")
+        v-list-item.py-2(
           v-for="(i, index) in customers",
           :key="index",
-          :value="index"
+          :value="index",
+          :active="customer?.id === i.id",
+          @click="actionSelectedCustomer(index)"
         )
           template(#prepend)
-            v-avatar(v-if="i.logo_corporativo", color="background", :size="35")
+            v-avatar(v-if="i.logo_corporativo", color="background", :size="32")
               v-img(:src="i.logo_corporativo")
             v-square-avatar-of-text(
               v-else,
               :text="i.razon_social",
-              text-size="sm",
-              :avatar-size="35"
+              text-size="xs",
+              :avatar-size="32"
             )
           v-list-item-title
-            span.font-extrabold.text-xs {{ i.razon_social }}
+            small.font-extrabold {{ i.razon_social }}
           v-list-item-subtitle
             span.text-xs {{ i.numero_documento }} - {{ i.sub_sector }}
           template(#append)
             v-chip(color="grey", density="comfortable")
               v-icon(start, size="13", icon="$mdiShieldStarOutline")
               small.font-bold Fiscal
-
   v-col(
     cols="12",
     lg="9",
@@ -200,8 +197,10 @@ v-row.h-full(no-gutters)
         )
           v-tab(:value="1")
             span.font-bold(class="text-[10px]") Ubicaciones
+              span.ml-1(v-if="customer.ubicaciones.length") ({{ customer.ubicaciones.length }})
           v-tab(:value="2")
             span.font-bold(class="text-[10px]") Contactos
+              span.ml-1(v-if="customer.contactos.length") ({{ customer.contactos.length }})
       perfect-scrollbar.overflow-y-auto.pa-4(
         v-if="panelActual === 1",
         :class="isMobile ? 'h-[calc(100vh-157px)]' : 'h-[calc(100vh-190px)]'"
@@ -269,7 +268,7 @@ v-row.h-full(no-gutters)
                     v-list-item-subtitle
                       span.text-xs {{ l.distrito }} - {{ l.provincia }} - {{ l.departamento }}
                     template(#prepend="")
-                      v-avatar(color="primary")
+                      v-avatar(color="primary", size="32")
                         v-icon(color="white", icon="$mdiMapMarkerOutline")
       perfect-scrollbar.overflow-y-auto.pa-4(
         v-if="panelActual === 2",
@@ -334,14 +333,14 @@ v-row.h-full(no-gutters)
                         v-if="c.imagen_perfil",
                         color="background",
                         density="compact",
-                        size="35"
+                        size="32"
                       )
                         v-img(:src="c.imagen_perfil")
                       v-square-avatar-of-text(
                         v-else,
                         :text="c.nombre",
-                        :avatar-size="35",
-                        text-size="sm",
+                        :avatar-size="32",
+                        text-size="xs",
                         bg-color="primary",
                         text-color="white "
                       )
@@ -399,7 +398,7 @@ export default defineComponent({
       }
     };
 
-    const actionSelectedCustomer = ([index]) => {
+    const actionSelectedCustomer = (index) => {
       customer.value = { ...customers.value[index] };
     };
 
@@ -440,12 +439,10 @@ export default defineComponent({
       isShowDialogAddOrUpdateCustomerContact.value = true;
     };
 
-    const getListCustomerAndSelected = async (customerIdEmmited) => {
+    const getListCustomerAndSelected = async (idEmmited) => {
       await getAllCustomers();
-      const customerExist = customers.value.find(
-        (e) => e.id === customerIdEmmited
-      );
-      customer.value = customerExist;
+      const position = customers.value.findIndex((e) => e.id === idEmmited);
+      actionSelectedCustomer(position);
     };
 
     const slidesImages = ({

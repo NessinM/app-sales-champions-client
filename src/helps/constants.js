@@ -3,18 +3,47 @@ export const enviroments = {
   API_ROUTE: import.meta.env.VITE_API_ROUTE ?? "no_definido",
   API_ROUTE_UPLOAD: import.meta.env.VITE_API_ROUTE_UPLOAD ?? "no_definido",
 };
+
 export const listReasonsForEvent = [
   {
-    name: "Cerrar un negocio",
-    value: "cerrar un negocio",
+    name: "Capacitación de producto",
+    value: "capacitacion de producto",
   },
   {
-    name: "Ofrecer productos",
-    value: "ofrecer productos",
+    name: "Revisión de inventario y/o reposición",
+    value: "revision de inventario o reposicion",
   },
   {
-    name: "Otro asunto",
-    value: "otro asunto",
+    name: "Revisión de precios (negociación)",
+    value: "revision de precios negociacion",
+  },
+  {
+    name: "Promociones",
+    value: "promociones",
+  },
+  {
+    name: "Entrega de material publicitario",
+    value: "entrega de material publicitario",
+  },
+  {
+    name: "Visita a cliente nuevo",
+    value: "Visita a cliente nuevo",
+  },
+  {
+    name: "Recorrido de galerias (Cobertura)",
+    value: "recorrido de galerias - cobertura",
+  },
+  {
+    name: "Presentación de marca o empresa",
+    value: "presentacion de marca o empresa",
+  },
+  {
+    name: "Visita de mantenimiento (fidelización)",
+    value: "visita de mantenimiento - fidelizacion",
+  },
+  {
+    name: "Activación en punto de venta",
+    value: "activacion en punto de venta",
   },
 ]
 

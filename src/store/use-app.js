@@ -34,7 +34,7 @@ export const useAppStore = defineStore("app-store", {
     getOptionsMenuSideBar: (state) => state.menu,
   },
   actions: {
-    async fetchGetListCustomers(payload) {
+    async fetchGetListCustomers(payload = {}) {
       const { data } = await http.API_ROUTE.get("/customer/", payload);
       return data;
     },
@@ -42,11 +42,11 @@ export const useAppStore = defineStore("app-store", {
       const { data } = await http.API_ROUTE.get(`/customer/${customerId}`, {});
       return data;
     },
-    async fetchCreateCustomer(payload) {
-      const { data } = await http.API_ROUTE.post(`/customer/`, payload);
+    async fetchCreateCustomer(payload = {}) {
+      const { data } = await http.API_ROUTE.post(`/customer`, payload);
       return data;
     },
-    async fetchUpdateCustomer(customerId, payload) {
+    async fetchUpdateCustomer(customerId, payload = {}) {
       const { data } = await http.API_ROUTE.put(
         `/customer/${customerId}`,
         payload
@@ -60,14 +60,23 @@ export const useAppStore = defineStore("app-store", {
       );
       return data;
     },
-    async fetchCreateCustomerLocation(customerId, payload) {
+    async fetchGetListCustomerLocations(customerId, payload = {}) {
+      const { data } = await http.API_ROUTE.get("/customer-location/", {
+        params: {
+          customerId,
+          ...payload,
+        },
+      });
+      return data;
+    },
+    async fetchCreateCustomerLocation(customerId, payload = {}) {
       const { data } = await http.API_ROUTE.post(`/customer-location/`, {
         customerId,
         ...payload,
       });
       return data;
     },
-    async fecthUpdateCustomerLocation(customerLocationId, payload) {
+    async fecthUpdateCustomerLocation(customerLocationId, payload = {}) {
       const { data } = await http.API_ROUTE.put(
         `/customer-location/${customerLocationId}`,
         payload
@@ -81,14 +90,23 @@ export const useAppStore = defineStore("app-store", {
       );
       return data;
     },
-    async fetchCreateCustomerContact(customerId, payload) {
+    async fetchGetListCustomerContacts(customerId, payload = {}) {
+      const { data } = await http.API_ROUTE.get("/customer-contact/", {
+        params: {
+          customerId,
+          ...payload,
+        },
+      });
+      return data;
+    },
+    async fetchCreateCustomerContact(customerId, payload = {}) {
       const { data } = await http.API_ROUTE.post(`/customer-contact/`, {
         customerId,
         ...payload,
       });
       return data;
     },
-    async fecthUpdateCustomerContact(customerContactId, payload) {
+    async fecthUpdateCustomerContact(customerContactId, payload = {}) {
       const { data } = await http.API_ROUTE.put(
         `/customer-contact/${customerContactId}`,
         payload
@@ -102,8 +120,16 @@ export const useAppStore = defineStore("app-store", {
       );
       return data;
     },
-    async fetchGetListEvents(payload) {
-      const { data } = await http.API_ROUTE.get("/event/", payload);
+    async fetchGetListEvents(payload = {}) {
+      const { data } = await http.API_ROUTE.get("/event", payload);
+      return data;
+    },
+    async fetchCreateEvent(payload = {}) {
+      const fecha_inicio = new Date(payload.fecha_inicio);
+      const fecha_final = new Date(payload.fecha_inicio);
+      console.log("fecha_inicio", fecha_inicio);
+      console.log("fecha_final", fecha_final);
+      const { data } = await http.API_ROUTE.post("/event", payload);
       return data;
     },
   },

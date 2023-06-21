@@ -215,13 +215,14 @@ export default defineComponent({
                 location.value
               );
               await fetchUpdateCustomer(customerCreated.id, {
-                ubicacionId: customerLocationCreated.id,
+                ubicacion: customerLocationCreated.id,
               });
             }
             notify({
               type: "success",
               text: "El cliente se generó correctamente.",
             });
+            console.log("customerCreated", customerCreated);
             emit("created", customerCreated.id);
             emit("close");
           }
