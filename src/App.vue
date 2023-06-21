@@ -17,9 +17,9 @@ v-layout.w-screen.h-screen
 </template>
 
 <script>
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { storeToRefs } from "pinia";
-import { useThemeStore, useAuthStore } from "@/store";
+import { useThemeStore, useAuthStore, usePlaceStore } from "@/store";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import navigationDrawer from "@/views/View_app_navigation_drawer.vue";
 import preferencesApplicationDrawer from "@/views/View_app_preferences_drawer.vue";
@@ -34,6 +34,7 @@ export default defineComponent({
     "v-app-notify": notificationApplication,
   },
   setup() {
+    const { getInitialLocation } = usePlaceStore();
     const appThemeStore = useThemeStore();
     const { mobile } = useDisplay();
 
@@ -46,6 +47,8 @@ export default defineComponent({
       appThemeStore.setActiveDrawerThemeSettings(
         !is_active_drawer_theme_settings.value
       );
+
+    onMounted(() => getInitialLocation());
 
     const isMobile = computed(() => mobile.value);
 
