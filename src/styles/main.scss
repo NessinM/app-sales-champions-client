@@ -116,6 +116,55 @@ body {
 .v-messages {
   font-size: 11px !important;
 }
+
+.v-date-picker-header__content {
+  font-weight: 700 !important;
+  font-size: 26px !important;
+}
+
+.v-btn--size-default {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: currentColor !important;
+}
+.v-date-picker-month__weekday {
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  font-weight: 800 !important;
+  color: var(--primary-text) !important;
+}
+.v-date-picker .v-date-picker-month .v-date-picker-month__day {
+  height: 30px !important;
+  width: 30px !important;
+}
+
+.v-date-picker-controls__date {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: capitalize !important;
+}
+
+.v-date-picker-header {
+  padding-bottom: 0px !important;
+}
+
+.v-date-picker .v-date-picker-month .v-date-picker-month__day .v-btn {
+  --v-btn-size: 0.85rem !important;
+  --v-btn-height: 18px !important
+}
+
+.v-date-picker-month__days {
+  grid-row-gap: 2px !important
+}
+
+.v-input {
+  --v-input-chips-margin-top: 5px !important
+}
+
+
+// .v-picker.v-sheet, .v-date-picker-month {
+//   width: 307px !important
+// }
 // .v-field--center-affix .v-label.v-field-label {
 //   transform: none !important
 // }

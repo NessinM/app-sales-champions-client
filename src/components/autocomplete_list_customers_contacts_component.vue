@@ -6,6 +6,8 @@ v-autocomplete.mx-2.text-slate-500(
   :disabled="isLoading",
   :error="!!errorMessage",
   :error-messages="errorMessage ? errorMessage : ''",
+  closable-chips,
+  chips,
   color="primary",
   :label="label",
   item-title="nombre",
@@ -15,13 +17,13 @@ v-autocomplete.mx-2.text-slate-500(
   density="compact",
   hide-details="auto"
 )
-  template(#chip="{ item }")
-    //- v-chip(
-    //-   v-bind="props",
-    //-   color="primary",
-    //-   @click:close="onClickRemoveFromChip(item.raw.id, index)"
-    //- )
-    small.font-extrabold.uppercase.text-primary {{ item.raw.nombre }}
+  template(#chip="{ item, props }")
+    v-chip(
+      v-bind="props",
+      color="primary",
+      @click:close="onClickRemoveFromChip(item.raw.id, index)"
+    )
+      small.font-extrabold.uppercase {{ item.raw.nombre }}
   template(#item="{ item, index }")
     v-list-item.py-2(
       :active="list[index].active",
@@ -42,9 +44,9 @@ v-autocomplete.mx-2.text-slate-500(
           :avatar-size="32"
         )
       v-list-item-title
-        span.font-extrabold.text-xs {{ item?.raw?.nombre }}
+        span.font-extrabold.text-md {{ item?.raw?.nombre }}
       v-list-item-subtitle
-        span.font-xs.font-bold {{ item?.raw?.numero_documento }} - {{ item?.raw?.cargo }}
+        span.font-xs {{ item?.raw?.numero_documento }} - {{ item?.raw?.cargo }}
 </template>
 
 <script>
@@ -59,6 +61,10 @@ export default defineComponent({
   },
   props: {
     errorMessage: {
+      type: String,
+      default: "",
+    },
+    customerContactId: {
       type: String,
       default: "",
     },
@@ -77,7 +83,7 @@ export default defineComponent({
   },
   emits: ["updated"],
   setup(props, { emit }) {
-    const { multiple, customerId } = toRefs(props);
+    const { multiple, customerId, customerContactId } = toRefs(props);
 
     const isLoading = ref(false);
     const selected = ref([]);
@@ -136,6 +142,11 @@ export default defineComponent({
           customerId.value
         );
         list.value = contacts;
+        if (multiple.value) {
+          alert("todavia falta desarrollar");
+        } else {
+          selected.value.push(customerContactId.value);
+        }
       } catch (error) {
         notify({ type: "error", text: error.message });
       } finally {

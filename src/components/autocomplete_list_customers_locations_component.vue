@@ -6,6 +6,8 @@ v-autocomplete.mx-2.text-slate-500(
   :disabled="isLoading",
   :error="!!errorMessage",
   :error-messages="errorMessage ? errorMessage : ''",
+  closable-chips,
+  chips,
   color="primary",
   :label="label",
   item-title="direccion",
@@ -15,13 +17,13 @@ v-autocomplete.mx-2.text-slate-500(
   density="compact",
   hide-details="auto"
 )
-  template(#chip="{ item }")
-    //- v-chip(
-    //-   v-bind="props",
-    //-   color="primary",
-    //-   @click:close="onClickRemoveFromChip(item.raw.id, index)"
-    //- )
-    small.font-extrabold.uppercase.text-primary {{ item.raw.nombre }}
+  template(#chip="{ item, props }")
+    v-chip(
+      v-bind="props",
+      color="primary",
+      @click:close="onClickRemoveFromChip(item.raw.id, index)"
+    )
+      small.font-extrabold.uppercase {{ item.raw.nombre }}
   template(#item="{ item, index }")
     v-list-item.py-2(
       :active="list[index].active",
@@ -55,6 +57,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    customerLocationId: {
+      type: String,
+      default: "",
+    },
     customerId: {
       type: String,
       default: "",
@@ -70,7 +76,7 @@ export default defineComponent({
   },
   emits: ["updated"],
   setup(props, { emit }) {
-    const { multiple, customerId } = toRefs(props);
+    const { multiple, customerId, customerLocationId } = toRefs(props);
 
     const isLoading = ref(false);
     const selected = ref([]);
@@ -130,6 +136,11 @@ export default defineComponent({
         );
         console.log("locations", locations);
         list.value = locations;
+        if (multiple.value) {
+          alert("todavia falta desarrollar");
+        } else {
+          selected.value.push(customerLocationId.value);
+        }
       } catch (error) {
         notify({ type: "error", text: error.message });
       } finally {

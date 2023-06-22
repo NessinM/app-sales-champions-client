@@ -2,6 +2,9 @@ export const enviroments = {
   APP_NAME: import.meta.env.VITE_APP_NAME ?? "no_definido",
   API_ROUTE: import.meta.env.VITE_API_ROUTE ?? "no_definido",
   API_ROUTE_UPLOAD: import.meta.env.VITE_API_ROUTE_UPLOAD ?? "no_definido",
+  API_ROUTE_MAP: import.meta.env.VITE_API_ROUTE_MAP ?? "no_definido",
+  ACCESS_TOKEN_MAPBOX:
+    import.meta.env.VITE_ACCESS_TOKEN_MAPBOX ?? "no_definido",
 };
 
 export const listReasonsForEvent = [
@@ -45,7 +48,7 @@ export const listReasonsForEvent = [
     name: "Activación en punto de venta",
     value: "activacion en punto de venta",
   },
-]
+];
 
 export const listPositionsInCompany = [
   {

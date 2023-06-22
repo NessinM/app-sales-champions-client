@@ -51,9 +51,9 @@ const router = createRouter({
       },
     },
     {
-      path: "/seguimiento-de-usuarios",
-      name: "seguimiento-de-usuarios",
-      component: () => import("@/views/View_app_seguimiento_de_usuarios.vue"),
+      path: "/central-map",
+      name: "central-map",
+      component: () => import("@/views/View_app_central_map.vue"),
       meta: {
         isRequiredAuth: true,
         title: "Administrador de clientes",

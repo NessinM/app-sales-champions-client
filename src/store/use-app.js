@@ -24,9 +24,9 @@ export const useAppStore = defineStore("app-store", {
       },
       {
         subtitle: "Seguimiento de usuarios",
-        title: "Mapa de seguimiento",
+        title: "Mapa central",
         icon: "$mdiMapMarkerPath",
-        to: "/seguimiento-de-usuarios",
+        to: "/central-map",
       },
     ],
   }),
@@ -34,6 +34,7 @@ export const useAppStore = defineStore("app-store", {
     getOptionsMenuSideBar: (state) => state.menu,
   },
   actions: {
+    // customer
     async fetchGetListCustomers(payload = {}) {
       const { data } = await http.API_ROUTE.get("/customer/", payload);
       return data;
@@ -60,6 +61,8 @@ export const useAppStore = defineStore("app-store", {
       );
       return data;
     },
+
+    // location
     async fetchGetListCustomerLocations(customerId, payload = {}) {
       const { data } = await http.API_ROUTE.get("/customer-location/", {
         params: {
@@ -90,6 +93,8 @@ export const useAppStore = defineStore("app-store", {
       );
       return data;
     },
+
+    // conatact
     async fetchGetListCustomerContacts(customerId, payload = {}) {
       const { data } = await http.API_ROUTE.get("/customer-contact/", {
         params: {
@@ -120,8 +125,15 @@ export const useAppStore = defineStore("app-store", {
       );
       return data;
     },
+
+    //event
+
     async fetchGetListEvents(payload = {}) {
       const { data } = await http.API_ROUTE.get("/event", payload);
+      return data;
+    },
+    async fetchGetOneEvent(eventId) {
+      const { data } = await http.API_ROUTE.get(`/event/${eventId}`, {});
       return data;
     },
     async fetchCreateEvent(payload = {}) {
@@ -130,6 +142,10 @@ export const useAppStore = defineStore("app-store", {
       console.log("fecha_inicio", fecha_inicio);
       console.log("fecha_final", fecha_final);
       const { data } = await http.API_ROUTE.post("/event", payload);
+      return data;
+    },
+    async fetchUpdateEvent(eventId, payload = {}) {
+      const { data } = await http.API_ROUTE.put(`/event/${eventId}`, payload);
       return data;
     },
   },

@@ -66,11 +66,19 @@ import {
   mdiWhatsapp,
   mdiArrowLeft,
   mdiCrosshairsGps,
-  mdiDirections
+  mdiDirections,
+  mdiCalendarMonthOutline,
+  mdiMapMarker,
+  mdiRayStartArrow,
+  mdiRayEndArrow,
 } from "@mdi/js";
 
 export default {
   mdiAccount,
+  mdiMapMarker,
+  mdiRayEndArrow,
+  mdiRayStartArrow,
+  mdiCalendarMonthOutline,
   mdiDirections,
   mdiCrosshairsGps,
   mdiArrowLeft,

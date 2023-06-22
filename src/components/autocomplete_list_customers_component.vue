@@ -6,6 +6,8 @@ v-autocomplete.mx-2.text-slate-500(
   :disabled="isLoading",
   :error="!!errorMessage",
   :error-messages="errorMessage ? errorMessage : ''",
+  closable-chips,
+  chips,
   color="primary",
   :label="label",
   item-title="razon_social",
@@ -15,13 +17,13 @@ v-autocomplete.mx-2.text-slate-500(
   variant="outlined",
   hide-details="auto"
 )
-  template(#chip="{ item }")
-    //- v-chip.mx-1(
-    //-   v-bind="props",
-    //-   color="primary",
-    //-   @click:close="onClickRemoveFromChip(item.raw.id, index)"
-    //- )
-    small.font-extrabold.text-primary {{ item.raw.razon_social }}
+  template(#chip="{ item, props }")
+    v-chip.mx-1(
+      v-bind="props",
+      color="primary",
+      @click:close="onClickRemoveFromChip(item.raw.id, index)"
+    )
+      small.font-extrabold {{ item.raw.razon_social }}
   template(#item="{ item, index }")
     v-list-item.py-2(
       :active="list[index].active",
@@ -58,6 +60,10 @@ export default defineComponent({
     "v-square-avatar-of-text": SquareAvatarOfTextComponent,
   },
   props: {
+    customerId: {
+      type: String,
+      default: "",
+    },
     multiple: {
       type: Boolean,
       default: false,
@@ -73,21 +79,31 @@ export default defineComponent({
   },
   emits: ["updated"],
   setup(props, { emit }) {
-    const { multiple } = toRefs(props);
+    const { multiple, customerId } = toRefs(props);
     const isLoading = ref(false);
     const selected = ref([]);
     const list = ref([]);
     const { fetchGetListCustomers } = useAppStore();
 
-    // const validation = {
-    //   items: [(v) => !!v || "El asunto para el evento es requerido"],
-    // };
-
     onMounted(async () => {
+      console.log("Renderizado......");
       try {
         isLoading.value = true;
         const { customers } = await fetchGetListCustomers();
         list.value = customers;
+        if (multiple.value) {
+          alert("todavia falta desarrollar");
+        } else {
+          console.log("customerId.value", customerId.value);
+          selected.value.push(customerId.value);
+          // if (customerId.value) {
+          //   const positionCustomer = list.value.findIndex(
+          //     (e) => e.id === customerId.value
+          //   );
+          //   console.log("positionCustomer", positionCustomer);
+          //   if (positionCustomer === -1) return;
+          // }
+        }
       } catch (error) {
         notify({ type: "error", text: error.message });
       } finally {
