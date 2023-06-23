@@ -87,7 +87,7 @@ export default defineComponent({
   },
   setup() {
     const { mobile } = useDisplay();
-    const { fetchGetListEvents } = useAppStore();
+    const { fetchGetListEvents, fetchUpdateEvent } = useAppStore();
 
     const theme = useTheme();
 
@@ -118,6 +118,15 @@ export default defineComponent({
       }
     };
 
+    const updateEvent = async () => {
+      try {
+        const event = await fetchUpdateEvent(customerIdUpdate.value)
+        console.log('event', event)
+      } catch (error) {
+        notify({ type: "error", text: error.message });
+      }
+    };
+
     const closeDialogAddCustomer = () =>
       (isShowDialogAddOrUpdateEvent.value = false);
     const openDialogAddEvent = () =>
@@ -140,6 +149,7 @@ export default defineComponent({
       openDialogAddEvent,
       getListCustomerAndSelected,
       customerIdUpdate,
+      updateEvent
     };
   },
 });
