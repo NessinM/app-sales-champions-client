@@ -26,30 +26,34 @@ v-card-text(v-if="!isLoadingGetEvent")
       v-col(cols="12", lg="6", md="6", sm="12")
         v-hover(v-slot="{ isHovering, props }")
           v-card.pa-4(
+            :disabled="fecha_llegada",
             color="warning",
             :rounded="5",
-            height="120",
+            height="130",
             v-bind="props",
             :class="{ 'elevation-6': isHovering }",
-            @click="updateEvent"
+            @click="setActionEvent('llegada')"
           )
             .flex.flex-col.items-center
               v-icon(icon="$mdiRayStartArrow", size="55", color="white")
               span.text-md.font-extrabold.text-white Marcar llegada
+              span.text-xs.font-normal.text-white {{ fecha_llegada }}
       v-col(cols="12", lg="6", md="6", sm="12")
         v-hover(v-slot="{ isHovering, props }")
           v-card.pa-4(
+            :disabled="!fecha_llegada || fecha_salida",
             color="success",
             :rounded="5",
-            height="120",
+            height="130",
             v-bind="props",
             :class="{ 'elevation-6': isHovering }",
-            @click="() => {}"
+            @click="setActionEvent('salida')"
           )
             .flex.flex-col.items-center
               v-icon(icon="$mdiRayEndArrow", size="55", color="white")
               span.text-md.font-extrabold.text-white Marcar salida
-  div(v-if="tabEdit === 2")
+              span.text-xs.font-normal.text-white {{ fecha_salida }}
+  v-card(v-if="tabEdit === 2" flat :disabled="fecha_salida")
     v-form(ref="formRef")
       v-row(no-gutters)
         v-col(cols="12", lg="12", md="12", sm="12")
@@ -69,24 +73,24 @@ v-card-text(v-if="!isLoadingGetEvent")
         v-col(cols="12", lg="12", md="12", sm="12")
           v-autocomplete-list-customers.my-2(
             label="Seleccionar un cliente",
-            :customer-id="event.cliente",
-            :error-message="validateExtern.client(event.cliente)",
+            :customer-id="event.clienteId",
+            :error-message="validateExtern.client(event.clienteId)",
             @updated="getClienteSelected"
           )
         v-col(cols="12", lg="12", md="12", sm="12")
           v-autocomplete-list-customer-contacts.my-2(
             label="Seleccionar un contacto",
-            :customer-contact-id="event.contacto",
-            :customer-id="event?.cliente",
-            :error-message="validateExtern.contact(event.contacto)",
+            :customer-contact-id="event.contactoId",
+            :customer-id="event?.clienteId",
+            :error-message="validateExtern.contact(event.contactoId)",
             @updated="getContactSelected"
           )
         v-col(cols="12", lg="12", md="12", sm="12")
           v-autocomplete-list-customer-locations.my-2(
             label="Seleccionar una ubicacion",
-            :customer-location-id="event.ubicacion",
-            :customer-id="event?.cliente",
-            :error-message="validateExtern.location(event.ubicacion)",
+            :customer-location-id="event.ubicacionId",
+            :customer-id="event?.clienteId",
+            :error-message="validateExtern.location(event.ubicacionId)",
             @updated="getLocationSelected"
           )
         v-col(cols="12", :lg="8", :md="8", sm="12")
@@ -121,9 +125,9 @@ v-card-text(v-if="!isLoadingGetEvent")
             row-height="25",
             shaped=""
           )
-  div(v-if="tabEdit === 3")
+  v-card(v-if="tabEdit === 3" flat :disabled="fecha_salida")
     v-row(no-gutters)
-      v-col(cols="12", lg="5", md="5", sm="12")
+      v-col(cols="12", lg="6", md="6", sm="12")
         v-autocomplete.mx-2.text-slate-500.my-2(
           v-model="segmentoValor",
           label="Segmentos",
@@ -135,7 +139,7 @@ v-card-text(v-if="!isLoadingGetEvent")
           color="primary",
           hide-details="auto"
         )
-      v-col(cols="12", lg="5", md="5", sm="12")
+      v-col(cols="12", lg="6", md="6", sm="12")
         v-text-field.mx-2.text-slate-500.my-2(
           v-model="montoValor",
           hide-details="auto",
@@ -145,34 +149,36 @@ v-card-text(v-if="!isLoadingGetEvent")
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="2", md="2", sm="12")
-        v-btn.mx-2.my-2(color="success", :rounded="5", @click="agregarOpcion")
-          small.text-xs.font-bold.text-white Agregar
-    .flex
-      v-table
-        thead
-          tr
-            th.text-left
-              span.text-sm Segmento
-            th.text-left
-              span.text-sm Monto
-            th.text-left
+    v-btn.mx-2.my-2.w-full(
+      color="success",
+      :rounded="5",
+      @click="agregarOpcion"
+    )
+      small.text-xs.font-bold.text-white Agregar
+    v-table(fixed-header)
+      thead
+        tr
+          th.text-left
+            span.text-sm Segmento
+          th.text-left
+            span.text-sm Monto
+          th.text-left
 
-        tbody
-          tr(v-for="(d, index) in detalles", :key="index")
-            td
-              span.font-bold.text-xs {{ d.descripcion }}
-            td
-              span.font-bold.text-xs {{ d.monto }}
-            td
-              v-btn.mx-2.my-2(
-                color="error",
-                :rounded="5",
-                @click="eliminarOpcion(index)"
-              )
-                small.text-xs.font-bold.text-white Eliminar
-    v-btn.mx-2.my-2(color="success", :rounded="5", @click="guardarSegmentos()")
-      small.text-xs.font-bold.text-white Guardar segmentos
+      tbody
+        tr(v-for="(d, index) in detalles", :key="index")
+          td
+            span.font-bold.text-xs.uppercase {{ d.descripcion }}
+          td
+            span.font-bold.text-xs {{ d.monto }}
+          td.text-right
+            v-btn.mx-2.my-2(
+              color="error",
+              :rounded="5",
+              @click="eliminarOpcion(index)"
+            )
+              small.text-xs.font-bold.text-white Eliminar
+    //- v-btn.mx-2.my-2(color="success", :rounded="5", @click="guardarSegmentos()")
+    //-   small.text-xs.font-bold.text-white Guardar segmentos
 
 v-divider
 .flex.pa-4(
@@ -190,9 +196,29 @@ v-divider
   v-btn.ml-2.font-bold(
     color="success",
     :rounded="5",
+    :disabled="fecha_salida"
     @click="validateAndCreateCustomer()"
   )
     small.text-xs.font-bold.text-white {{ eventId ? "Guardar cambios" : "Crear evento" }}
+.flex.pa-4(
+  v-if="!isLoadingGetEvent && tabEdit === 3",
+  :class="{ 'flex-col': isMobile, 'justify-end': !isMobile }"
+)
+  v-btn.ml-2.font-bold(
+    color="error",
+    :rounded="5",
+    variant="tonal",
+    :class="{ 'mb-3': isMobile }",
+    @click="emitCloseComponent"
+  )
+    span.text-xs.font-bold cancelar
+  v-btn.ml-2.font-bold(
+    color="success",
+    :rounded="5",
+    :disabled="fecha_salida"
+    @click="guardarSegmentos()"
+  )
+    small.text-xs.font-bold.text-white Guardar detalles
 </template>
 <script>
 import { computed, defineComponent, onMounted, ref, toRefs } from "vue";
@@ -241,11 +267,14 @@ export default defineComponent({
     const isLoadingGetSunat = ref(false);
     const detalles = ref([]);
     const formRef = ref(null);
+
+    const fecha_llegada = ref(undefined);
+    const fecha_salida = ref(undefined);
     const event = ref({
       asunto: "",
-      cliente: "",
-      contacto: "",
-      ubicacion: "",
+      clienteId: "",
+      contactoId: "",
+      ubicacionId: "",
       fecha_inicio: "",
       es_todo_el_dia: "",
       observacion: "",
@@ -255,9 +284,9 @@ export default defineComponent({
 
     const validationForm = {
       asunto: [(v) => !!v || "El asunto para el evento es requerido"],
-      cliente: [(v) => validateExtern.client(v)],
-      contacto: [(v) => validateExtern.contact(v)],
-      ubicacion: [(v) => validateExtern.location(v)],
+      clienteId: [(v) => validateExtern.client(v)],
+      contactoId: [(v) => validateExtern.contact(v)],
+      ubicacionId: [(v) => validateExtern.location(v)],
       fecha_inicio: [(v) => validateExtern.fecha_inicio(v)],
     };
 
@@ -276,16 +305,42 @@ export default defineComponent({
       },
     };
 
-    const updateEvent = async () => {
+    const setActionEvent = async (type) => {
+      if (type !== "llegada" && type !== "salida")
+        return notify({
+          type: "error",
+          text: "Envie el tipo de accion que se desea realizar",
+        });
+
       try {
         const [lat, long] = userLocation;
-        const event = await fetchUpdateEvent(eventId.value, {
-          longitude_llegada: long,
-          latitude_llegada: lat,
-          fecha_llegada: new Date(),
-        });
+
+        const objEvent = {
+          llegada: {
+            longitude_llegada: long,
+            latitude_llegada: lat,
+            fecha_llegada: new Date(),
+          },
+          salida: {
+            longitude_salida: long,
+            latitude_salida: lat,
+            fecha_salida: new Date(),
+          },
+        };
+        const event = await fetchUpdateEvent(eventId.value, objEvent[type]);
+
+        if (type === 'llegada') {
+          fecha_llegada.value = moment(event.fecha_llegada).format(
+            "DD/MM/YYYY HH:mm"
+          );
+        } else if (type === 'salida') {
+          fecha_salida.value = moment(event.fecha_salida).format(
+            "DD/MM/YYYY HH:mm"
+          );
+          emit('close')
+        }
         console.log("event", event);
-        notify({ type: "success", text: "Exito" });
+        notify({ type: "success", text: "La accion se marco correctamente" });
       } catch (error) {
         notify({ type: "error", text: error.message });
       }
@@ -304,6 +359,9 @@ export default defineComponent({
                 "YYYY-MM-DDTHH:mm"
               ).toDate(),
             });
+
+            if (detalles.value.length)
+              await fetchCreateSegmentsToEvent(eventId.value, detalles.value);
 
             emit("updated", eventId.value);
             emit("close");
@@ -336,9 +394,19 @@ export default defineComponent({
           isLoadingGetEvent.value = true;
           const response = await fetchGetOneEvent(eventId.value);
           event.value.asunto = response.asunto;
-          event.value.cliente = response.cliente.id;
-          event.value.contacto = response.contacto.id;
-          event.value.ubicacion = response.ubicacion.id;
+          if (response.fecha_llegada) {
+            fecha_llegada.value = moment(response.fecha_llegada).format(
+              "DD/MM/YYYY HH:mm"
+            );
+          }
+          if (response.fecha_salida) {
+            fecha_salida.value = moment(response.fecha_salida).format(
+              "DD/MM/YYYY HH:mm"
+            );
+          }
+          event.value.clienteId = response.clienteId;
+          event.value.contactoId = response.contactoId;
+          event.value.ubicacionId = response.ubicacionId;
           event.value.fecha_inicio = moment(response.fecha_inicio).format(
             "YYYY-MM-DDTHH:mm"
           );
@@ -357,19 +425,20 @@ export default defineComponent({
     };
 
     const getClienteSelected = ([idCustomerSelected]) => {
-      event.value.cliente = idCustomerSelected;
+      event.value.clienteId = idCustomerSelected;
     };
     const getContactSelected = ([idContactSelected]) => {
-      event.value.contacto = idContactSelected;
+      event.value.contactoId = idContactSelected;
     };
     const getLocationSelected = ([idLocationSelected]) => {
-      event.value.ubicacion = idLocationSelected;
+      event.value.ubicacionId = idLocationSelected;
     };
 
     const segmentoValor = ref("");
     const montoValor = ref(0);
 
     const agregarOpcion = () => {
+      if (!segmentoValor.value || !montoValor.value) return;
       detalles.value.push({
         descripcion: segmentoValor.value,
         monto: +montoValor.value,
@@ -392,6 +461,8 @@ export default defineComponent({
       });
     };
     return {
+      fecha_llegada,
+      fecha_salida,
       detalles,
       eliminarOpcion,
       segmentoValor,
@@ -413,7 +484,7 @@ export default defineComponent({
       getContactSelected,
       getLocationSelected,
       tabEdit,
-      updateEvent,
+      setActionEvent,
       listSegments,
       agregarOpcion,
       guardarSegmentos,

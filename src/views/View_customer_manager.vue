@@ -47,11 +47,11 @@ v-row.h-full(no-gutters)
       v-text-field(
         v-model="searchValue",
         flat,
-        prepend-inner-icon="$mdiFolderSearch",
+        prepend-inner-icon="$mdiFilterVariant",
         color="primary",
         variant="solo",
         clearable,
-        placeholder="Buscar por razón social, numero documento",
+        placeholder="Filtrar por razón social, numero documento",
         type="text",
         hide-details,
         @input="filterData"
@@ -65,8 +65,7 @@ v-row.h-full(no-gutters)
               variant="elevated",
               @click="getAllCustomers()"
             )
-    v-divider(v-if="!isThemeDark")
-    .p-2
+    .py-1.px-4
       v-btn.w-full(
         color="success",
         rounded="3",
@@ -74,16 +73,16 @@ v-row.h-full(no-gutters)
         @click="openDialogAddOrUpdateCustomer()"
       )
         v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
-        small.font-bold.text-white Agregar nuevo cliente
+        span.font-extrabold.text-white Agregar nuevo cliente
     perfect-scrollbar.overflow-y-auto.pb-5(class="h-[calc(100vh-170px)]")
-      v-alert(
+      v-alert.mx-4(
         v-if="!customers.length && !isLoading",
         variant="outlined",
         density="compact",
         color="error"
       )
         v-icon(start, size="20", icon="$mdiFolderSearch")
-        small.text-xs.font-medium No existen datos coincidentes para esta busqueda
+        small.text-xs.font-bold No existen datos coincidentes para esta busqueda
       .flex.flex-col.pa-8.items-center(v-if="isLoading")
         small.text-xs.text-primary.font-bold.italic Obteniendo listado de clientes...
         v-progress-linear.mt-2(
@@ -93,7 +92,7 @@ v-row.h-full(no-gutters)
           height="5"
         )
 
-      v-list.py-0(mandatory, color="primary")
+      v-list.mx-2(mandatory, color="primary", nav)
         v-list-item.py-2(
           v-for="(i, index) in customers",
           :key="index",
@@ -113,11 +112,16 @@ v-row.h-full(no-gutters)
           v-list-item-title
             small.font-extrabold {{ i.razon_social }}
           v-list-item-subtitle
-            span.text-xs {{ i.numero_documento }} - {{ i.sub_sector }}
+            small.text-xs {{ i.numero_documento }} - {{ i.sub_sector }}
           template(#append)
-            v-chip(color="grey", density="comfortable")
-              v-icon(start, size="13", icon="$mdiShieldStarOutline")
-              small.font-bold Fiscal
+            v-btn(
+              color="grey",
+              icon,
+              variant="icon",
+              density="comfortable",
+              @click="() => {}"
+            )
+              v-icon(icon="$mdiDotsVertical", size="25")
   v-col(
     cols="12",
     lg="9",
@@ -159,7 +163,7 @@ v-row.h-full(no-gutters)
               span.text-md {{ customer.numero_documento }} -
               span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
       .bg-primary.elevation-4(class="!sticky !top-0 !z-10")
-        .h-24.flex.items-center.justify-center(v-if="!isMobile")
+        .h-36.flex.items-center.justify-center(v-if="!isMobile")
           v-list-item
             template(#prepend)
               v-avatar(
@@ -178,7 +182,7 @@ v-row.h-full(no-gutters)
                 text-color="primary"
               )
             v-list-item-title
-              span.text-sm.font-extrabold {{ customer.razon_social }}
+              span.text-lg.font-extrabold {{ customer.razon_social }}
             v-list-item-subtitle
               span.text-md {{ customer.numero_documento }} -
               span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
@@ -196,10 +200,10 @@ v-row.h-full(no-gutters)
         )
           v-tab(:value="1")
             span.font-bold(class="text-[10px]") Ubicaciones
-              span.ml-1(v-if="customer.ubicaciones.length") ({{ customer.ubicaciones.length }})
+              span.ml-1(v-if="ubicaciones.length") ({{ ubicaciones.length }})
           v-tab(:value="2")
             span.font-bold(class="text-[10px]") Contactos
-              span.ml-1(v-if="customer.contactos.length") ({{ customer.contactos.length }})
+              span.ml-1(v-if="contactos.length") ({{ contactos.length }})
       perfect-scrollbar.overflow-y-auto.pa-4(
         v-if="panelActual === 1",
         :class="isMobile ? 'h-[calc(100vh-157px)]' : 'h-[calc(100vh-190px)]'"
@@ -225,7 +229,7 @@ v-row.h-full(no-gutters)
                     :class="isHovering ? 'text-white' : 'text-slate-300'"
                   ) Agregar nueva ubicacion
           v-col(
-            v-for="(l, index) in customer.ubicaciones",
+            v-for="(l, index) in ubicaciones",
             :key="index",
             cols="12",
             lg="3",
@@ -259,7 +263,7 @@ v-row.h-full(no-gutters)
                         cover=""
                       )
                         v-card-title
-                          .text-xs.font-bold {{ l.nombre }}
+                          .text-xs.font-bold {{ l.titulo }}
                 v-list
                   v-list-item
                     v-list-item-title
@@ -294,7 +298,7 @@ v-row.h-full(no-gutters)
                     :class="isHovering ? 'text-white' : 'text-slate-300'"
                   ) Agregar nuevo contacto
           v-col(
-            v-for="(c, index) in customer.contactos",
+            v-for="(c, index) in contactos",
             :key="index",
             cols="12",
             lg="3",
@@ -364,7 +368,11 @@ export default defineComponent({
   setup() {
     const { mobile } = useDisplay();
     const { getThemePreference } = useThemeStore();
-    const { fetchGetListCustomers } = useAppStore();
+    const {
+      fetchGetListCustomers,
+      fetchGetListCustomerLocations,
+      fetchGetListCustomerContacts,
+    } = useAppStore();
 
     const theme = useTheme();
 
@@ -372,6 +380,8 @@ export default defineComponent({
     const customer = ref(null);
     const locationId = ref("");
     const customerIdUpdate = ref("");
+    const ubicaciones = ref([]);
+    const contactos = ref([]);
     const filteredCustomers = ref([]);
     const isLoading = ref(true);
     const isShowDialogAddOrUpdateCustomer = ref(false);
@@ -397,8 +407,16 @@ export default defineComponent({
       }
     };
 
-    const actionSelectedCustomer = (index) => {
-      customer.value = { ...customers.value[index] };
+    const actionSelectedCustomer = async (index) => {
+      try {
+        customer.value = { ...customers.value[index] };
+        ubicaciones.value = await fetchGetListCustomerLocations(
+          customer.value.id
+        );
+        contactos.value = await fetchGetListCustomerContacts(customer.value.id);
+      } catch (error) {
+        notify({ type: "error", text: error.message });
+      }
     };
 
     const getAllCustomers = async () => {
@@ -406,9 +424,8 @@ export default defineComponent({
         filteredCustomers.value = [];
         customers.value = [];
         isLoading.value = true;
-        const response = await fetchGetListCustomers();
-        filteredCustomers.value = response.customers;
-        customers.value = response.customers;
+        customers.value = await fetchGetListCustomers();
+        filteredCustomers.value = { ...customers.value };
       } catch (error) {
         notify({ type: "error", text: error.message });
       } finally {
@@ -459,6 +476,8 @@ export default defineComponent({
     };
 
     return {
+      ubicaciones,
+      contactos,
       searchValue,
       isThemeDark,
       isMobile,

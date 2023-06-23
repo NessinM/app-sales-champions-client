@@ -16,9 +16,9 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
     v-row(no-gutters)
       v-col(cols="12", lg="6", md="12", sm="12")
         v-text-field.mx-2.text-slate-500.my-1(
-          v-model="customerLocation.nombre",
-          :rules="validationForm.nombre",
-          label="Nombre para la ubicaciòn",
+          v-model="customerLocation.titulo",
+          :rules="validationForm.titulo",
+          label="Titulo para la ubicaciòn",
           variant="outlined",
           density="compact",
           color="primary"
@@ -251,7 +251,7 @@ export default defineComponent({
     const { mobile } = useDisplay();
 
     const validationForm = {
-      nombre: [(v) => !!v || "Ingrese un nombre para esta ubicaciòn"],
+      titulo: [(v) => !!v || "Ingrese un titulo para esta ubicaciòn"],
       direccion: [(v) => !!v || "Ingrese una dirección valida"],
       tipo_via: [(v) => !!v || "El tipo de via es requerido"],
       distrito: [(v) => !!v || "Seleccione un distrito"],
@@ -267,7 +267,7 @@ export default defineComponent({
     const distritos = ref([]);
     let filesTemporaryToUpload = reactive([]);
     const customerLocation = ref({
-      nombre: "",
+      titulo: "",
       direccion: "",
       referencia_direccion: "",
       tipo_via: "",
@@ -397,7 +397,7 @@ export default defineComponent({
             customerLocationId.value
           );
 
-          customerLocation.value.nombre = location.nombre;
+          customerLocation.value.titulo = location.titulo;
           customerLocation.value.direccion = location.direccion;
           customerLocation.value.referencia_direccion =
             location.referencia_direccion;

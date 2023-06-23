@@ -7,8 +7,11 @@ export const capitalizeFirstLetter = (string) => {
 
 export const avatarWithInitials = (string) => {
   const textSplit = string.split(" ");
-  const initials = textSplit.shift().charAt(0) + textSplit.pop().charAt(0);
-  return initials.toUpperCase();;
+  const initials =
+    textSplit.length > 1
+      ? textSplit.shift().charAt(0) + textSplit.pop().charAt(0)
+      : string.substring(0, 2);
+  return initials.toUpperCase();
 };
 
 export const formatSizeBytes = (bytes, decimals = 2) => {

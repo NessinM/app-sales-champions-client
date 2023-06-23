@@ -23,7 +23,7 @@ v-autocomplete.mx-2.text-slate-500(
       color="primary",
       @click:close="onClickRemoveFromChip(item.raw.id, index)"
     )
-      small.font-extrabold.uppercase {{ item.raw.nombre }}
+      small.font-extrabold.uppercase {{ item.raw.titulo }}
   template(#item="{ item, index }")
     v-list-item.py-2(
       :active="list[index].active",
@@ -32,12 +32,12 @@ v-autocomplete.mx-2.text-slate-500(
     )
       template(#prepend)
         v-square-avatar-of-text(
-          :text="item?.raw?.nombre",
+          :text="item?.raw?.titulo",
           text-size="xs",
           :avatar-size="32"
         )
       v-list-item-title
-        span.font-extrabold.text-xs {{ item?.raw?.nombre }}
+        span.font-extrabold.text-xs {{ item?.raw?.titulo }}
       v-list-item-subtitle
         small.font-bold {{ item?.raw?.direccion }}
 </template>
@@ -131,12 +131,8 @@ export default defineComponent({
 
       try {
         isLoading.value = true;
-        const { locations } = await fetchGetListCustomerLocations(
-          customerId.value
-        );
-        console.log("locations", locations);
-        list.value = locations;
-        if (!customerLocationId.value) return
+        list.value = await fetchGetListCustomerLocations(customerId.value);
+        if (!customerLocationId.value) return;
 
         if (multiple.value) {
           alert("todavia falta desarrollar");

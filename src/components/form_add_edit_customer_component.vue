@@ -140,7 +140,7 @@ export default defineComponent({
     onMounted(() => checkEditOrCreateCustomer());
 
     const location = ref({
-      nombre: "Direccion fiscal",
+      titulo: "DIRECCIÓN FISCAL",
       direccion: "",
       referencia_direccion: "",
       tipo_via: "",
@@ -215,7 +215,7 @@ export default defineComponent({
                 location.value
               );
               await fetchUpdateCustomer(customerCreated.id, {
-                ubicacion: customerLocationCreated.id,
+                ubicacionId: customerLocationCreated.id,
               });
             }
             notify({

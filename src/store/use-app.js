@@ -74,7 +74,7 @@ export const useAppStore = defineStore("app-store", {
     },
     async fetchCreateCustomerLocation(customerId, payload = {}) {
       const { data } = await http.API_ROUTE.post(`/customer-location/`, {
-        customerId,
+        clienteId: customerId,
         ...payload,
       });
       return data;
@@ -94,7 +94,7 @@ export const useAppStore = defineStore("app-store", {
       return data;
     },
 
-    // conatact
+    // contact
     async fetchGetListCustomerContacts(customerId, payload = {}) {
       const { data } = await http.API_ROUTE.get("/customer-contact/", {
         params: {
@@ -106,7 +106,7 @@ export const useAppStore = defineStore("app-store", {
     },
     async fetchCreateCustomerContact(customerId, payload = {}) {
       const { data } = await http.API_ROUTE.post(`/customer-contact/`, {
-        customerId,
+        clienteId: customerId,
         ...payload,
       });
       return data;
@@ -161,7 +161,7 @@ export const useAppStore = defineStore("app-store", {
     },
     async fetchCreateSegmentsToEvent(eventId, segmentos) {
       const { data } = await http.API_ROUTE.post("/event-segment", {
-        eventId,
+        eventoId: eventId,
         segmentos,
       });
       return data;

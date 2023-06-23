@@ -71,10 +71,14 @@ import {
   mdiMapMarker,
   mdiRayStartArrow,
   mdiRayEndArrow,
+  mdiMapMarkerOff,
+  mdiFilterVariant,
 } from "@mdi/js";
 
 export default {
   mdiAccount,
+  mdiMapMarkerOff,
+  mdiFilterVariant,
   mdiMapMarker,
   mdiRayEndArrow,
   mdiRayStartArrow,

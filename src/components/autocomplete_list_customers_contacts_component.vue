@@ -138,12 +138,9 @@ export default defineComponent({
 
       try {
         isLoading.value = true;
-        const { contacts } = await fetchGetListCustomerContacts(
-          customerId.value
-        );
-        list.value = contacts;
+        list.value = await fetchGetListCustomerContacts(customerId.value);
 
-        if (!customerContactId.value) return
+        if (!customerContactId.value) return;
         if (multiple.value) {
           alert("todavia falta desarrollar");
         } else {
