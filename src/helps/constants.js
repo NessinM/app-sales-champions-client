@@ -7,6 +7,48 @@ export const enviroments = {
     import.meta.env.VITE_ACCESS_TOKEN_MAPBOX ?? "no_definido",
 };
 
+export const listSegments = [
+  {
+    name : "Impresion",
+    value: "impresion"
+  },
+  {
+    name : "Drones",
+    value: "drones"
+  },
+  {
+    name : "Componentes",
+    value: "componentes"
+  },
+  {
+    name : "Imagen",
+    value: "imagen"
+  },
+  {
+    name : "Equipamiento",
+    value: "equipamiento"
+  },
+  {
+    name : "Accesorios",
+    value: "accesorios"
+  },
+  {
+    name : "Varios",
+    value: "varios"
+  },
+  {
+    name : "Conectividad",
+    value: "conectividad"
+  },
+  {
+    name : "Electricidad",
+    value: "electricidad"
+  },
+  {
+    name : "Bienestar",
+    value: "bienestar"
+  },
+]
 export const listReasonsForEvent = [
   {
     name: "Capacitación de producto",
@@ -111,6 +153,7 @@ export const listTypesOfTaxpayers = [
     value: "PAS",
   },
 ];
+
 export const typesOfVia = [
   {
     name: "Avenida",
@@ -129,6 +172,7 @@ export const typesOfVia = [
     value: "CA",
   },
 ];
+
 export const businessSectorsList = [
   {
     name: "Banca y seguros",
@@ -219,6 +263,7 @@ export const businessSectorsList = [
     value: "usuario final",
   },
 ];
+
 export const ubigeous = [
   {
     ubigeo: "010517",

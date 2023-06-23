@@ -10,9 +10,6 @@ import { es } from "vuetify/locale";
 import themes from "./themes.js";
 import icons from "./icons.js";
 
-import DateFnsAdapter from "@date-io/date-fns";
-import esEs from "date-fns/locale/es";
-
 const vuetify = createVuetify({
   blueprint: md3, // obtiene los estilos de google Material 3
   components: {
@@ -20,12 +17,6 @@ const vuetify = createVuetify({
     ...labsComponents,
   },
   directives,
-  date: {
-    adapter: DateFnsAdapter,
-    locale: {
-      es: esEs,
-    },
-  },
   theme: {
     options: { customProperties: true },
     defaultTheme: themes.default_theme,

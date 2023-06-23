@@ -6,9 +6,9 @@ v-dialog(
   :width="isMobile ? '100%' : '500'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
-    //- :event-id="customerIdUpdate",
+    // :event-id="customerIdUpdate",
     v-form-add-edit-event(
-      :event-id="'443C4B27-4D11-EE11-9F62-2C44FD2EE46E'",
+    :event-id="'810F80A0-9211-EE11-9F62-2C44FD2EE46E'",
       @created="getListCustomerAndSelected",
       @updated="getListCustomerAndSelected",
       @close="closeDialogAddCustomer"

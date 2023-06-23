@@ -136,6 +136,8 @@ export default defineComponent({
         );
         console.log("locations", locations);
         list.value = locations;
+        if (!customerLocationId.value) return
+
         if (multiple.value) {
           alert("todavia falta desarrollar");
         } else {

@@ -91,6 +91,7 @@ export default defineComponent({
         isLoading.value = true;
         const { customers } = await fetchGetListCustomers();
         list.value = customers;
+        if (!customerId.value) return
         if (multiple.value) {
           alert("todavia falta desarrollar");
         } else {

@@ -142,6 +142,8 @@ export default defineComponent({
           customerId.value
         );
         list.value = contacts;
+
+        if (!customerContactId.value) return
         if (multiple.value) {
           alert("todavia falta desarrollar");
         } else {
