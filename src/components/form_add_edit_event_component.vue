@@ -7,7 +7,7 @@ v-card-title.flex.items-center.pb-0.pt-4.px-6(
     v-progress-linear(indeterminate="", color="primary")
     small.mt-3.font-bold.text-sm Obteniendo informacion del evento
   v-tabs.mt-4(
-    v-else,
+    v-if="!isLoadingGetEvent && eventId",
     v-model="tabEdit",
     :color="isMobile ? 'white' : 'primary'",
     grow="",
@@ -89,18 +89,13 @@ v-card-text(v-if="!isLoadingGetEvent")
             :error-message="validateExtern.location(event.ubicacion)",
             @updated="getLocationSelected"
           )
-        v-col(
-          cols="12",
-          :lg="8",
-          :md="8",
-          sm="12"
-        )
+        v-col(cols="12", :lg="8", :md="8", sm="12")
           v-text-field.mx-2.text-slate-500.my-2(
             v-model="event.fecha_inicio",
             hide-details="auto",
             :rules="validationForm.fecha_inicio",
             :label="event.es_todo_el_dia ? 'Fecha para el evento' : 'Fecha y hora para el evento'",
-            :type="event.es_todo_el_dia  ? 'date' : 'datetime-local'",
+            :type="event.es_todo_el_dia ? 'date' : 'datetime-local'",
             variant="outlined",
             density="compact",
             color="primary"
@@ -116,7 +111,7 @@ v-card-text(v-if="!isLoadingGetEvent")
         v-col(cols="12", lg="4", md="4", sm="12")
         v-col(cols="12", lg="12", md="12", sm="12")
           v-textarea.mx-2.text-slate-500.my-2(
-            v-model="event.observacion"
+            v-model="event.observacion",
             hide-details="auto",
             label="observacion",
             color="primary",
@@ -127,13 +122,61 @@ v-card-text(v-if="!isLoadingGetEvent")
             shaped=""
           )
   div(v-if="tabEdit === 3")
-    //- v-row
-    //-   v-col(cols="12", lg="6", md="6", sm="12")
-    //-   v-col(cols="12", lg="6", md="6", sm="12")
+    v-row(no-gutters)
+      v-col(cols="12", lg="5", md="5", sm="12")
+        v-autocomplete.mx-2.text-slate-500.my-2(
+          v-model="segmentoValor",
+          label="Segmentos",
+          :items="listSegments",
+          density="compact",
+          variant="outlined",
+          item-title="name",
+          item-value="value",
+          color="primary",
+          hide-details="auto"
+        )
+      v-col(cols="12", lg="5", md="5", sm="12")
+        v-text-field.mx-2.text-slate-500.my-2(
+          v-model="montoValor",
+          hide-details="auto",
+          label="Monto",
+          type="number",
+          variant="outlined",
+          density="compact",
+          color="primary"
+        )
+      v-col(cols="12", lg="2", md="2", sm="12")
+        v-btn.mx-2.my-2(color="success", :rounded="5", @click="agregarOpcion")
+          small.text-xs.font-bold.text-white Agregar
+    .flex
+      v-table
+        thead
+          tr
+            th.text-left
+              span.text-sm Segmento
+            th.text-left
+              span.text-sm Monto
+            th.text-left
+
+        tbody
+          tr(v-for="(d, index) in detalles", :key="index")
+            td
+              span.font-bold.text-xs {{ d.descripcion }}
+            td
+              span.font-bold.text-xs {{ d.monto }}
+            td
+              v-btn.mx-2.my-2(
+                color="error",
+                :rounded="5",
+                @click="eliminarOpcion(index)"
+              )
+                small.text-xs.font-bold.text-white Eliminar
+    v-btn.mx-2.my-2(color="success", :rounded="5", @click="guardarSegmentos()")
+      small.text-xs.font-bold.text-white Guardar segmentos
 
 v-divider
 .flex.pa-4(
-  v-if="!isLoadingGetEvent && (tabEdit === 2 || tabEdit === 3)",
+  v-if="!isLoadingGetEvent && tabEdit === 2",
   :class="{ 'flex-col': isMobile, 'justify-end': !isMobile }"
 )
   v-btn.ml-2.font-bold(
@@ -163,7 +206,9 @@ import {
   listTypesOfTaxpayers,
   businessSectorsList,
   listReasonsForEvent,
+  listSegments,
 } from "@/helps/constants";
+import moment from "moment";
 export default defineComponent({
   name: "FormAddEditEventComponent",
   components: {
@@ -185,14 +230,16 @@ export default defineComponent({
     const {
       fetchCreateEvent,
       fetchGetOneEvent,
-      fetchUpdateCustomer,
       fetchUpdateEvent,
+      fetchGetListSegmentsByEvent,
+      fetchCreateSegmentsToEvent,
     } = useAppStore();
 
     const tabEdit = ref(1);
     const isLoadingGetEvent = ref(false);
     const isLoading = ref(false);
     const isLoadingGetSunat = ref(false);
+    const detalles = ref([]);
     const formRef = ref(null);
     const event = ref({
       asunto: "",
@@ -200,9 +247,6 @@ export default defineComponent({
       contacto: "",
       ubicacion: "",
       fecha_inicio: "",
-      hora_inicio: "",
-      fecha_final: "",
-      hora_final: "",
       es_todo_el_dia: "",
       observacion: "",
     });
@@ -215,9 +259,6 @@ export default defineComponent({
       contacto: [(v) => validateExtern.contact(v)],
       ubicacion: [(v) => validateExtern.location(v)],
       fecha_inicio: [(v) => validateExtern.fecha_inicio(v)],
-      hora_inicio: [(v) => validateExtern.hora_inicio(v)],
-      fecha_final: [(v) => validateExtern.fecha_final(v)],
-      hora_final: [(v) => validateExtern.hora_final(v)],
     };
 
     const validateExtern = {
@@ -232,18 +273,6 @@ export default defineComponent({
       },
       fecha_inicio: (v) => {
         if (!v) return "Este campo es obligatorio";
-      },
-      hora_inicio: (v) => {
-        if (!v && !event.value.es_todo_el_dia)
-          return "Ingrese una hora de inicio";
-      },
-      fecha_final: (v) => {
-        if (!v && !event.value.es_todo_el_dia)
-          return "Ingrese una fecha de finalizacion";
-      },
-      hora_final: (v) => {
-        if (!v && !event.value.es_todo_el_dia)
-          return "Ingrese una hora para el fin del evento";
       },
     };
 
@@ -268,11 +297,14 @@ export default defineComponent({
         if (valid) {
           isLoading.value = true;
           if (eventId.value) {
-            await fetchUpdateCustomer(eventId.value, event.value);
-            notify({
-              type: "success",
-              text: "Los cambios se guardarón correctamente.",
+            await fetchUpdateEvent(eventId.value, {
+              ...event.value,
+              fecha_inicio: moment(
+                event.value.fecha_inicio,
+                "YYYY-MM-DDTHH:mm"
+              ).toDate(),
             });
+
             emit("updated", eventId.value);
             emit("close");
           } else {
@@ -303,19 +335,23 @@ export default defineComponent({
         try {
           isLoadingGetEvent.value = true;
           const response = await fetchGetOneEvent(eventId.value);
-          if (response.event.length) {
-            const getEvent = response.event[0];
-            event.value.asunto = getEvent.asunto;
-            event.value.cliente = getEvent.cliente.id;
-            event.value.contacto = getEvent.contacto.id;
-            event.value.ubicacion = getEvent.ubicacion.id;
-          }
+          event.value.asunto = response.asunto;
+          event.value.cliente = response.cliente.id;
+          event.value.contacto = response.contacto.id;
+          event.value.ubicacion = response.ubicacion.id;
+          event.value.fecha_inicio = moment(response.fecha_inicio).format(
+            "YYYY-MM-DDTHH:mm"
+          );
+          event.value.observacion = response.observacion;
+          const { segments } = await fetchGetListSegmentsByEvent(eventId.value);
+          detalles.value = segments;
           isLoadingGetEvent.value = false;
         } catch (error) {
           notify({ type: "error", text: error.message });
-          emit('close')
+          emit("close");
         }
       } else {
+        tabEdit.value = 2;
         // event.value.tipo_documento = "RUC";
       }
     };
@@ -330,9 +366,36 @@ export default defineComponent({
       event.value.ubicacion = idLocationSelected;
     };
 
+    const segmentoValor = ref("");
+    const montoValor = ref(0);
+
+    const agregarOpcion = () => {
+      detalles.value.push({
+        descripcion: segmentoValor.value,
+        monto: +montoValor.value,
+      });
+      segmentoValor.value = "";
+      montoValor.value = 0;
+    };
+    const eliminarOpcion = (index) => {
+      detalles.value.splice(index, 1);
+    };
+
     const isMobile = computed(() => mobile.value);
     const emitCloseComponent = () => emit("close");
+
+    const guardarSegmentos = async () => {
+      await fetchCreateSegmentsToEvent(eventId.value, detalles.value);
+      notify({
+        type: "success",
+        text: "Los cambios se guardarón correctamente.",
+      });
+    };
     return {
+      detalles,
+      eliminarOpcion,
+      segmentoValor,
+      montoValor,
       isLoading,
       isLoadingGetEvent,
       formRef,
@@ -351,8 +414,10 @@ export default defineComponent({
       getLocationSelected,
       tabEdit,
       updateEvent,
+      listSegments,
+      agregarOpcion,
+      guardarSegmentos,
     };
   },
 });
-
 </script>

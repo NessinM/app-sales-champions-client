@@ -148,5 +148,23 @@ export const useAppStore = defineStore("app-store", {
       const { data } = await http.API_ROUTE.put(`/event/${eventId}`, payload);
       return data;
     },
+
+    //event segments
+
+    async fetchGetListSegmentsByEvent(eventId) {
+      const { data } = await http.API_ROUTE.get(`/event-segment/`, {
+        params: {
+          eventId,
+        },
+      });
+      return data;
+    },
+    async fetchCreateSegmentsToEvent(eventId, segmentos) {
+      const { data } = await http.API_ROUTE.post("/event-segment", {
+        eventId,
+        segmentos,
+      });
+      return data;
+    },
   },
 });
