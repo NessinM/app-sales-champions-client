@@ -161,34 +161,6 @@ body {
   --v-input-chips-margin-top: 5px !important
 }
 
-
-// .v-picker.v-sheet, .v-date-picker-month {
-//   width: 307px !important
-// }
-// .v-field--center-affix .v-label.v-field-label {
-//   transform: none !important
-// }
-
-// .map {
-//   height: calc(100vh - 100px) !important;
-//   min-height: calc(100vh - 100px) !important;
-//   max-height: calc(100vh - 100px) !important;
-// }
-
-// .map-full {
-//   height: 100vh !important;
-// }
-
-// .show-visibility-filters {
-//   top: 0;
-//   right : 50%
-// }
-// .hidden-visibility-filters {
-//   top: 100;
-//   right : 50%
-// }
-
-// .content-list-customers {
-//   height: calc(100vh - 65px);
-//   overflow-y: auto;
-// }
+.v-messages__message {
+  line-height: 7px !important
+}

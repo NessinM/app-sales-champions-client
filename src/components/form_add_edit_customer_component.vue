@@ -5,7 +5,7 @@ v-card-text
   v-form(ref="formRef")
     v-row(no-gutters)
       v-col(cols="12", lg="12", md="12", sm="12")
-        v-autocomplete.mx-2.text-slate-500.my-1(
+        v-autocomplete.mx-2.text-slate-400(
           v-model="customer.tipo_documento",
           label="Tipo de documento",
           :items="listTypesOfTaxpayers",
@@ -23,7 +23,7 @@ v-card-text
         md="12",
         sm="12"
       )
-        v-text-field.mx-2.text-slate-500.my-1(
+        v-text-field.mx-2.text-slate-400(
           v-model="customer.numero_documento",
           :loading="isLoadingGetSunat",
           :rules="validationForm.numero_documento",
@@ -64,7 +64,7 @@ v-card-text
             )
             small.text-xs.font-bold SUNAT
       v-col(cols="12", lg="12", md="12", sm="12")
-        v-text-field.mx-2.text-slate-500.my-1(
+        v-text-field.mx-2.text-slate-400(
           v-model="customer.razon_social",
           :rules="validationForm.razon_social",
           label="Nombre o razon social",
@@ -73,7 +73,7 @@ v-card-text
           color="primary"
         )
       v-col(v-if="customerId", cols="12", lg="12", md="12", sm="12")
-        v-autocomplete.mx-2.text-slate-500.my-1(
+        v-autocomplete.mx-2.text-slate-400(
           v-model="customer.sub_sector",
           label="Sub sector",
           :items="businessSectorsList",

@@ -6,7 +6,7 @@ v-card-text.py-0
   v-form(ref="formRef", :disabled="isLoading")
     v-row(no-gutters)
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-500.my-1(
+        v-text-field.mx-2.text-slate-400.my-1(
           v-model="customerContact.nombre",
           :rules="validationForm.nombre",
           label="Nombre completo",
@@ -15,7 +15,7 @@ v-card-text.py-0
           color="primary"
         )
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-500.my-1(
+        v-autocomplete.mx-2.text-slate-400.my-1(
           v-model="customerContact.tipo_documento",
           label="Tipo de documento",
           :items="listTypesOfTaxpayers",
@@ -28,7 +28,7 @@ v-card-text.py-0
           color="primary"
         )
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-500.my-1(
+        v-text-field.mx-2.text-slate-400.my-1(
           v-model="customerContact.numero_documento",
           :rules="validationForm.numero_documento",
           label="Numero de documento",
@@ -38,7 +38,7 @@ v-card-text.py-0
           type="number"
         )
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-500.my-1(
+        v-autocomplete.mx-2.text-slate-400.my-1(
           v-model="customerContact.cargo",
           label="Cargo",
           :items="listPositionsInCompany",
@@ -51,7 +51,7 @@ v-card-text.py-0
           color="primary"
         )
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-500.my-1(
+        v-text-field.mx-2.text-slate-400.my-1(
           v-model="customerContact.correo_electronico",
           :rules="validationForm.correo_electronico",
           label="Correo electronico",
@@ -60,7 +60,7 @@ v-card-text.py-0
           color="primary"
         )
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-500.my-1(
+        v-text-field.mx-2.text-slate-400.my-1(
           v-model="customerContact.numero_telefono",
           label="Numero de telefono",
           variant="outlined",

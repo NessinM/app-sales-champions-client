@@ -125,7 +125,7 @@ v-row.h-full(no-gutters)
   v-col(
     cols="12",
     lg="9",
-    md="8",
+    :md="isMobile ? 12 : 8",
     sm="12",
     :class="{ 'absolute z-10': isMobile }"
   )
@@ -136,10 +136,10 @@ v-row.h-full(no-gutters)
         v-icon.text-slate-300(start, size="90", icon="$mdiAccountArrowLeft")
         small.text-slate-300.text-md.font-semibold.my-2 Seleccione un usuario del panel lateral izquierdo
     v-card.h-full(v-if="customer", rounded="0", elevation="0")
-      v-toolbar(v-if="isMobile", color="primary")
-        v-btn.hidden-xs-only(icon="", @click="customer = null")
-          v-icon(icon="$mdiArrowLeft", color="white")
-        v-toolbar-title(class="!ms-0")
+      v-toolbar(v-if="isMobile", color="primary" height="100")
+        //- v-btn.mx-4(icon="", size="30" @click="customer = null")
+        //-   v-icon(icon="$mdiArrowLeft", color="white")
+        v-toolbar-title.mx-2(class="!ms-0")
           v-list-item.px-2
             template(#prepend)
               v-avatar(
@@ -158,7 +158,7 @@ v-row.h-full(no-gutters)
                 text-color="primary"
               )
             v-list-item-title
-              span.text-sm.font-extrabold {{ customer.razon_social }}
+              span.text-md.font-extrabold {{ customer.razon_social }}
             v-list-item-subtitle
               span.text-md {{ customer.numero_documento }} -
               span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
@@ -259,7 +259,7 @@ v-row.h-full(no-gutters)
                       v-img.align-end.text-white(
                         height="160",
                         :src="slide",
-                        gradient="to bottom, rgba(0,0,0,.1), #2d4258a1",
+                        gradient="to bottom, rgba(0,0,0,.1), #2d4258a1", 
                         cover=""
                       )
                         v-card-title

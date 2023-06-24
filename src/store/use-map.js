@@ -84,11 +84,12 @@ export const useMapStore = defineStore("map-store", {
       }
 
       const { data } = await http.API_MAP.get(
-        `/v5/mapbox.places/${payload}.json`,
+        `/geocoding/v5/mapbox.places/${payload}.json`,
         {
           params: {
             limit: 5,
-            poximity: this.userLocation.join(","),
+            language: "es",
+            proximity: this.userLocation.join(","),
           },
         }
       );

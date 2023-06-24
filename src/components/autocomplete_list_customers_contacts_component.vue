@@ -1,5 +1,5 @@
 <template lang="pug">
-v-autocomplete.mx-2.text-slate-500(
+v-autocomplete.mx-2.text-slate-400(
   v-model="selected",
   :items="list",
   :loading="isLoading",

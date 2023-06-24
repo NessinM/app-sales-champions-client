@@ -28,7 +28,6 @@ const API_UPLOAD = axios.create({
 const API_MAP = axios.create({
   baseURL: enviroments.API_ROUTE_MAP,
   params: {
-    language: "es",
     access_token: enviroments.ACCESS_TOKEN_MAPBOX,
   },
   withCredentials: false,
