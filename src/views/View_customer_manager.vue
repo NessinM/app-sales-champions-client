@@ -16,7 +16,7 @@ v-dialog(
   v-model="isShowDialogAddOrUpdateCustomerLocation",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '700'"
+  :width="isMobile ? '100%' : '500'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
     v-form-add-edit-customer-location(
@@ -41,30 +41,29 @@ v-dialog(
       @close="closeDialogAddOrUpdateCustomerContact"
     )
 
-v-row.h-full(no-gutters)
+v-row(no-gutters)
   v-col(cols="12", lg="3 ", md="4", sm="12")
-    .flex.align-center.justify-center
-      v-text-field(
-        v-model="searchValue",
-        flat,
-        prepend-inner-icon="$mdiFilterVariant",
-        color="primary",
-        variant="solo",
-        clearable,
-        placeholder="Filtrar por razón social, numero documento",
-        type="text",
-        hide-details,
-        @input="filterData"
-      )
-        template(#append-inner)
-          v-fade-transition.ml-2(leave-absolute)
-            v-btn(
-              icon="$mdiSync",
-              size="small",
-              color="primary",
-              variant="elevated",
-              @click="getAllCustomers()"
-            )
+    v-text-field(
+      v-model="searchValue",
+      flat,
+      prepend-inner-icon="$mdiFilterVariant",
+      color="primary",
+      variant="solo",
+      clearable,
+      placeholder="Filtrar por razón social, numero documento",
+      type="text",
+      hide-details,
+      @input="filterData"
+    )
+      template(#append-inner)
+        v-fade-transition.ml-2(leave-absolute)
+          v-btn(
+            icon="$mdiSync",
+            size="small",
+            color="primary",
+            variant="elevated",
+            @click="getAllCustomers()"
+          )
     .py-1.px-4
       v-btn.w-full(
         color="success",
@@ -74,10 +73,10 @@ v-row.h-full(no-gutters)
       )
         v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
         span.font-extrabold.text-white Agregar nuevo cliente
-    perfect-scrollbar.overflow-y-auto.pb-5(class="h-[calc(100vh-170px)]")
-      v-alert.mx-4(
+    perfect-scrollbar.overflow-y-auto(class="h-[calc(100vh-101px)]")
+      v-alert.mx-4.my-2(
         v-if="!customers.length && !isLoading",
-        variant="outlined",
+        variant="tonal",
         density="compact",
         color="error"
       )
@@ -115,13 +114,12 @@ v-row.h-full(no-gutters)
             small.text-xs {{ i.numero_documento }} - {{ i.sub_sector }}
           template(#append)
             v-btn(
-              color="grey",
               icon,
-              variant="icon",
+              variant="text",
               density="comfortable",
               @click="() => {}"
             )
-              v-icon(icon="$mdiDotsVertical", size="25")
+              v-icon(icon="$mdiDotsVertical", size="25" color="grey")
   v-col(
     cols="12",
     lg="9",
@@ -129,69 +127,69 @@ v-row.h-full(no-gutters)
     sm="12",
     :class="{ 'absolute z-10': isMobile }"
   )
-    .items-center.flex.justify-center.h-full(v-if="!customer && !isMobile")
+    .items-center.flex.justify-center.h-full.bg-primary(v-if="!customer && !isMobile")
       .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
         class="h-1/3 w-1/2"
       )
         v-icon.text-slate-300(start, size="90", icon="$mdiAccountArrowLeft")
         small.text-slate-300.text-md.font-semibold.my-2 Seleccione un usuario del panel lateral izquierdo
-    v-card.h-full(v-if="customer", rounded="0", elevation="0")
-      v-toolbar(v-if="isMobile", color="primary" height="100")
-        //- v-btn.mx-4(icon="", size="30" @click="customer = null")
-        //-   v-icon(icon="$mdiArrowLeft", color="white")
-        v-toolbar-title.mx-2(class="!ms-0")
-          v-list-item.px-2
-            template(#prepend)
-              v-avatar(
-                v-if="customer.logo_corporativo",
-                color="background",
-                density="compact",
-                size="40"
-              )
-                v-img(:src="customer.logo_corporativo")
-              v-square-avatar-of-text(
-                v-else,
-                :text="customer.razon_social",
-                :avatar-size="40",
-                text-size="sm",
-                bg-color="white",
-                text-color="primary"
-              )
-            v-list-item-title
-              span.text-md.font-extrabold {{ customer.razon_social }}
-            v-list-item-subtitle
-              span.text-md {{ customer.numero_documento }} -
-              span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
-      .bg-primary.elevation-4(class="!sticky !top-0 !z-10")
-        .h-36.flex.items-center.justify-center(v-if="!isMobile")
-          v-list-item
-            template(#prepend)
-              v-avatar(
-                v-if="customer.logo_corporativo",
-                color="background",
-                density="compact",
-                size="55"
-              )
-                v-img(:src="customer.logo_corporativo")
-              v-square-avatar-of-text(
-                v-else,
-                :text="customer.razon_social",
-                :avatar-size="55",
-                text-size="lg",
-                bg-color="white",
-                text-color="primary"
-              )
-            v-list-item-title
-              span.text-lg.font-extrabold {{ customer.razon_social }}
-            v-list-item-subtitle
-              span.text-md {{ customer.numero_documento }} -
-              span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
-            template(#append)
-              v-btn.mx-4(
-                icon="$mdiPencil",
-                @click="openDialogAddOrUpdateCustomer(customer?.id)"
-              )
-        v-tabs(
+    .pa-4(v-if="customer")
+      v-card.pt-4.px-4.d-flex.justify-center.flex-wrap.elevation-1.mb-4(
+        color="primary",
+        height="190"
+      )
+        v-container.flex
+          .flex
+            v-list-item.px-2
+              template(#prepend)
+                v-avatar(
+                  v-if="customer.logo_corporativo",
+                  color="background",
+                  density="compact",
+                  size="70"
+                )
+                  v-img(:src="customer.logo_corporativo")
+                v-square-avatar-of-text(
+                  v-else,
+                  :text="customer.razon_social",
+                  :avatar-size="70",
+                  text-size="2xl",
+                  bg-color="white",
+                  text-color="primary"
+                )
+              v-list-item-title
+                span.text-lg.font-extrabold {{ customer.razon_social }}
+              v-list-item-subtitle
+                span.text-md {{ customer.numero_documento }} -
+                span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
+              template(#append)
+                v-btn.mx-4(
+                  icon="$mdiPencil",
+                  @click="openDialogAddOrUpdateCustomer(customer?.id)"
+                )
+          v-spacer
+          v-row(justify="end", dense="")
+            v-col.text-center(
+              cols="auto"
+            )
+              v-card.pa-4(width="112", color="white", @click="openDialogAddOrUpdateCustomerLocation()")
+                v-avatar.mb-2(
+                  icon="$mdiOfficeBuildingPlus",
+                  color="primary",
+                  variant="tonal"
+                )
+                span.text-xs.font-extrabold Ubicaciones
+            v-col.text-center(
+              cols="auto"
+            )
+              v-card.pa-4(width="112", color="white", @click="openDialogAddOrUpdateCustomerContact()")
+                v-avatar.mb-2(
+                  icon="$mdiAccountMultiplePlus",
+                  color="primary",
+                  variant="tonal"
+                )
+                span.text-xs.font-extrabold Contactos
+        v-tabs.w-full(
           v-model="panelActual",
           align-tabs="end",
           density="compact",
@@ -199,159 +197,112 @@ v-row.h-full(no-gutters)
           bg-color="primary"
         )
           v-tab(:value="1")
-            span.font-bold(class="text-[10px]") Ubicaciones
+            span.font-extrabold(class="text-[10px]") Ubicaciones
               span.ml-1(v-if="ubicaciones.length") ({{ ubicaciones.length }})
           v-tab(:value="2")
-            span.font-bold(class="text-[10px]") Contactos
+            span.font-extrabold(class="text-[10px]") Contactos
               span.ml-1(v-if="contactos.length") ({{ contactos.length }})
-      perfect-scrollbar.overflow-y-auto.pa-4(
-        v-if="panelActual === 1",
-        :class="isMobile ? 'h-[calc(100vh-157px)]' : 'h-[calc(100vh-190px)]'"
-      )
-        v-row
-          v-col(cols="12", lg="3", md="6", sm="12")
-            v-hover(v-slot="{ isHovering, props }")
-              v-card.mx-auto.pa-4(
-                :height="isMobile ? 160 : 225",
-                :elevation="isHovering ? 6 : 1",
-                :class="{ 'on-hover text-white': isHovering }",
-                v-bind="props",
-                :color="isHovering ? 'primary' : 'background'",
-                @click="openDialogAddOrUpdateCustomerLocation()"
-              )
-                .flex.items-center.justify-center.h-full.flex-col
-                  v-icon(
-                    :size="isMobile ? 50 : 70",
-                    icon="$mdiOfficeBuildingPlus",
-                    :class="isHovering ? 'text-white' : 'text-slate-300'"
-                  )
-                  small.font-bold(
-                    :class="isHovering ? 'text-white' : 'text-slate-300'"
-                  ) Agregar nueva ubicacion
+      perfect-scrollbar(  v-if="panelActual === 1" class="h-[calc(100vh-241px)]")
+        .items-center.flex.justify-center.h-full(v-if="!ubicaciones.length")
+          .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
+            class="h-1/3 w-1/2"
+          )
+            v-icon.text-slate-300(start, size="90", icon="$mdiDomain")
+            small.text-slate-300.text-md.font-semibold.my-2 No se encontró ninguna ubicacion registrado para el cliente seleccionado
+        v-row(v-else)
           v-col(
             v-for="(l, index) in ubicaciones",
             :key="index",
             cols="12",
-            lg="3",
+            lg="4",
             md="6",
             sm="12"
           )
             v-hover(v-slot="{ isHovering, props }")
               v-card.mx-auto(
-                :elevation="isHovering ? 6 : 2",
-                :class="{ 'on-hover bg-background': isHovering }",
-                v-bind="props",
-                @click="openDialogAddOrUpdateCustomerLocation(l.id)"
+                v-bind="props"
+                :elevation="isHovering ? 5 : 1",
               )
                 v-carousel(
-                  height="160",
-                  hide-delimiters,
+                  height="180",
+                  :hide-delimiters="false",
+                  hide-delimiter-background
                   :show-arrows="false",
                   :interval="5000",
                   cycle,
                   touch
+                  color="primary"
                 )
                   v-carousel-item(
                     v-for="(slide, i) in slidesImages(l)",
                     :key="i"
                   )
-                    v-card.mx-auto.cursor-pointer(:rounded="0")
-                      v-img.align-end.text-white(
-                        height="160",
+                    v-card.mx-auto.cursor-pointer(:rounded="0" @click="openDialogAddOrUpdateCustomerLocation(l.id)" )
+                      v-img.align-start.text-white.text-end(
+                        height="180",
                         :src="slide",
-                        gradient="to bottom, rgba(0,0,0,.1), #2d4258a1", 
+                        gradient="to bottom, rgba(0,0,0,.1), #fff", 
                         cover=""
                       )
-                        v-card-title
-                          .text-xs.font-bold {{ l.titulo }}
-                v-list
-                  v-list-item
-                    v-list-item-title
-                      span.font-extrabold.text-xs {{ l.direccion }}
-                    v-list-item-subtitle
-                      span.text-xs {{ l.distrito }} - {{ l.provincia }} - {{ l.departamento }}
-                    template(#prepend="")
-                      v-avatar(color="primary", size="32")
-                        v-icon(color="white", icon="$mdiMapMarkerOutline")
-      perfect-scrollbar.overflow-y-auto.pa-4(
-        v-if="panelActual === 2",
-        :class="isMobile ? 'h-[calc(100vh-157px)]' : 'h-[calc(100vh-190px)]'"
-      )
-        v-row
-          v-col(cols="12", lg="3", md="6", sm="12")
-            v-hover(v-slot="{ isHovering, props }")
-              v-card.mx-auto.pa-4(
-                :height="isMobile ? 160 : 225",
-                :elevation="isHovering ? 6 : 1",
-                :class="{ 'on-hover text-white': isHovering }",
-                v-bind="props",
-                :color="isHovering ? 'primary' : 'background'",
-                @click="openDialogAddOrUpdateCustomerContact()"
-              )
-                .flex.items-center.justify-center.h-full.flex-col
-                  v-icon(
-                    :size="isMobile ? 50 : 70",
-                    icon="$mdiAccountMultiplePlus",
-                    :class="isHovering ? 'text-white' : 'text-slate-300'"
-                  )
-                  small.font-bold(
-                    :class="isHovering ? 'text-white' : 'text-slate-300'"
-                  ) Agregar nuevo contacto
+                        v-btn.ma-4(v-if="l.id === customer.ubicacionId" color="white")
+                          v-icon(start='' icon='$mdiMapMarker')
+                          span.font-extrabold(class="text-[10px]")   Fiscal
+                v-list-item.py-4(@click="openDialogAddOrUpdateCustomerLocation(l.id)")
+                  v-list-item-title
+                    strong.font-extrabold.text-xs {{ l.direccion }}
+                  v-list-item-subtitle
+                    span.font-bold.text-xs {{ l.distrito }} - {{ l.provincia }} - {{ l.departamento }}
+                  template(#append="")
+                    v-btn(
+                      icon,
+                      variant="text",
+                      density="comfortable",
+                      @click="() => {}"
+                    )
+                      v-icon(icon="$mdiDotsVertical", size="25" color="grey")
+      perfect-scrollbar(  v-if="panelActual === 2" class="h-[calc(100vh-241px)]")
+        .items-center.flex.justify-center.h-full(v-if="!contactos.length")
+          .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
+            class="h-1/3 w-1/2"
+          )
+            v-icon.text-slate-300(start, size="90", icon="$mdiAccountMultipleRemoveOutline")
+            small.text-slate-300.text-md.font-semibold.my-2 No se encontró ningun contacto  registrado para el cliente seleccionado
+        v-row(v-else)
           v-col(
             v-for="(c, index) in contactos",
             :key="index",
             cols="12",
-            lg="3",
+            lg="4",
             md="6",
             sm="12"
           )
             v-hover(v-slot="{ isHovering, props }")
               v-card.mx-auto(
-                :elevation="isHovering ? 6 : 2",
-                :class="{ 'on-hover bg-background': isHovering }",
+                :elevation="isHovering ? 3 : 1",
                 v-bind="props",
+                height="228"
+                color="white",
                 @click="openDialogAddOrUpdateCustomerContact(c.id)"
               )
-                v-card.elevation-5(
-                  :rounded="0",
-                  height="160",
-                  color="background"
-                )
-                  .flex.items-center.justify-center.h-full
-                    div
-                      v-btn.mx-2(icon="$mdiPhone", color="blue")
-                      v-btn.mx-2.text-white(
-                        icon="$mdiWhatsapp",
-                        color="success"
-                      )
-
-                v-list
-                  v-list-item
-                    v-list-item-title
-                      span.font-extrabold.text-md {{ c.nombre }}
-                    v-list-item-subtitle
-                      span.text-xs.capitalize {{ c.cargo }}
-                    template(#prepend="")
-                      v-avatar(
-                        v-if="c.imagen_perfil",
-                        color="background",
-                        density="compact",
-                        size="32"
-                      )
-                        v-img(:src="c.imagen_perfil")
-                      v-square-avatar-of-text(
-                        v-else,
-                        :text="c.nombre",
-                        :avatar-size="32",
-                        text-size="xs",
-                        bg-color="primary",
-                        text-color="white "
-                      )
+                .flex.items-center.justify-center.h-full.flex-col
+                  .flex.flex-col.items-center
+                    v-avatar.mb-2(color='primary' size='60' variant="tonal")
+                      span.font-bold NA
+                    span.font-extrabold.text-md {{ c.nombre }}
+                    span.text-xs.font-bold.text-slate-300 {{ c.cargo }}
+                  .flex.mt-6
+                    v-btn.mx-2(icon="$mdiPencil", color="primary")
+                    v-btn.mx-2(icon="$mdiPhone", color="blue")
+                    v-btn.mx-2(
+                      color="success"
+                      icon
+                    )
+                      v-icon(icon="$mdiWhatsapp", size="22" color="white")
 </template>
 <script>
 import { computed, defineComponent, ref, onMounted } from "vue";
 import { useAppStore, useThemeStore } from "@/store";
-import { useDisplay, useTheme } from "vuetify";
+import { useDisplay } from "vuetify";
 import { notify } from "@kyvg/vue3-notification";
 import SquareAvatarOfTextComponent from "@/components/square_avatar_of_text_component.vue";
 import FormAddOrEditCustomerComponent from "@/components/form_add_edit_customer_component.vue";
@@ -374,8 +325,6 @@ export default defineComponent({
       fetchGetListCustomerContacts,
     } = useAppStore();
 
-    const theme = useTheme();
-
     const customers = ref([]);
     const customer = ref(null);
     const locationId = ref("");
@@ -392,7 +341,6 @@ export default defineComponent({
 
     onMounted(() => getAllCustomers());
 
-    const isThemeDark = computed(() => theme.current.value.dark);
     const isMobile = computed(() => mobile.value);
 
     const filterData = () => {
@@ -472,6 +420,8 @@ export default defineComponent({
       if (imagen_dos) slides.push(imagen_dos);
       if (imagen_tres) slides.push(imagen_tres);
       if (imagen_cuatro) slides.push(imagen_cuatro);
+
+      if (!slides.length) slides.push('/public/assets/placeholder-location-image.jpg')
       return slides;
     };
 
@@ -479,7 +429,6 @@ export default defineComponent({
       ubicaciones,
       contactos,
       searchValue,
-      isThemeDark,
       isMobile,
       customer,
       customers,

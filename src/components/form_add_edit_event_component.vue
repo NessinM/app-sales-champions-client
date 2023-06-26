@@ -57,7 +57,7 @@ v-card-text(v-if="!isLoadingGetEvent")
     v-form(ref="formRef")
       v-row(no-gutters)
         v-col(cols="12", lg="12", md="12", sm="12")
-          v-autocomplete.mx-2.text-slate-400.my-2(
+          v-autocomplete.mx-2.text-slate-500.my-2(
             v-model="event.asunto",
             hide-details="auto",
             label="Asunto",
@@ -94,7 +94,7 @@ v-card-text(v-if="!isLoadingGetEvent")
             @updated="getLocationSelected"
           )
         v-col(cols="12", :lg="8", :md="8", sm="12")
-          v-text-field.mx-2.text-slate-400.my-2(
+          v-text-field.mx-2.text-slate-500.my-2(
             v-model="event.fecha_inicio",
             hide-details="auto",
             :rules="validationForm.fecha_inicio",
@@ -105,7 +105,7 @@ v-card-text(v-if="!isLoadingGetEvent")
             color="primary"
           )
         v-col(cols="12", lg="4", md="3", sm="12")
-          v-switch.mx-2.text-slate-400.my-2(
+          v-switch.mx-2.text-slate-500.my-2(
             v-model="event.es_todo_el_dia",
             hide-details="auto",
             label="Todo el dia",
@@ -114,7 +114,7 @@ v-card-text(v-if="!isLoadingGetEvent")
           )
         v-col(cols="12", lg="4", md="4", sm="12")
         v-col(cols="12", lg="12", md="12", sm="12")
-          v-textarea.mx-2.text-slate-400.my-2(
+          v-textarea.mx-2.text-slate-500.my-2(
             v-model="event.observacion",
             hide-details="auto",
             label="observacion",
@@ -128,7 +128,7 @@ v-card-text(v-if="!isLoadingGetEvent")
   v-card(v-if="tabEdit === 3" flat :disabled="fecha_salida")
     v-row(no-gutters)
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-400.my-2(
+        v-autocomplete.mx-2.text-slate-500.my-2(
           v-model="segmentoValor",
           label="Segmentos",
           :items="listSegments",
@@ -140,7 +140,7 @@ v-card-text(v-if="!isLoadingGetEvent")
           hide-details="auto"
         )
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-400.my-2(
+        v-text-field.mx-2.text-slate-500.my-2(
           v-model="montoValor",
           hide-details="auto",
           label="Monto",

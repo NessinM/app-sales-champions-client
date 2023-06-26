@@ -32,7 +32,7 @@ section.skewed.shadow-lg(class="shadow-slate-500/50")
       v-alert.text-xs.mb-4.font-bold(variant="tonal", color="blue")
         | Ingresa tu correo electrónico y te enviaremos un enlace para que recuperes el acceso a tu cuenta.
 
-      v-text-field.text-slate-400(
+      v-text-field.text-slate-500(
         v-model="form.username",
         type="text",
         color="primary",
@@ -61,7 +61,7 @@ section.skewed.shadow-lg(class="shadow-slate-500/50")
         v-icon(icon="$mdiLinkVariant")
         |
         | Ingresar mis credenciales para iniciar sesión
-  blockquote.text-xs.font-medium.italic.text-center.text-slate-400.absolute.bottom-0.right-0.py-4.px-4
+  blockquote.text-xs.font-medium.italic.text-center.text-slate-500.absolute.bottom-0.right-0.py-4.px-4
     | © {{ new Date().getFullYear() }} -
     span.relative.inline-block.mx-2(
       class="before:block before:absolute before:-inset-1 before:-skew-y-3",

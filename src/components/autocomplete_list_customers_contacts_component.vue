@@ -1,5 +1,5 @@
 <template lang="pug">
-v-autocomplete.mx-2.text-slate-400(
+v-autocomplete.mx-2.text-slate-500(
   v-model="selected",
   :items="list",
   :loading="isLoading",
@@ -20,6 +20,7 @@ v-autocomplete.mx-2.text-slate-400(
   template(#chip="{ item, props }")
     v-chip(
       v-bind="props",
+      rounded
       color="primary",
       @click:close="onClickRemoveFromChip(item.raw.id, index)"
     )

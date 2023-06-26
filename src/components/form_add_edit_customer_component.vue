@@ -2,10 +2,16 @@
 v-card-title.flex.items-center.py-4.mx-2
   span.font-extrabold.text-lg {{ customerId ? "Editar cliente" : "Nuevo cliente" }}
 v-card-text
+  v-card.mb-6.mx-2(v-if="customerId" color="primary" )
+    v-card-item
+      v-card-title
+        span.font-bold.text-lg {{ customer.tipo_documento }} - {{ customer.numero_documento }}
+      v-card-subtitle {{ customer.sub_sector || 'Sector no ingresado' }}
+
   v-form(ref="formRef")
     v-row(no-gutters)
-      v-col(cols="12", lg="12", md="12", sm="12")
-        v-autocomplete.mx-2.text-slate-400(
+      v-col(v-if="!customerId" cols="12", lg="12", md="12", sm="12")
+        v-autocomplete.mx-2.text-slate-500(
           v-model="customer.tipo_documento",
           label="Tipo de documento",
           :items="listTypesOfTaxpayers",
@@ -18,12 +24,13 @@ v-card-text
           color="primary"
         )
       v-col(
+        v-if="!customerId"
         cols="12",
         :lg="customer.tipo_documento === 'RUC' ? 8 : 12",
         md="12",
         sm="12"
       )
-        v-text-field.mx-2.text-slate-400(
+        v-text-field.mx-2.text-slate-500(
           v-model="customer.numero_documento",
           :loading="isLoadingGetSunat",
           :rules="validationForm.numero_documento",
@@ -43,7 +50,7 @@ v-card-text
                 size="20"
               )
       v-col(
-        v-if="customer.tipo_documento === 'RUC'",
+        v-if="customer.tipo_documento === 'RUC' && !customerId",
         cols="12",
         lg="4",
         md="12",
@@ -64,7 +71,7 @@ v-card-text
             )
             small.text-xs.font-bold SUNAT
       v-col(cols="12", lg="12", md="12", sm="12")
-        v-text-field.mx-2.text-slate-400(
+        v-text-field.mx-2.text-slate-500(
           v-model="customer.razon_social",
           :rules="validationForm.razon_social",
           label="Nombre o razon social",
@@ -72,10 +79,10 @@ v-card-text
           density="compact",
           color="primary"
         )
-      v-col(v-if="customerId", cols="12", lg="12", md="12", sm="12")
-        v-autocomplete.mx-2.text-slate-400(
+      v-col(v-if="customerId && !isLoadingGetCustomerToEdit", cols="12", lg="12", md="12", sm="12")
+        v-autocomplete.mx-2.text-slate-500(
           v-model="customer.sub_sector",
-          label="Sub sector",
+          label="Sector",
           :items="businessSectorsList",
           placeholder="Seleccione una opcion de la lista",
           item-title="name",
@@ -83,6 +90,20 @@ v-card-text
           variant="outlined",
           density="compact",
           color="primary"
+        )
+      v-col(v-if="customerId && !isLoadingGetCustomerToEdit" cols="12", lg="12", md="12", sm="12")
+        v-autocomplete-list-customer-locations.mb-5(
+          label="Seleccionar una ubicacion principal",
+          :customer-location-id="customer.ubicacionId",
+          :customer-id="customerId",
+          @updated="getLocationSelected"
+        )
+      v-col(v-if="customerId && !isLoadingGetCustomerToEdit" cols="12", lg="12", md="12", sm="12")
+        v-autocomplete-list-customer-contacts.mb-2(
+          label="Seleccionar un contacto principal",
+          :customer-contact-id="customer.contactoId",
+          :customer-id="customerId",
+          @updated="getContactSelected"
         )
 .flex.pa-1.px-6.pb-6.mx-2(
   :class="{ 'flex-col': isMobile, 'justify-end': !isMobile }"
@@ -108,8 +129,14 @@ import { useDisplay } from "vuetify/lib/framework.mjs";
 import { useAppStore } from "../store";
 import { notify } from "@kyvg/vue3-notification";
 import { listTypesOfTaxpayers, businessSectorsList } from "@/helps/constants";
+import AutocompleteListCustomerContacts from "@/components/autocomplete_list_customers_contacts_component.vue";
+import AutocompleteListCustomerLocations from "@/components/autocomplete_list_customers_locations_component.vue";
 export default defineComponent({
   name: "ComponentFormCustomer",
+  components: {
+    "v-autocomplete-list-customer-contacts": AutocompleteListCustomerContacts,
+    "v-autocomplete-list-customer-locations": AutocompleteListCustomerLocations,
+  },
   props: {
     customerId: {
       type: String,
@@ -129,18 +156,21 @@ export default defineComponent({
     } = useAppStore();
 
     const isLoading = ref(false);
+    const isLoadingGetCustomerToEdit = ref(false);
     const isLoadingGetSunat = ref(false);
     const formRef = ref(null);
     const customer = ref({
       tipo_documento: "",
       numero_documento: "",
       razon_social: "",
+      contactoId: '',
+      ubicacionId: ''
     });
 
     onMounted(() => checkEditOrCreateCustomer());
 
     const location = ref({
-      titulo: "DIRECCIÓN FISCAL",
+      titulo: "Sede principal - (fiscal)",
       direccion: "",
       referencia_direccion: "",
       tipo_via: "",
@@ -160,8 +190,8 @@ export default defineComponent({
         );
 
         customer.value.razon_social = responseSunat.nombre_o_razon_social;
-        location.value.direccion = responseSunat.direccion;
-        location.value.referencia_direccion = responseSunat.direccion_completa;
+        location.value.direccion = responseSunat.direccion_completa;
+        location.value.referencia_direccion = '';
         location.value.tipo_via = responseSunat.tipo_de_via;
         location.value.calle_numero = responseSunat.numero;
         location.value.departamento = responseSunat.departamento;
@@ -189,7 +219,7 @@ export default defineComponent({
       if (customer.value.tipo_documento === "DNI" && v.length > 8)
         return "El numero de DNI no puede ser mayor a 8 caracteres";
       if (customer.value.tipo_documento === "RUC" && v.length < 11)
-        return "El numero de RUC no ser menor a 11 caracteres";
+        return "El RUC no puede ser menor a 11 caracteres";
       if (customer.value.tipo_documento === "RUC" && v.length > 11)
         return "El numero de RUC no puede ser mayor a 11 caracteres";
     };
@@ -235,6 +265,7 @@ export default defineComponent({
     };
 
     const checkEditOrCreateCustomer = async () => {
+      isLoadingGetCustomerToEdit.value = true
       if (customerId.value) {
         try {
           const customerGet = await fetchGetOneCustomer(customerId.value);
@@ -242,18 +273,31 @@ export default defineComponent({
           customer.value.numero_documento = customerGet.numero_documento;
           customer.value.razon_social = customerGet.razon_social;
           customer.value.sub_sector = customerGet.sub_sector;
+          customer.value.ubicacionId = customerGet.ubicacionId;
+          customer.value.contactoId = customerGet.contactoId;
         } catch (error) {
           notify({ type: "error", text: error.message });
+        } finally {
+          isLoadingGetCustomerToEdit.value = false
         }
       } else {
         customer.value.tipo_documento = "RUC";
+        isLoadingGetCustomerToEdit.value = false
       }
+    };
+
+    const getContactSelected = ([idContactSelected]) => {
+      customer.value.contactoId = idContactSelected;
+    };
+    const getLocationSelected = ([idLocationSelected]) => {
+      customer.value.ubicacionId = idLocationSelected;
     };
 
     const isMobile = computed(() => mobile.value);
     const emitCloseComponent = () => emit("close");
     return {
       isLoading,
+      isLoadingGetCustomerToEdit,
       formRef,
       customer,
       validationForm,
@@ -264,6 +308,8 @@ export default defineComponent({
       isLoadingGetSunat,
       validateAndCreateCustomer,
       emitCloseComponent,
+      getContactSelected,
+      getLocationSelected
     };
   },
 });

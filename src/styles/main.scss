@@ -157,8 +157,8 @@ body {
   grid-row-gap: 2px !important
 }
 
-.v-input {
-  --v-input-chips-margin-top: 5px !important
+.v-autocomplete input, .v-autocomplete__selection {
+  margin-top: 2px !important
 }
 
 .v-messages__message {

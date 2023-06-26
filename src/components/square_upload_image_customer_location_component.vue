@@ -48,8 +48,8 @@ v-card.mx-2(
         :class="isDragActiveIndicator ? 'text-primary' : 'text-slate-300'",
         :size="isDragActiveIndicator ? 82 : 50"
       )
-      small.text-xs.text-slate-400(v-if="isDragActiveIndicator") Suelta el archivo para visualizar
-      small.text-xs.text-slate-400(v-else) Solo se admite archivos de tipo imagen
+      small.text-xs.text-slate-500(v-if="isDragActiveIndicator") Suelta el archivo para visualizar
+      small.text-xs.text-slate-500(v-else) Solo se admite archivos de tipo imagen
         strong.mx-1 (PNG, JPG, JPEG)
 </template>
 

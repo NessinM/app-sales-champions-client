@@ -73,10 +73,14 @@ import {
   mdiRayEndArrow,
   mdiMapMarkerOff,
   mdiFilterVariant,
+  mdiDomain,
+  mdiAccountMultipleRemoveOutline,
 } from "@mdi/js";
 
 export default {
   mdiAccount,
+  mdiDomain,
+  mdiAccountMultipleRemoveOutline,
   mdiMapMarkerOff,
   mdiFilterVariant,
   mdiMapMarker,

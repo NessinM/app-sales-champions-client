@@ -25,7 +25,7 @@ section.skewed.shadow-lg(class="shadow-slate-500/50")
     )
       v-img.align-center(src="/assets/background_login_maps.jpg", cover)
     v-form(@submit.prevent="fetchAuthenticateCredentials()")
-      v-text-field.text-slate-400(
+      v-text-field.text-slate-500(
         v-model="form.email",
         type="text",
         color="primary",
@@ -35,7 +35,7 @@ section.skewed.shadow-lg(class="shadow-slate-500/50")
         density="compact",
         variant="outlined"
       )
-      v-text-field.text-slate-400(
+      v-text-field.text-slate-500(
         v-model="form.password",
         color="primary",
         label="Contraseña",
@@ -67,7 +67,7 @@ section.skewed.shadow-lg(class="shadow-slate-500/50")
         |
         | Si olvidaste tu contraseña o la deseas cambiar
   v-divider
-  blockquote.text-xs.font-medium.italic.text-center.text-slate-400.absolute.bottom-0.right-0.py-4.px-4
+  blockquote.text-xs.font-medium.italic.text-center.text-slate-500.absolute.bottom-0.right-0.py-4.px-4
     | © {{ new Date().getFullYear() }} -
     span.relative.inline-block.mx-2(
       class="before:block before:absolute before:-inset-1 before:-skew-y-3",

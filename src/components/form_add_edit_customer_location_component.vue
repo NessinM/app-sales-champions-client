@@ -1,5 +1,5 @@
 <template lang="pug">
-v-card-title.flex.items-center.py-2.px-6(
+v-card-title.flex.items-center.py-4.px-6(
   :class="{ 'bg-primary elevation-4': isMobile }"
 )
   v-btn.mr-3(
@@ -9,13 +9,13 @@ v-card-title.flex.items-center.py-2.px-6(
     color="primary",
     @click="emitCloseComponent()"
   )
-    v-icon(icon="$mdiArrowLeft", size="30 ")
+    v-icon(icon="$mdiArrowLeft", size="25 ")
   span.font-extrabold.text-lg {{ customerLocationId ? "Editar ubicación" : "Nueva ubicación" }}
 v-card-text(:class="isMobile ? '' : 'py-0'")
-  v-form(ref="formRef", :disabled="isLoading")
+  v-form.mt-2(ref="formRef", :disabled="isLoading")
     v-row(no-gutters)
-      v-col(cols="12", lg="6", md="12", sm="12")
-        v-text-field.mx-2.text-slate-400.my-1(
+      v-col(cols="12", lg="12", md="12", sm="12")
+        v-text-field.mx-2.text-slate-500(
           v-model="customerLocation.titulo",
           :rules="validationForm.titulo",
           label="Titulo para la ubicaciòn",
@@ -23,8 +23,8 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="6", md="12", sm="12")
-        v-text-field.mx-2.text-slate-400.my-1(
+      v-col(cols="12", lg="12", md="12", sm="12")
+        v-text-field.mx-2.text-slate-500(
           v-model="customerLocation.direccion",
           :rules="validationForm.direccion",
           label="Dirección",
@@ -32,53 +32,53 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="6", md="12", sm="12")
-        v-text-field.mx-2.text-slate-400.my-1(
-          v-model="customerLocation.referencia_direccion",
-          :rules="validationForm.referencia_direccion",
-          label="Referencia",
-          variant="outlined",
-          density="compact",
-          color="primary"
-        )
-      v-col(cols="12", lg="3", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-400.my-1(
-          v-model="customerLocation.tipo_via",
-          :rules="validationForm.tipo_via",
-          label="Tipo de via",
-          item-title="name",
-          item-value="value",
-          :items="typesOfVia",
-          variant="outlined",
-          density="compact",
-          color="primary"
-        )
-      v-col(cols="12", lg="3", md="6", sm="12")
-        v-text-field.mx-2.text-slate-400.my-1(
-          v-model="customerLocation.calle_numero",
-          label="Numero",
-          variant="outlined",
-          density="compact",
-          color="primary"
-        )
+      //- v-col(cols="12", lg="12", md="12", sm="12")
+      //-   v-text-field.mx-2.text-slate-500(
+      //-     v-model="customerLocation.referencia_direccion",
+      //-     :rules="validationForm.referencia_direccion",
+      //-     label="Referencia",
+      //-     variant="outlined",
+      //-     density="compact",
+      //-     color="primary"
+      //-   )
+      //- v-col(cols="12", lg="6", md="6", sm="12")
+      //-   v-autocomplete.mx-2.text-slate-500(
+      //-     v-model="customerLocation.tipo_via",
+      //-     :rules="validationForm.tipo_via",
+      //-     label="Tipo de via",
+      //-     item-title="name",
+      //-     item-value="value",
+      //-     :items="typesOfVia",
+      //-     variant="outlined",
+      //-     density="compact",
+      //-     color="primary"
+      //-   )
+      //- v-col(cols="12", lg="6", md="6", sm="12")
+      //-   v-text-field.mx-2.text-slate-500(
+      //-     v-model="customerLocation.calle_numero",
+      //-     label="Numero",
+      //-     variant="outlined",
+      //-     density="compact",
+      //-     color="primary"
+      //-   )
+      //- v-col(cols="12", lg="6", md="6", sm="12")
+      //-   v-text-field.mx-2.text-slate-500(
+      //-     v-model="customerLocation.correo_electronico",
+      //-     label="Correo electronico",
+      //-     variant="outlined",
+      //-     density="compact",
+      //-     color="primary"
+      //-   )
+      //- v-col(cols="12", lg="6", md="6", sm="12")
+      //-   v-text-field.mx-2.text-slate-500(
+      //-     v-model="customerLocation.numero_telefono",
+      //-     label="Numero de telefono",
+      //-     variant="outlined",
+      //-     density="compact",
+      //-     color="primary"
+      //-   )
       v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-400.my-1(
-          v-model="customerLocation.correo_electronico",
-          label="Correo electronico",
-          variant="outlined",
-          density="compact",
-          color="primary"
-        )
-      v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-400.my-1(
-          v-model="customerLocation.numero_telefono",
-          label="Numero de telefono",
-          variant="outlined",
-          density="compact",
-          color="primary"
-        )
-      v-col(cols="12", lg="4", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-400.my-1(
+        v-autocomplete.mx-2.text-slate-500(
           v-model="customerLocation.departamento",
           :rules="validationForm.departamento",
           :items="departamentos",
@@ -90,8 +90,8 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           item-value="departamento",
           @update:model-value="($event) => changeOptionDepProvDist('departamento')"
         )
-      v-col(cols="12", lg="4", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-400.my-1(
+      v-col(cols="12", lg="6", md="6", sm="12")
+        v-autocomplete.mx-2.text-slate-500(
           v-model="customerLocation.provincia",
           :rules="validationForm.provincia",
           :items="provincias",
@@ -103,8 +103,8 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           item-value="provincia",
           @update:model-value="($event) => changeOptionDepProvDist('provincia')"
         )
-      v-col(cols="12", lg="4", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-400.my-1(
+      v-col(cols="12", lg="6", md="6", sm="12")
+        v-autocomplete.mx-2.text-slate-500(
           v-model="customerLocation.distrito",
           :rules="validationForm.distrito",
           :items="distritos",
@@ -116,77 +116,78 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           item-value="distrito",
           @update:model-value="($event) => changeOptionDepProvDist('distrito')"
         )
-    .flex.items-center.mx-2
-      span.font-extrabold.text-lg Imagenes de la ubicacion
-    v-row.mt-4(no-gutters)
-      v-col(cols="12", lg="3", md="6", sm="12")
-        v-square-preview-customer-location.my-1(
-          v-if="customerLocation.imagen_uno",
-          :url-image="customerLocation.imagen_uno"
-        )
-          v-btn.w-full(
-            color="error",
-            :rounded="0",
-            @click="deleteImagenCustomerLocation(1)"
-          )
-            span.font-bold.text-xs Eliminar
-        v-square-upload-customer-location.my-1(
-          v-else,
-          :number-image="1",
-          @load-image="getImageLoaded",
-          @delete-image="getImageDelete"
-        )
-      v-col(cols="12", lg="3", md="6", sm="12")
-        v-square-preview-customer-location.my-1(
-          v-if="customerLocation.imagen_dos",
-          :url-image="customerLocation.imagen_dos"
-        )
-          v-btn.w-full(
-            color="error",
-            :rounded="0",
-            @click="deleteImagenCustomerLocation(2)"
-          )
-            span.font-bold.text-xs Eliminar
-        v-square-upload-customer-location.my-1(
-          v-else,
-          :number-image="2",
-          @load-image="getImageLoaded",
-          @delete-image="getImageDelete"
-        )
-      v-col(cols="12", lg="3", md="6", sm="12")
-        v-square-preview-customer-location.my-1(
-          v-if="customerLocation.imagen_tres",
-          :url-image="customerLocation.imagen_tres"
-        )
-          v-btn.w-full(
-            color="error",
-            :rounded="0",
-            @click="deleteImagenCustomerLocation(3)"
-          )
-            span.font-bold.text-xs Eliminar
-        v-square-upload-customer-location.my-1(
-          v-else,
-          :number-image="3",
-          @load-image="getImageLoaded",
-          @delete-image="getImageDelete"
-        )
-      v-col(cols="12", lg="3", md="6", sm="12")
-        v-square-preview-customer-location.my-1(
-          v-if="customerLocation.imagen_cuatro",
-          :url-image="customerLocation.imagen_cuatro"
-        )
-          v-btn.w-full(
-            color="error",
-            :rounded="0",
-            @click="deleteImagenCustomerLocation(4)"
-          )
-            span.font-bold.text-xs Eliminar
-        v-square-upload-customer-location.my-1(
-          v-else,
-          :number-image="4",
-          @load-image="getImageLoaded",
-          @delete-image="getImageDelete"
-        )
+
+    //- .flex.items-center.mx-2
+    //-   span.font-extrabold.text-lg Imagenes de la ubicacion
+    //- v-row.mt-4(no-gutters)
+    //-   v-col(cols="12", lg="3", md="6", sm="12")
+    //-     v-square-preview-customer-location.my-1(
+    //-       v-if="customerLocation.imagen_uno",
+    //-       :url-image="customerLocation.imagen_uno"
+    //-     )
+    //-       v-btn.w-full(
+    //-         color="error",
+    //-         :rounded="0",
+    //-         @click="deleteImagenCustomerLocation(1)"
+    //-       )
+    //-         span.font-bold.text-xs Eliminar
+    //-     v-square-upload-customer-location.my-1(
+    //-       v-else,
+    //-       :number-image="1",
+    //-       @load-image="getImageLoaded",
+    //-       @delete-image="getImageDelete"
+    //-     )
+    //-   v-col(cols="12", lg="3", md="6", sm="12")
+    //-     v-square-preview-customer-location.my-1(
+    //-       v-if="customerLocation.imagen_dos",
+    //-       :url-image="customerLocation.imagen_dos"
+    //-     )
+    //-       v-btn.w-full(
+    //-         color="error",
+    //-         :rounded="0",
+    //-         @click="deleteImagenCustomerLocation(2)"
+    //-       )
+    //-         span.font-bold.text-xs Eliminar
+    //-     v-square-upload-customer-location.my-1(
+    //-       v-else,
+    //-       :number-image="2",
+    //-       @load-image="getImageLoaded",
+    //-       @delete-image="getImageDelete"
+    //-     )
+    //-   v-col(cols="12", lg="3", md="6", sm="12")
+    //-     v-square-preview-customer-location.my-1(
+    //-       v-if="customerLocation.imagen_tres",
+    //-       :url-image="customerLocation.imagen_tres"
+    //-     )
+    //-       v-btn.w-full(
+    //-         color="error",
+    //-         :rounded="0",
+    //-         @click="deleteImagenCustomerLocation(3)"
+    //-       )
+    //-         span.font-bold.text-xs Eliminar
+    //-     v-square-upload-customer-location.my-1(
+    //-       v-else,
+    //-       :number-image="3",
+    //-       @load-image="getImageLoaded",
+    //-       @delete-image="getImageDelete"
+    //-     )
+    //-   v-col(cols="12", lg="3", md="6", sm="12")
+    //-     v-square-preview-customer-location.my-1(
+    //-       v-if="customerLocation.imagen_cuatro",
+    //-       :url-image="customerLocation.imagen_cuatro"
+    //-     )
+    //-       v-btn.w-full(
+    //-         color="error",
+    //-         :rounded="0",
+    //-         @click="deleteImagenCustomerLocation(4)"
+    //-       )
+    //-         span.font-bold.text-xs Eliminar
+    //-     v-square-upload-customer-location.my-1(
+    //-       v-else,
+    //-       :number-image="4",
+    //-       @load-image="getImageLoaded",
+    //-       @delete-image="getImageDelete"
+    //-     )
 
 v-divider(v-if="isMobile")
 .flex.justify-end.px-6.py-6.mx-2
@@ -223,13 +224,13 @@ import {
 import { useAppStore, useUploadStore } from "@/store";
 import { ubigeous, typesOfVia } from "@/helps/constants";
 import { useDisplay } from "vuetify/lib/framework.mjs";
-import SquareUploadImageCustomerLocation from "./square_upload_image_customer_location_component.vue";
-import SquarePreviewImageCustomerLocation from "./square_preview_image_customer_location_component.vue";
+// import SquareUploadImageCustomerLocation from "./square_upload_image_customer_location_component.vue";
+// import SquarePreviewImageCustomerLocation from "./square_preview_image_customer_location_component.vue";
 export default defineComponent({
   name: "AddCustomerLocationFormComponent",
   components: {
-    "v-square-upload-customer-location": SquareUploadImageCustomerLocation,
-    "v-square-preview-customer-location": SquarePreviewImageCustomerLocation,
+    // "v-square-upload-customer-location": SquareUploadImageCustomerLocation,
+    // "v-square-preview-customer-location": SquarePreviewImageCustomerLocation,
   },
   props: {
     customerId: {
@@ -274,14 +275,15 @@ export default defineComponent({
       numero_direccion: "",
       correo_electronico: "",
       numero_telefono: "",
-      distrito: "",
-      provincia: "",
-      departamento: "",
-      codigo_ubigeo: "",
+      distrito: null,
+      provincia: null,
+      departamento: null,
+      codigo_ubigeo: null,
       imagen_uno: "",
       imagen_dos: "",
       imagen_tres: "",
       imagen_cuatro: "",
+      es_fiscal: false
     });
 
     onMounted(() => checkEditOrCreateLocation());
@@ -450,6 +452,7 @@ export default defineComponent({
       filesTemporaryToUpload,
       deleteImagenCustomerLocation,
       isLoading,
+      ubigeous
     };
   },
 });
