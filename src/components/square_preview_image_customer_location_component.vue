@@ -1,5 +1,5 @@
 <template lang="pug">
-.relative.h-54.mx-2
+.relative.mx-2
   small.absolute.right-0.z-10.pa-1.px-3.bg-white.font-bold.rounded-bl-md.text-xs(
     v-if="sizeFile"
   )
@@ -9,8 +9,16 @@
       v-bind="props",
       :class="{ 'elevation-2': isHovering }"
     )
-      v-img.align-end.text-white(
-        height="126",
+      v-btn(
+        v-if="isHovering"
+        class="!absolute z-10 top-1/4 left-1/3"
+        color="info",
+        icon
+        size="small"
+      )
+        v-icon(icon="$mdiEye", size="20")
+      v-img.align-center.text-white(
+        height="122",
         :class="{ 'blur-sm': isHovering }",
         lazy-src="/assets/placeholder-location-image.jpg",
         cover,
@@ -20,8 +28,6 @@
         template(#placeholder)
           .d-flex.align-center.justify-center.fill-height
             v-progress-circular(color="primary", indeterminate)
-        v-card-title
-          .text-xs.opacity-1 {{ fileName }}
       slot
 </template>
 <script>

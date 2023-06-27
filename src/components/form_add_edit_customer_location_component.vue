@@ -1,6 +1,6 @@
 <template lang="pug">
-v-card-title.flex.items-center.py-4.px-6(
-  :class="{ 'bg-primary elevation-4': isMobile }"
+v-card-title.flex.items-center.px-6(
+  :class="{ 'bg-primary elevation-4 py-1': isMobile, 'py-5' : !isMobile }"
 )
   v-btn.mr-3(
     v-if="isMobile",
@@ -14,16 +14,16 @@ v-card-title.flex.items-center.py-4.px-6(
 v-card-text(:class="isMobile ? '' : 'py-0'")
   v-form.mt-2(ref="formRef", :disabled="isLoading")
     v-row(no-gutters)
-      v-col(cols="12", lg="12", md="12", sm="12")
+      v-col(cols="12", :lg="customerLocationId ? 6 : 12", :md="customerLocationId ? 6 : 12", sm="12")
         v-text-field.mx-2.text-slate-500(
           v-model="customerLocation.titulo",
           :rules="validationForm.titulo",
-          label="Titulo para la ubicaciòn",
+          label="Titulo",
           variant="outlined",
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="12", md="12", sm="12")
+      v-col(cols="12", :lg="customerLocationId ? 6 : 12", :md="customerLocationId ? 6 : 12", sm="12")
         v-text-field.mx-2.text-slate-500(
           v-model="customerLocation.direccion",
           :rules="validationForm.direccion",
@@ -32,47 +32,11 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           density="compact",
           color="primary"
         )
-      //- v-col(cols="12", lg="12", md="12", sm="12")
+      //- v-col(v-if="customerLocationId"  cols="12", lg="6", md="6", sm="12")
       //-   v-text-field.mx-2.text-slate-500(
       //-     v-model="customerLocation.referencia_direccion",
       //-     :rules="validationForm.referencia_direccion",
       //-     label="Referencia",
-      //-     variant="outlined",
-      //-     density="compact",
-      //-     color="primary"
-      //-   )
-      //- v-col(cols="12", lg="6", md="6", sm="12")
-      //-   v-autocomplete.mx-2.text-slate-500(
-      //-     v-model="customerLocation.tipo_via",
-      //-     :rules="validationForm.tipo_via",
-      //-     label="Tipo de via",
-      //-     item-title="name",
-      //-     item-value="value",
-      //-     :items="typesOfVia",
-      //-     variant="outlined",
-      //-     density="compact",
-      //-     color="primary"
-      //-   )
-      //- v-col(cols="12", lg="6", md="6", sm="12")
-      //-   v-text-field.mx-2.text-slate-500(
-      //-     v-model="customerLocation.calle_numero",
-      //-     label="Numero",
-      //-     variant="outlined",
-      //-     density="compact",
-      //-     color="primary"
-      //-   )
-      //- v-col(cols="12", lg="6", md="6", sm="12")
-      //-   v-text-field.mx-2.text-slate-500(
-      //-     v-model="customerLocation.correo_electronico",
-      //-     label="Correo electronico",
-      //-     variant="outlined",
-      //-     density="compact",
-      //-     color="primary"
-      //-   )
-      //- v-col(cols="12", lg="6", md="6", sm="12")
-      //-   v-text-field.mx-2.text-slate-500(
-      //-     v-model="customerLocation.numero_telefono",
-      //-     label="Numero de telefono",
       //-     variant="outlined",
       //-     density="compact",
       //-     color="primary"
@@ -116,79 +80,93 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           item-value="distrito",
           @update:model-value="($event) => changeOptionDepProvDist('distrito')"
         )
+      v-col(v-if="customerLocationId"  cols="12", lg="3", md="6", sm="12")
+        v-autocomplete.mx-2.text-slate-500(
+          v-model="customerLocation.tipo_via",
+          :rules="validationForm.tipo_via",
+          label="Via",
+          item-title="name",
+          item-value="value",
+          :items="typesOfVia",
+          variant="outlined",
+          density="compact",
+          color="primary"
+        )
+      v-col(v-if="customerLocationId"  cols="12", lg="3", md="6", sm="12")
+        v-text-field.mx-2.text-slate-500(
+          v-model="customerLocation.calle_numero",
+          label="Numero",
+          variant="outlined",
+          density="compact",
+          color="primary"
+        )
+      v-col(v-if="customerLocationId"  cols="12", lg="6", md="6", sm="12")
+        v-text-field.mx-2.text-slate-500(
+          v-model="customerLocation.numero_telefono",
+          label="Numero de telefono",
+          variant="outlined",
+          density="compact",
+          color="primary"
+        )
+      v-col(v-if="customerLocationId"  cols="12", lg="6", md="6", sm="12")
+        v-text-field.mx-2.text-slate-500(
+          v-model="customerLocation.correo_electronico",
+          label="Correo electronico",
+          variant="outlined",
+          density="compact",
+          color="primary"
+        )
+    v-tabs.w-full(
+      v-if="customerLocationId"
+      v-model="tabsCustomer"
+      align-tabs="end",
+      density="compact",
+      color="primary",
+    )
+      v-tab(:value="1")
+        span.font-extrabold(class="text-[10px]") Imagenes
+          span.mx-1(v-if="tabsCustomer === 2") ({{ filesTemporaryToUpload.length }})
+      v-tab(:value="2" :disabled="filesTemporaryToUpload.length >= 4")
+        span.font-extrabold(class="text-[10px]" ) Adjuntar
+    v-square-upload-customer-location.ma-2(
+      v-if="filesTemporaryToUpload.length < 4 && customerLocationId && tabsCustomer === 2",
+      :accept="['image/png', 'image/jpg', 'image/jpeg']"
+      :multiple="true"
+      @load-image="getFilesLocations",
+    )
+    v-row(v-if="customerLocationId && tabsCustomer === 1" no-gutters)
+      v-col( v-if="!filesTemporaryToUpload.length" cols="12" lg="12" md="12" sm="12",)
+        v-alert.mx-2.my-4(
 
-    //- .flex.items-center.mx-2
-    //-   span.font-extrabold.text-lg Imagenes de la ubicacion
-    //- v-row.mt-4(no-gutters)
-    //-   v-col(cols="12", lg="3", md="6", sm="12")
-    //-     v-square-preview-customer-location.my-1(
-    //-       v-if="customerLocation.imagen_uno",
-    //-       :url-image="customerLocation.imagen_uno"
-    //-     )
-    //-       v-btn.w-full(
-    //-         color="error",
-    //-         :rounded="0",
-    //-         @click="deleteImagenCustomerLocation(1)"
-    //-       )
-    //-         span.font-bold.text-xs Eliminar
-    //-     v-square-upload-customer-location.my-1(
-    //-       v-else,
-    //-       :number-image="1",
-    //-       @load-image="getImageLoaded",
-    //-       @delete-image="getImageDelete"
-    //-     )
-    //-   v-col(cols="12", lg="3", md="6", sm="12")
-    //-     v-square-preview-customer-location.my-1(
-    //-       v-if="customerLocation.imagen_dos",
-    //-       :url-image="customerLocation.imagen_dos"
-    //-     )
-    //-       v-btn.w-full(
-    //-         color="error",
-    //-         :rounded="0",
-    //-         @click="deleteImagenCustomerLocation(2)"
-    //-       )
-    //-         span.font-bold.text-xs Eliminar
-    //-     v-square-upload-customer-location.my-1(
-    //-       v-else,
-    //-       :number-image="2",
-    //-       @load-image="getImageLoaded",
-    //-       @delete-image="getImageDelete"
-    //-     )
-    //-   v-col(cols="12", lg="3", md="6", sm="12")
-    //-     v-square-preview-customer-location.my-1(
-    //-       v-if="customerLocation.imagen_tres",
-    //-       :url-image="customerLocation.imagen_tres"
-    //-     )
-    //-       v-btn.w-full(
-    //-         color="error",
-    //-         :rounded="0",
-    //-         @click="deleteImagenCustomerLocation(3)"
-    //-       )
-    //-         span.font-bold.text-xs Eliminar
-    //-     v-square-upload-customer-location.my-1(
-    //-       v-else,
-    //-       :number-image="3",
-    //-       @load-image="getImageLoaded",
-    //-       @delete-image="getImageDelete"
-    //-     )
-    //-   v-col(cols="12", lg="3", md="6", sm="12")
-    //-     v-square-preview-customer-location.my-1(
-    //-       v-if="customerLocation.imagen_cuatro",
-    //-       :url-image="customerLocation.imagen_cuatro"
-    //-     )
-    //-       v-btn.w-full(
-    //-         color="error",
-    //-         :rounded="0",
-    //-         @click="deleteImagenCustomerLocation(4)"
-    //-       )
-    //-         span.font-bold.text-xs Eliminar
-    //-     v-square-upload-customer-location.my-1(
-    //-       v-else,
-    //-       :number-image="4",
-    //-       @load-image="getImageLoaded",
-    //-       @delete-image="getImageDelete"
-    //-     )
-
+          variant="tonal",
+          density="compact",
+          color="orange"
+          )
+            v-icon(start, size="20", icon="$mdiFolderSearch")
+            small.text-xs.font-bold No existen imagenes relacionados para este cliente
+      v-col(v-for="(item, index) in filesTemporaryToUpload", :key="index", cols="12" lg="3" md="3" sm="12")
+        v-square-preview-customer-location.my-4(
+          v-if="item.register && isLoadingRederImage"
+          :url-image="item.file"
+        )
+          v-btn.w-full(
+            color="error",
+            :rounded="0",
+            @click="deleteImagenTempCustomerLocation(item.register, index)"
+          )
+            v-icon.mx-1(icon="$mdiTrashCanOutline", size="20")
+            span.font-extrabold.text-xs Eliminar
+        v-square-preview-customer-location.my-4(
+          v-if="!item.register && isLoadingRederImage"
+          :file-buffer="item.file"
+        )
+          v-btn.w-full(
+            color="error",
+            :rounded="0",
+            @click="deleteImagenTempCustomerLocation(item.register, index)"
+          )
+            v-icon.mx-1(icon="$mdiTrashCanOutline", size="20")
+            small.font-extrabold Eliminar
 v-divider(v-if="isMobile")
 .flex.justify-end.px-6.py-6.mx-2
   v-btn(
@@ -216,21 +194,21 @@ import { notify } from "@kyvg/vue3-notification";
 import {
   computed,
   defineComponent,
+  nextTick,
   onMounted,
-  reactive,
   ref,
   toRefs,
 } from "vue";
 import { useAppStore, useUploadStore } from "@/store";
 import { ubigeous, typesOfVia } from "@/helps/constants";
 import { useDisplay } from "vuetify/lib/framework.mjs";
-// import SquareUploadImageCustomerLocation from "./square_upload_image_customer_location_component.vue";
-// import SquarePreviewImageCustomerLocation from "./square_preview_image_customer_location_component.vue";
+import SquareUploadImageCustomerLocation from "./square_upload_image_customer_location_component.vue";
+import SquarePreviewImageCustomerLocation from "./square_preview_image_customer_location_component.vue";
 export default defineComponent({
   name: "AddCustomerLocationFormComponent",
   components: {
-    // "v-square-upload-customer-location": SquareUploadImageCustomerLocation,
-    // "v-square-preview-customer-location": SquarePreviewImageCustomerLocation,
+    "v-square-upload-customer-location": SquareUploadImageCustomerLocation,
+    "v-square-preview-customer-location": SquarePreviewImageCustomerLocation,
   },
   props: {
     customerId: {
@@ -261,12 +239,15 @@ export default defineComponent({
       codigo_ubigeo: [(v) => !!v || "El codigo de ubigeo es requerido"],
     };
 
+    const isLoadingRederImage = ref(true);
     const isLoading = ref(false);
     const formRef = ref(null);
     const departamentos = ref([]);
     const provincias = ref([]);
     const distritos = ref([]);
-    let filesTemporaryToUpload = reactive([]);
+    let countMaxFilesByCustomer = ref(4);
+    let tabsCustomer = ref(1);
+    let filesTemporaryToUpload = ref([]);
     const customerLocation = ref({
       titulo: "",
       direccion: "",
@@ -293,20 +274,23 @@ export default defineComponent({
         const { valid } = await formRef.value.validate();
         if (valid) {
           isLoading.value = true;
-          for (const item of filesTemporaryToUpload) {
-            const { file, numberImage } = item;
-            const { ruta } = await fetchSaveImageCustomersLocation(
-              "user-generic",
-              file
-            );
+          for (const [i, item] of filesTemporaryToUpload.value.entries()) {
+            const numberImage = i + 1
+            const { register, file } = item
+            if (!register) {
+              const { ruta } = await fetchSaveImageCustomersLocation(
+                "user-generic",
+                file
+              );
 
-            if (numberImage === 1) customerLocation.value.imagen_uno = ruta;
-            else if (numberImage === 2)
-              customerLocation.value.imagen_dos = ruta;
-            else if (numberImage === 3)
-              customerLocation.value.imagen_tres = ruta;
-            else if (numberImage === 4)
-              customerLocation.value.imagen_cuatro = ruta;
+              if (numberImage === 1) customerLocation.value.imagen_uno = ruta;
+              else if (numberImage === 2)
+                customerLocation.value.imagen_dos = ruta;
+              else if (numberImage === 3)
+                customerLocation.value.imagen_tres = ruta;
+              else if (numberImage === 4)
+                customerLocation.value.imagen_cuatro = ruta;
+            }
           }
           if (customerLocationId.value) {
             await fecthUpdateCustomerLocation(
@@ -381,12 +365,26 @@ export default defineComponent({
       } else customerLocation.value.codigo_ubigeo = "";
     };
 
-    const getImageLoaded = (file) => filesTemporaryToUpload.push(file);
-    const getImageDelete = (numberImage) => {
-      const index = filesTemporaryToUpload.findIndex(
-        (e) => e.numberImage === numberImage
-      );
-      if (index !== -1) filesTemporaryToUpload.splice(index, 1);
+    const getFilesLocations = (files = []) => {
+      let filesList = []
+      if (filesTemporaryToUpload.value.length > countMaxFilesByCustomer.value) return notify({ type: "error", text: 'Solo puedes agregar 4 imagenes como maximo' });
+      if ((filesTemporaryToUpload.value.length + files.length) > countMaxFilesByCustomer.value) {
+        const countMissingFiles = countMaxFilesByCustomer.value - filesTemporaryToUpload.value.length
+        for (let i = 0; i < countMissingFiles; i++) {
+          const e = files[i];
+          filesList.push(e)
+        }
+        notify({ type: 'info', text: `Solo se agregarón ${countMissingFiles} archivos de los ${files.length} que habias seleccionado` })
+      } else {
+        filesList = [...files]
+      }
+
+      for (let i = 0; i < filesList.length; i++) {
+        const element = filesList[i];
+        filesTemporaryToUpload.value.push({ register: false, file: element })
+      }
+
+      tabsCustomer.value = 1
     };
 
     const emitCloseComponent = () => emit("close");
@@ -415,6 +413,14 @@ export default defineComponent({
           customerLocation.value.imagen_dos = location.imagen_dos;
           customerLocation.value.imagen_tres = location.imagen_tres;
           customerLocation.value.imagen_cuatro = location.imagen_cuatro;
+
+          [location.imagen_uno, location.imagen_dos, location.imagen_tres, location.imagen_cuatro].forEach((e) => {
+            if (e) {
+              filesTemporaryToUpload.value.push({ register: true, file: e })
+            }
+          })
+
+          tabsCustomer.value = filesTemporaryToUpload.value.length > 0 ? 1 : 2
         } catch (error) {
           notify({ type: "error", text: error.message });
         }
@@ -428,14 +434,32 @@ export default defineComponent({
       }
     };
 
-    const deleteImagenCustomerLocation = (numberImage) => {
-      if (numberImage === 1) customerLocation.value.imagen_uno = "";
-      else if (numberImage === 2) customerLocation.value.imagen_dos = "";
-      else if (numberImage === 3) customerLocation.value.imagen_tres = "";
-      else if (numberImage === 4) customerLocation.value.imagen_cuatro = "";
+    const deleteImagenTempCustomerLocation = async (register, index) => {
+
+      isLoadingRederImage.value = false
+      if (!register) {
+        filesTemporaryToUpload.value.splice(index, 1)
+        // eslint-disable-next-line vue/valid-next-tick
+        await nextTick(() => isLoadingRederImage.value = true)
+        if (!filesTemporaryToUpload.value.length) tabsCustomer.value = 2
+        return
+      }
+
+      let idImage = index + 1
+
+      if (idImage === 1) customerLocation.value.imagen_uno = "";
+      else if (idImage === 2) customerLocation.value.imagen_dos = "";
+      else if (idImage === 3) customerLocation.value.imagen_tres = "";
+      else if (idImage === 4) customerLocation.value.imagen_cuatro = "";
+
+      filesTemporaryToUpload.value.splice(index, 1)
+      // eslint-disable-next-line vue/valid-next-tick
+      await nextTick(() => isLoadingRederImage.value = true)
+      if (!filesTemporaryToUpload.value.length) tabsCustomer.value = 2
     };
 
     return {
+      tabsCustomer,
       formRef,
       departamentos,
       provincias,
@@ -447,12 +471,11 @@ export default defineComponent({
       typesOfVia,
       changeOptionDepProvDist,
       isMobile,
-      getImageLoaded,
-      getImageDelete,
+      getFilesLocations,
       filesTemporaryToUpload,
-      deleteImagenCustomerLocation,
+      deleteImagenTempCustomerLocation,
       isLoading,
-      ubigeous
+      isLoadingRederImage
     };
   },
 });

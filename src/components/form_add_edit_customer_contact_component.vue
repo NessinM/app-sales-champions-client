@@ -2,11 +2,11 @@
 v-card-title.flex.items-center.py-4.px-6
   span.font-extrabold.text-lg {{ customerContactId ? "Editar contacto" : "Nuevo contacto" }}
 v-divider(v-if="isMobile")
-v-card-text.py-0
+v-card-text
   v-form(ref="formRef", :disabled="isLoading")
     v-row(no-gutters)
-      v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-500.my-1(
+      v-col(cols="12", lg="12", md="6", sm="12")
+        v-text-field.mx-2.text-slate-500(
           v-model="customerContact.nombre",
           :rules="validationForm.nombre",
           label="Nombre completo",
@@ -14,8 +14,8 @@ v-card-text.py-0
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="6", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-500.my-1(
+      v-col(cols="12", lg="12", md="6", sm="12")
+        v-autocomplete.mx-2.text-slate-500(
           v-model="customerContact.tipo_documento",
           label="Tipo de documento",
           :items="listTypesOfTaxpayers",
@@ -27,8 +27,8 @@ v-card-text.py-0
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-500.my-1(
+      v-col(cols="12", lg="12", md="6", sm="12")
+        v-text-field.mx-2.text-slate-500(
           v-model="customerContact.numero_documento",
           :rules="validationForm.numero_documento",
           label="Numero de documento",
@@ -37,8 +37,8 @@ v-card-text.py-0
           color="primary",
           type="number"
         )
-      v-col(cols="12", lg="6", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-500.my-1(
+      v-col(cols="12", lg="12", md="6", sm="12")
+        v-autocomplete.mx-2.text-slate-500(
           v-model="customerContact.cargo",
           label="Cargo",
           :items="listPositionsInCompany",
@@ -50,8 +50,8 @@ v-card-text.py-0
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-500.my-1(
+      v-col(cols="12", lg="12", md="6", sm="12")
+        v-text-field.mx-2.text-slate-500(
           v-model="customerContact.correo_electronico",
           :rules="validationForm.correo_electronico",
           label="Correo electronico",
@@ -59,8 +59,8 @@ v-card-text.py-0
           density="compact",
           color="primary"
         )
-      v-col(cols="12", lg="6", md="6", sm="12")
-        v-text-field.mx-2.text-slate-500.my-1(
+      v-col(cols="12", lg="12", md="6", sm="12")
+        v-text-field.mx-2.text-slate-500(
           v-model="customerContact.numero_telefono",
           label="Numero de telefono",
           variant="outlined",
@@ -153,7 +153,7 @@ export default defineComponent({
       nombre: "",
       tipo_documento: "",
       numero_documento: "",
-      cargo: "",
+      cargo: null,
       numero_telefono: "",
       correo_electronico: "",
       es_representante_legal: 0,

@@ -8,39 +8,38 @@ v-dialog(
   v-card(:rounded="isMobile ? 0 : 5")
     v-form-add-edit-customer(
       :customer-id="customerIdUpdate",
-      @created="getListCustomerAndSelected",
-      @updated="getListCustomerAndSelected",
+      @created="getListCustomersAndSelected",
+      @updated="getListCustomersAndSelected",
       @close="closeDialogAddOrUpdateCustomer"
     )
 v-dialog(
   v-model="isShowDialogAddOrUpdateCustomerLocation",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '500'"
+  :width="isMobile ? '100%' : `${locationId ? '600' : '500'}`"
 )
   v-card(:rounded="isMobile ? 0 : 5")
     v-form-add-edit-customer-location(
       :customer-id="customer?.id",
       :customer-location-id="locationId",
-      @created="getListCustomerAndSelected",
-      @updated="getListCustomerAndSelected",
+      @created="getListCustomerLocations",
+      @updated="getListCustomerLocations",
       @close="closeDialogAddOrUpdateCustomerLocation"
     )
 v-dialog(
   v-model="isShowDialogAddOrUpdateCustomerContact",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '700'"
+  :width="isMobile ? '100%' : '500'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
     v-form-add-edit-customer-contact(
       :customer-id="customer?.id",
       :customer-contact-id="locationId",
-      @created="getListCustomerAndSelected",
-      @updated="getListCustomerAndSelected",
+      @created="getListCustomerContacts",
+      @updated="getListCustomerContacts",
       @close="closeDialogAddOrUpdateCustomerContact"
     )
-
 v-row(no-gutters)
   v-col(cols="12", lg="3 ", md="4", sm="12")
     v-text-field(
@@ -73,6 +72,11 @@ v-row(no-gutters)
       )
         v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
         span.font-extrabold.text-white Agregar nuevo cliente
+    //- .flex.flex-col.gap-2.p-4.w-300px.h-100px.m-auto.overflow-y-scroll.rounded(ref='elet' class='bg-gray-500/5')
+    //-   .h-15.rounded.p-3(v-for='item in data' :key='item' class='bg-gray-500/5')
+    //-     | {{ item }}
+
+
     perfect-scrollbar.overflow-y-auto(class="h-[calc(100vh-101px)]")
       v-alert.mx-4.my-2(
         v-if="!customers.length && !isLoading",
@@ -83,8 +87,8 @@ v-row(no-gutters)
         v-icon(start, size="20", icon="$mdiFolderSearch")
         small.text-xs.font-bold No existen datos coincidentes para esta busqueda
       .flex.flex-col.pa-8.items-center(v-if="isLoading")
-        small.text-xs.text-primary.font-bold.italic Obteniendo listado de clientes...
-        v-progress-linear.mt-2(
+        small.text-xs.text-primary.font-bold Obteniendo listado de clientes...
+        v-progress-circular.mt-2(
           color="primary",
           indeterminate,
           rounded,
@@ -126,8 +130,9 @@ v-row(no-gutters)
     :md="isMobile ? 12 : 8",
     sm="12",
     :class="{ 'absolute z-10': isMobile }"
+
   )
-    .items-center.flex.justify-center.h-full.bg-primary(v-if="!customer && !isMobile")
+    .items-center.flex.justify-center.h-full(v-if="!customer && !isMobile")
       .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
         class="h-1/3 w-1/2"
       )
@@ -135,6 +140,7 @@ v-row(no-gutters)
         small.text-slate-300.text-md.font-semibold.my-2 Seleccione un usuario del panel lateral izquierdo
     .pa-4(v-if="customer")
       v-card.pt-4.px-4.d-flex.justify-center.flex-wrap.elevation-1.mb-4(
+        :disabled="isLoading"
         color="primary",
         height="190"
       )
@@ -168,30 +174,35 @@ v-row(no-gutters)
                   @click="openDialogAddOrUpdateCustomer(customer?.id)"
                 )
           v-spacer
-          v-row(justify="end", dense="")
+          v-row(justify="end" no-gutters)
             v-col.text-center(
+              v-if="panelActual === 1"
               cols="auto"
             )
-              v-card.pa-4(width="112", color="white", @click="openDialogAddOrUpdateCustomerLocation()")
-                v-avatar.mb-2(
-                  icon="$mdiOfficeBuildingPlus",
-                  color="primary",
-                  variant="tonal"
-                )
-                span.text-xs.font-extrabold Ubicaciones
+              v-card(width="120", height="105" color="white", @click="openDialogAddOrUpdateCustomerLocation()")
+                .flex.items-center.justify-center.flex-col.h-full
+                  v-avatar.mb-1(
+                    icon="$mdiOfficeBuildingPlus",
+                    color="primary",
+                    variant="tonal"
+                  )
+                  span.text-xs.font-extrabold Nueva ubicacion
             v-col.text-center(
+              v-if="panelActual === 2"
               cols="auto"
             )
-              v-card.pa-4(width="112", color="white", @click="openDialogAddOrUpdateCustomerContact()")
-                v-avatar.mb-2(
-                  icon="$mdiAccountMultiplePlus",
-                  color="primary",
-                  variant="tonal"
-                )
-                span.text-xs.font-extrabold Contactos
+              v-card(width="120", height="105" color="white", @click="openDialogAddOrUpdateCustomerContact()")
+                .flex.items-center.justify-center.flex-col.h-full
+                  v-avatar.mb-1(
+                    icon="$mdiAccountMultiplePlus",
+                    color="primary",
+                    variant="tonal"
+                  )
+                  span.text-xs.font-extrabold Nuevo contacto
         v-tabs.w-full(
-          v-model="panelActual",
-          align-tabs="end",
+          v-model="panelActual"
+          :disabled="isLoading",
+          align-tabs="start",
           density="compact",
           color="white",
           bg-color="primary"
@@ -222,6 +233,7 @@ v-row(no-gutters)
               v-card.mx-auto(
                 v-bind="props"
                 :elevation="isHovering ? 5 : 1",
+                :disabled="isLoading"
               )
                 v-carousel(
                   height="180",
@@ -244,7 +256,7 @@ v-row(no-gutters)
                         gradient="to bottom, rgba(0,0,0,.1), #fff", 
                         cover=""
                       )
-                        v-btn.ma-4(v-if="l.id === customer.ubicacionId" color="white")
+                        v-btn.ma-4(v-if="l.id === customer.ubicacionId" color="primary")
                           v-icon(start='' icon='$mdiMapMarker')
                           span.font-extrabold(class="text-[10px]")   Fiscal
                 v-list-item.py-4(@click="openDialogAddOrUpdateCustomerLocation(l.id)")
@@ -282,7 +294,7 @@ v-row(no-gutters)
                 v-bind="props",
                 height="228"
                 color="white",
-                @click="openDialogAddOrUpdateCustomerContact(c.id)"
+                :disabled="isLoading"
               )
                 .flex.items-center.justify-center.h-full.flex-col
                   .flex.flex-col.items-center
@@ -291,7 +303,7 @@ v-row(no-gutters)
                     span.font-extrabold.text-md {{ c.nombre }}
                     span.text-xs.font-bold.text-slate-300 {{ c.cargo }}
                   .flex.mt-6
-                    v-btn.mx-2(icon="$mdiPencil", color="primary")
+                    v-btn.mx-2(icon="$mdiPencil", color="primary"  @click="openDialogAddOrUpdateCustomerContact(c.id)")
                     v-btn.mx-2(icon="$mdiPhone", color="blue")
                     v-btn.mx-2(
                       color="success"
@@ -304,6 +316,7 @@ import { computed, defineComponent, ref, onMounted } from "vue";
 import { useAppStore, useThemeStore } from "@/store";
 import { useDisplay } from "vuetify";
 import { notify } from "@kyvg/vue3-notification";
+import { useInfiniteScroll } from '@vueuse/core'
 import SquareAvatarOfTextComponent from "@/components/square_avatar_of_text_component.vue";
 import FormAddOrEditCustomerComponent from "@/components/form_add_edit_customer_component.vue";
 import FormAddOrEditCustomerLocationComponent from "@/components/form_add_edit_customer_location_component.vue";
@@ -314,7 +327,7 @@ export default defineComponent({
     "v-square-avatar-of-text": SquareAvatarOfTextComponent,
     "v-form-add-edit-customer": FormAddOrEditCustomerComponent,
     "v-form-add-edit-customer-location": FormAddOrEditCustomerLocationComponent,
-    "v-form-add-edit-customer-contact": FormAddOrEditCustomerContactComponent,
+    "v-form-add-edit-customer-contact": FormAddOrEditCustomerContactComponent
   },
   setup() {
     const { mobile } = useDisplay();
@@ -333,6 +346,8 @@ export default defineComponent({
     const contactos = ref([]);
     const filteredCustomers = ref([]);
     const isLoading = ref(true);
+    const isLoadingGetListCustomerLocations = ref(false);
+    const isLoadingGetListCustomerContacts = ref(false);
     const isShowDialogAddOrUpdateCustomer = ref(false);
     const isShowDialogAddOrUpdateCustomerLocation = ref(false);
     const isShowDialogAddOrUpdateCustomerContact = ref(false);
@@ -358,9 +373,7 @@ export default defineComponent({
     const actionSelectedCustomer = async (index) => {
       try {
         customer.value = { ...customers.value[index] };
-        ubicaciones.value = await fetchGetListCustomerLocations(
-          customer.value.id
-        );
+        ubicaciones.value = await fetchGetListCustomerLocations(customer.value.id);
         contactos.value = await fetchGetListCustomerContacts(customer.value.id);
       } catch (error) {
         notify({ type: "error", text: error.message });
@@ -369,15 +382,35 @@ export default defineComponent({
 
     const getAllCustomers = async () => {
       try {
-        filteredCustomers.value = [];
-        customers.value = [];
         isLoading.value = true;
         customers.value = await fetchGetListCustomers();
-        filteredCustomers.value = { ...customers.value };
+        filteredCustomers.value = [...customers.value];
       } catch (error) {
         notify({ type: "error", text: error.message });
       } finally {
         isLoading.value = false;
+      }
+    };
+
+    const getListCustomerLocations = async () => {
+      try {
+        isLoadingGetListCustomerLocations.value = true
+        ubicaciones.value = await fetchGetListCustomerLocations(customer.value.id);
+      } catch (error) {
+        notify({ type: "error", text: error.message });
+      } finally {
+        isLoadingGetListCustomerLocations.value = true
+      }
+    };
+
+    const getListCustomerContacts = async () => {
+      try {
+        isLoadingGetListCustomerContacts.value = true
+        contactos.value = await fetchGetListCustomerContacts(customer.value.id);
+      } catch (error) {
+        notify({ type: "error", text: error.message });
+      } finally {
+        isLoadingGetListCustomerContacts.value = true
       }
     };
 
@@ -403,7 +436,7 @@ export default defineComponent({
       isShowDialogAddOrUpdateCustomerContact.value = true;
     };
 
-    const getListCustomerAndSelected = async (idEmmited) => {
+    const getListCustomersAndSelected = async (idEmmited) => {
       await getAllCustomers();
       const position = customers.value.findIndex((e) => e.id === idEmmited);
       actionSelectedCustomer(position);
@@ -425,7 +458,20 @@ export default defineComponent({
       return slides;
     };
 
+    const elet = ref(null)
+    const data = ref([1, 3, 4, 5, 6])
+
+    useInfiniteScroll(elet.value, () => {
+      const length = data.value.length + 1
+      data.value.push(...Array.from({ length: 5 }, (_, i) => length + i))
+    },
+      {
+        distance: 10
+      },)
+
     return {
+      data,
+      elet,
       ubicaciones,
       contactos,
       searchValue,
@@ -448,9 +494,11 @@ export default defineComponent({
       closeDialogAddOrUpdateCustomerLocation,
       openDialogAddOrUpdateCustomerLocation,
       locationId,
-      getListCustomerAndSelected,
+      getListCustomersAndSelected,
       slidesImages,
       customerIdUpdate,
+      getListCustomerLocations,
+      getListCustomerContacts
     };
   },
 });

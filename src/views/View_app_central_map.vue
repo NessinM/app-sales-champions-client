@@ -1,5 +1,5 @@
 <template lang="pug">
-#map-box-geocom.h-full.w-full.relative(v-if="isUserLocationReady")
+#map-box-central.h-full.w-full.relative(v-if="isUserLocationReady")
   v-map-card-search-places(class="!absolute !left-5 !z-10 !top-5")
   v-map-button-current-location(class="!absolute !right-5 !z-10 !top-5")
 v-dialog(
@@ -36,7 +36,7 @@ export default defineComponent({
 
     const initMap = () => {
       const instanceMap = new mapboxgl.Map({
-        container: document.getElementById("map-box-geocom"), // container ID
+        container: document.getElementById("map-box-central"), // container ID
         style: "mapbox://styles/mapbox/streets-v12", // style URL
         // style: "mapbox://styles/mapbox/dark-v9", // style URL
         center: userLocation.value, // starting position [lng, lat]
