@@ -1,5 +1,7 @@
 import {
   mdiAccount,
+  mdiAccountCheck,
+  mdiAccountAlert,
   mdiAccountClockOutline,
   mdiAccountGroup,
   mdiFileTableBoxOutline,
@@ -75,10 +77,17 @@ import {
   mdiFilterVariant,
   mdiDomain,
   mdiAccountMultipleRemoveOutline,
+  mdiFormatListBulletedSquare,
+  mdiDatabaseSearch,
+  mdiDatabaseEyeOff,
 } from "@mdi/js";
 
 export default {
   mdiAccount,
+  mdiDatabaseEyeOff,
+  mdiDatabaseSearch,
+  mdiAccountCheck,
+  mdiFormatListBulletedSquare,
   mdiDomain,
   mdiAccountMultipleRemoveOutline,
   mdiMapMarkerOff,
@@ -154,4 +163,5 @@ export default {
   mdiFolderSearch,
   mdiShieldStarOutline,
   mdiAccountMultiplePlus,
+  mdiAccountAlert,
 };

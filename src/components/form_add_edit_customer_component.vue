@@ -2,15 +2,9 @@
 v-card-title.flex.items-center.py-4.mx-2
   span.font-extrabold.text-lg {{ customerId ? "Editar cliente" : "Nuevo cliente" }}
 v-card-text
-  v-card.mb-6.mx-2(v-if="customerId" color="primary" )
-    v-card-item
-      v-card-title
-        span.font-bold.text-lg {{ customer.tipo_documento }} - {{ customer.numero_documento }}
-      v-card-subtitle {{ customer.sub_sector || 'Sector no ingresado' }}
-
   v-form(ref="formRef")
     v-row(no-gutters)
-      v-col(v-if="!customerId" cols="12", lg="12", md="12", sm="12")
+      v-col(v-if="!customerId", cols="12", lg="12", md="12", sm="12")
         v-autocomplete.mx-2.text-slate-500(
           v-model="customer.tipo_documento",
           label="Tipo de documento",
@@ -24,7 +18,7 @@ v-card-text
           color="primary"
         )
       v-col(
-        v-if="!customerId"
+        v-if="!customerId",
         cols="12",
         :lg="customer.tipo_documento === 'RUC' ? 8 : 12",
         md="12",
@@ -79,7 +73,13 @@ v-card-text
           density="compact",
           color="primary"
         )
-      v-col(v-if="customerId && !isLoadingGetCustomerToEdit", cols="12", lg="12", md="12", sm="12")
+      v-col(
+        v-if="customerId && !isLoadingGetCustomerToEdit",
+        cols="12",
+        lg="12",
+        md="12",
+        sm="12"
+      )
         v-autocomplete.mx-2.text-slate-500(
           v-model="customer.sub_sector",
           label="Sector",
@@ -91,19 +91,40 @@ v-card-text
           density="compact",
           color="primary"
         )
-      v-col(v-if="customerId && !isLoadingGetCustomerToEdit" cols="12", lg="12", md="12", sm="12")
+      v-col(
+        v-if="customerId && !isLoadingGetCustomerToEdit",
+        cols="12",
+        lg="12",
+        md="12",
+        sm="12"
+      )
         v-autocomplete-list-customer-locations.mb-5(
           label="Seleccionar una ubicacion principal",
           :customer-location-id="customer.ubicacionId",
           :customer-id="customerId",
           @updated="getLocationSelected"
         )
-      v-col(v-if="customerId && !isLoadingGetCustomerToEdit" cols="12", lg="12", md="12", sm="12")
-        v-autocomplete-list-customer-contacts.mb-2(
+      v-col(
+        v-if="customerId && !isLoadingGetCustomerToEdit",
+        cols="12",
+        lg="12",
+        md="12",
+        sm="12"
+      )
+        v-autocomplete-list-customer-contacts.mb-5(
           label="Seleccionar un contacto principal",
           :customer-contact-id="customer.contactoId",
           :customer-id="customerId",
           @updated="getContactSelected"
+        )
+      v-col(v-if="customerId", cols="12", lg="12", md="12", sm="12")
+        v-text-field.mx-2.text-slate-500(
+          v-model="customer.codigo_sap",
+          disabled,
+          label="Codigo SAP",
+          variant="outlined",
+          density="compact",
+          color="primary"
         )
 .flex.pa-1.px-6.pb-6.mx-2(
   :class="{ 'flex-col': isMobile, 'justify-end': !isMobile }"
@@ -163,8 +184,9 @@ export default defineComponent({
       tipo_documento: "",
       numero_documento: "",
       razon_social: "",
-      contactoId: '',
-      ubicacionId: ''
+      contactoId: "",
+      ubicacionId: "",
+      codigo_sap: "",
     });
 
     onMounted(() => checkEditOrCreateCustomer());
@@ -191,7 +213,7 @@ export default defineComponent({
 
         customer.value.razon_social = responseSunat.nombre_o_razon_social;
         location.value.direccion = responseSunat.direccion_completa;
-        location.value.referencia_direccion = '';
+        location.value.referencia_direccion = "";
         location.value.tipo_via = responseSunat.tipo_de_via;
         location.value.calle_numero = responseSunat.numero;
         location.value.departamento = responseSunat.departamento;
@@ -265,7 +287,7 @@ export default defineComponent({
     };
 
     const checkEditOrCreateCustomer = async () => {
-      isLoadingGetCustomerToEdit.value = true
+      isLoadingGetCustomerToEdit.value = true;
       if (customerId.value) {
         try {
           const customerGet = await fetchGetOneCustomer(customerId.value);
@@ -275,14 +297,15 @@ export default defineComponent({
           customer.value.sub_sector = customerGet.sub_sector;
           customer.value.ubicacionId = customerGet.ubicacionId;
           customer.value.contactoId = customerGet.contactoId;
+          customer.value.codigo_sap = customerGet.codigo_sap;
         } catch (error) {
           notify({ type: "error", text: error.message });
         } finally {
-          isLoadingGetCustomerToEdit.value = false
+          isLoadingGetCustomerToEdit.value = false;
         }
       } else {
         customer.value.tipo_documento = "RUC";
-        isLoadingGetCustomerToEdit.value = false
+        isLoadingGetCustomerToEdit.value = false;
       }
     };
 
@@ -309,7 +332,7 @@ export default defineComponent({
       validateAndCreateCustomer,
       emitCloseComponent,
       getContactSelected,
-      getLocationSelected
+      getLocationSelected,
     };
   },
 });

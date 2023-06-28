@@ -5,50 +5,52 @@ export const enviroments = {
   API_ROUTE_MAP: import.meta.env.VITE_API_ROUTE_MAP ?? "no_definido",
   ACCESS_TOKEN_MAPBOX:
     import.meta.env.VITE_ACCESS_TOKEN_MAPBOX ?? "no_definido",
+  API_ROUTE_OCTOPUS: import.meta.env.VITE_API_ROUTE_OCTOPUS ?? "no_definido",
+  API_SECRET_OCTOPUS: import.meta.env.VITE_API_SECRET_OCTOPUS ?? "no_definido",
 };
 
 export const listSegments = [
   {
-    name : "Impresion",
-    value: "impresion"
+    name: "Impresion",
+    value: "impresion",
   },
   {
-    name : "Drones",
-    value: "drones"
+    name: "Drones",
+    value: "drones",
   },
   {
-    name : "Componentes",
-    value: "componentes"
+    name: "Componentes",
+    value: "componentes",
   },
   {
-    name : "Imagen",
-    value: "imagen"
+    name: "Imagen",
+    value: "imagen",
   },
   {
-    name : "Equipamiento",
-    value: "equipamiento"
+    name: "Equipamiento",
+    value: "equipamiento",
   },
   {
-    name : "Accesorios",
-    value: "accesorios"
+    name: "Accesorios",
+    value: "accesorios",
   },
   {
-    name : "Varios",
-    value: "varios"
+    name: "Varios",
+    value: "varios",
   },
   {
-    name : "Conectividad",
-    value: "conectividad"
+    name: "Conectividad",
+    value: "conectividad",
   },
   {
-    name : "Electricidad",
-    value: "electricidad"
+    name: "Electricidad",
+    value: "electricidad",
   },
   {
-    name : "Bienestar",
-    value: "bienestar"
+    name: "Bienestar",
+    value: "bienestar",
   },
-]
+];
 export const listReasonsForEvent = [
   {
     name: "Capacitación de producto",

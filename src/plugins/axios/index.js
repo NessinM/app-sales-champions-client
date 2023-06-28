@@ -1,13 +1,19 @@
 import axios from "axios";
 import { enviroments } from "@/helps/constants";
-// import { useAuthStore } from '@/store'
-// import { connectionError, validationError } from "@/helps/errors";
-
-// const { fetchHandleLogout } = useAuthStore()
 
 const API_ROUTE = axios.create({
   baseURL: enviroments.API_ROUTE,
   withCredentials: true,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  },
+});
+
+const API_OCTOPUS = axios.create({
+  baseURL: enviroments.API_ROUTE_OCTOPUS,
+  withCredentials: false,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -60,10 +66,14 @@ API_ROUTE.interceptors.response.use(
         return Promise.reject(_error);
       }
     } else {
-      // console.log(error);
       return Promise.reject(response.data);
     }
   }
 );
 
-export default { API_ROUTE, API_UPLOAD, API_MAP };
+export default {
+  API_ROUTE,
+  API_UPLOAD,
+  API_MAP,
+  API_OCTOPUS,
+};

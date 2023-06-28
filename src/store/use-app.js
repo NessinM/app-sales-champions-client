@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
+import { createTokenOctopus } from "@/helps/process";
 import http from "@/plugins/axios";
+// import jwt from "jsonwebtoken";
 
 export const useAppStore = defineStore("app-store", {
   state: () => ({
@@ -36,7 +38,9 @@ export const useAppStore = defineStore("app-store", {
   actions: {
     // customer
     async fetchGetListCustomers(payload = {}) {
-      const { data } = await http.API_ROUTE.get("/customer/", payload);
+      const { data } = await http.API_ROUTE.get("/customer/", {
+        params: payload,
+      });
       return data;
     },
     async fetchGetOneCustomer(customerId) {
@@ -59,6 +63,18 @@ export const useAppStore = defineStore("app-store", {
         `/customer/search/sunat/${document_number}`,
         {}
       );
+      return data;
+    },
+    async fetchGetCustomerOfSAP(documentNumber = "") {
+      var tokenOctopus = await createTokenOctopus("datacont", "nesyn");
+      const { data } = await http.API_OCTOPUS.get(`/cliente/obtener`, {
+        params: {
+          empresa: "datacont",
+          token: tokenOctopus,
+          filtro: documentNumber,
+          buscarPor: "codigoSapCliente",
+        },
+      });
       return data;
     },
 
