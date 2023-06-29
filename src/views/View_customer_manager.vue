@@ -134,17 +134,9 @@ v-row(no-gutters)
         span.font-extrabold.text-white Agregar nuevo cliente
     perfect-scrollbar.overflow-y-auto(
       ref="elCustomerList",
-      class="h-[calc(100vh-101px)]",
+      :class="isMobile ? `h-[calc(100vh-160px)]` : 'h-[calc(100vh-101px)]'",
       @ps-y-reach-end="getAllCustomers(true)"
     )
-      //- v-alert.mx-4.my-2(
-      //-   v-if="!customers.length && !isLoading",
-      //-   variant="tonal",
-      //-   density="compact",
-      //-   color="error"
-      //- )
-      //-   v-icon(start, size="20", icon="$mdiFolderSearch")
-      //-   small.text-xs.font-bold No existen datos coincidentes para esta busqueda
       v-list.mx-2(mandatory, color="primary", nav)
         v-list-item.py-2(
           v-for="(i, index) in customers",
@@ -206,10 +198,9 @@ v-row(no-gutters)
       v-card.d-flex.justify-center.flex-wrap.elevation-1(
         :disabled="isLoading",
         color="primary",
-        height="174",
-        :class="!isMobile ? 'ma-4' : ''"
+        :class="!isMobile ? 'ma-4 rounded-0' : 'rounded-lg'"
       )
-        v-container.flex
+        .flex.w-full.pa-4
           .flex
             v-list-item.px-2
               template(#prepend)
@@ -217,13 +208,13 @@ v-row(no-gutters)
                   v-if="customer.logo_corporativo",
                   color="background",
                   density="compact",
-                  size="70"
+                  size="65"
                 )
                   v-img(:src="customer.logo_corporativo")
                 v-square-avatar-of-text(
                   v-else,
                   :text="customer.razon_social",
-                  :avatar-size="70",
+                  :avatar-size="65",
                   text-size="2xl",
                   bg-color="white",
                   text-color="primary"
@@ -464,7 +455,6 @@ export default defineComponent({
     const searchValue = ref("");
     const panelActual = ref(1);
     const noMore = ref(false);
-    // const isScroll = ref(false);
 
     onMounted(() => getAllCustomers());
 
