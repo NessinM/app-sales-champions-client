@@ -20,7 +20,7 @@ v-autocomplete.mx-2.text-slate-500(
   template(#chip="{ item, props }")
     v-chip(
       v-bind="props",
-      rounded
+      rounded,
       color="primary",
       @click:close="onClickRemoveFromChip(item.raw.id, index)"
     )

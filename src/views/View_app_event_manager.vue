@@ -218,10 +218,7 @@ export default defineComponent({
 
     const updateEvent = async () => {
       try {
-        const event = await fetchUpdateEvent(customerIdUpdate.value);
-        /* eslint-disable */ console.log(
-          ...oo_oo(`13ebc2ac_1`, "event", event)
-        );
+        await fetchUpdateEvent(customerIdUpdate.value);
       } catch (error) {
         notify({ type: "error", text: error.message });
       }

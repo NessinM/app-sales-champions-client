@@ -1,6 +1,6 @@
 <template lang="pug">
 v-card-title.flex.items-center.px-6(
-  :class="{ 'bg-primary elevation-4 py-1': isMobile, 'py-5' : !isMobile }"
+  :class="{ 'bg-primary elevation-4 py-1': isMobile, 'py-5': !isMobile }"
 )
   v-btn.mr-3(
     v-if="isMobile",
@@ -14,7 +14,12 @@ v-card-title.flex.items-center.px-6(
 v-card-text(:class="isMobile ? '' : 'py-0'")
   v-form.mt-2(ref="formRef", :disabled="isLoading")
     v-row(no-gutters)
-      v-col(cols="12", :lg="customerLocationId ? 6 : 12", :md="customerLocationId ? 6 : 12", sm="12")
+      v-col(
+        cols="12",
+        :lg="customerLocationId ? 6 : 12",
+        :md="customerLocationId ? 6 : 12",
+        sm="12"
+      )
         v-text-field.mx-2.text-slate-500(
           v-model="customerLocation.titulo",
           :rules="validationForm.titulo",
@@ -23,7 +28,12 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           density="compact",
           color="primary"
         )
-      v-col(cols="12", :lg="customerLocationId ? 6 : 12", :md="customerLocationId ? 6 : 12", sm="12")
+      v-col(
+        cols="12",
+        :lg="customerLocationId ? 6 : 12",
+        :md="customerLocationId ? 6 : 12",
+        sm="12"
+      )
         v-text-field.mx-2.text-slate-500(
           v-model="customerLocation.direccion",
           :rules="validationForm.direccion",
@@ -80,7 +90,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           item-value="distrito",
           @update:model-value="($event) => changeOptionDepProvDist('distrito')"
         )
-      v-col(v-if="customerLocationId"  cols="12", lg="3", md="6", sm="12")
+      v-col(v-if="customerLocationId", cols="12", lg="3", md="6", sm="12")
         v-autocomplete.mx-2.text-slate-500(
           v-model="customerLocation.tipo_via",
           :rules="validationForm.tipo_via",
@@ -92,7 +102,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           density="compact",
           color="primary"
         )
-      v-col(v-if="customerLocationId"  cols="12", lg="3", md="6", sm="12")
+      v-col(v-if="customerLocationId", cols="12", lg="3", md="6", sm="12")
         v-text-field.mx-2.text-slate-500(
           v-model="customerLocation.calle_numero",
           label="Numero",
@@ -100,7 +110,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           density="compact",
           color="primary"
         )
-      v-col(v-if="customerLocationId"  cols="12", lg="6", md="6", sm="12")
+      v-col(v-if="customerLocationId", cols="12", lg="6", md="6", sm="12")
         v-text-field.mx-2.text-slate-500(
           v-model="customerLocation.numero_telefono",
           label="Numero de telefono",
@@ -108,7 +118,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           density="compact",
           color="primary"
         )
-      v-col(v-if="customerLocationId"  cols="12", lg="6", md="6", sm="12")
+      v-col(v-if="customerLocationId", cols="12", lg="6", md="6", sm="12")
         v-text-field.mx-2.text-slate-500(
           v-model="customerLocation.correo_electronico",
           label="Correo electronico",
@@ -117,36 +127,44 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           color="primary"
         )
     v-tabs.w-full(
-      v-if="customerLocationId"
-      v-model="tabsCustomer"
+      v-if="customerLocationId",
+      v-model="tabsCustomer",
       align-tabs="end",
       density="compact",
-      color="primary",
+      color="primary"
     )
       v-tab(:value="1")
         span.font-extrabold(class="text-[10px]") Imagenes
           span.mx-1(v-if="tabsCustomer === 2") ({{ filesTemporaryToUpload.length }})
-      v-tab(:value="2" :disabled="filesTemporaryToUpload.length >= 4")
-        span.font-extrabold(class="text-[10px]" ) Adjuntar
+      v-tab(:value="2", :disabled="filesTemporaryToUpload.length >= 4")
+        span.font-extrabold(class="text-[10px]") Adjuntar
     v-square-upload-customer-location.ma-2(
       v-if="filesTemporaryToUpload.length < 4 && customerLocationId && tabsCustomer === 2",
-      :accept="['image/png', 'image/jpg', 'image/jpeg']"
-      :multiple="true"
-      @load-image="getFilesLocations",
+      :accept="['image/png', 'image/jpg', 'image/jpeg']",
+      :multiple="true",
+      @load-image="getFilesLocations"
     )
-    v-row(v-if="customerLocationId && tabsCustomer === 1" no-gutters)
-      v-col( v-if="!filesTemporaryToUpload.length" cols="12" lg="12" md="12" sm="12",)
-        v-alert.mx-2.my-4(
-
-          variant="tonal",
-          density="compact",
-          color="orange"
-          )
-            v-icon(start, size="20", icon="$mdiFolderSearch")
-            small.text-xs.font-bold No existen imagenes relacionados para este cliente
-      v-col(v-for="(item, index) in filesTemporaryToUpload", :key="index", cols="12" lg="3" md="3" sm="12")
+    v-row(v-if="customerLocationId && tabsCustomer === 1", no-gutters)
+      v-col(
+        v-if="!filesTemporaryToUpload.length",
+        cols="12",
+        lg="12",
+        md="12",
+        sm="12"
+      )
+        v-alert.mx-2.my-4(variant="tonal", density="compact", color="orange")
+          v-icon(start, size="20", icon="$mdiFolderSearch")
+          small.text-xs.font-bold No existen imagenes relacionados para este cliente
+      v-col(
+        v-for="(item, index) in filesTemporaryToUpload",
+        :key="index",
+        cols="12",
+        lg="3",
+        md="3",
+        sm="12"
+      )
         v-square-preview-customer-location.my-4(
-          v-if="item.register && isLoadingRederImage"
+          v-if="item.register && isLoadingRederImage",
           :url-image="item.file"
         )
           v-btn.w-full(
@@ -157,7 +175,7 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
             v-icon.mx-1(icon="$mdiTrashCanOutline", size="20")
             span.font-extrabold.text-xs Eliminar
         v-square-preview-customer-location.my-4(
-          v-if="!item.register && isLoadingRederImage"
+          v-if="!item.register && isLoadingRederImage",
           :file-buffer="item.file"
         )
           v-btn.w-full(
@@ -264,7 +282,7 @@ export default defineComponent({
       imagen_dos: "",
       imagen_tres: "",
       imagen_cuatro: "",
-      es_fiscal: false
+      es_fiscal: false,
     });
 
     onMounted(() => checkEditOrCreateLocation());
@@ -275,8 +293,8 @@ export default defineComponent({
         if (valid) {
           isLoading.value = true;
           for (const [i, item] of filesTemporaryToUpload.value.entries()) {
-            const numberImage = i + 1
-            const { register, file } = item
+            const numberImage = i + 1;
+            const { register, file } = item;
             if (!register) {
               const { ruta } = await fetchSaveImageCustomersLocation(
                 "user-generic",
@@ -366,25 +384,36 @@ export default defineComponent({
     };
 
     const getFilesLocations = (files = []) => {
-      let filesList = []
-      if (filesTemporaryToUpload.value.length > countMaxFilesByCustomer.value) return notify({ type: "error", text: 'Solo puedes agregar 4 imagenes como maximo' });
-      if ((filesTemporaryToUpload.value.length + files.length) > countMaxFilesByCustomer.value) {
-        const countMissingFiles = countMaxFilesByCustomer.value - filesTemporaryToUpload.value.length
+      let filesList = [];
+      if (filesTemporaryToUpload.value.length > countMaxFilesByCustomer.value)
+        return notify({
+          type: "error",
+          text: "Solo puedes agregar 4 imagenes como maximo",
+        });
+      if (
+        filesTemporaryToUpload.value.length + files.length >
+        countMaxFilesByCustomer.value
+      ) {
+        const countMissingFiles =
+          countMaxFilesByCustomer.value - filesTemporaryToUpload.value.length;
         for (let i = 0; i < countMissingFiles; i++) {
           const e = files[i];
-          filesList.push(e)
+          filesList.push(e);
         }
-        notify({ type: 'info', text: `Solo se agregarón ${countMissingFiles} archivos de los ${files.length} que habias seleccionado` })
+        notify({
+          type: "info",
+          text: `Solo se agregarón ${countMissingFiles} archivos de los ${files.length} que habias seleccionado`,
+        });
       } else {
-        filesList = [...files]
+        filesList = [...files];
       }
 
       for (let i = 0; i < filesList.length; i++) {
         const element = filesList[i];
-        filesTemporaryToUpload.value.push({ register: false, file: element })
+        filesTemporaryToUpload.value.push({ register: false, file: element });
       }
 
-      tabsCustomer.value = 1
+      tabsCustomer.value = 1;
     };
 
     const emitCloseComponent = () => emit("close");
@@ -414,18 +443,45 @@ export default defineComponent({
           customerLocation.value.imagen_tres = location.imagen_tres;
           customerLocation.value.imagen_cuatro = location.imagen_cuatro;
 
-          [location.imagen_uno, location.imagen_dos, location.imagen_tres, location.imagen_cuatro].forEach((e) => {
+          [
+            location.imagen_uno,
+            location.imagen_dos,
+            location.imagen_tres,
+            location.imagen_cuatro,
+          ].forEach((e) => {
             if (e) {
-              filesTemporaryToUpload.value.push({ register: true, file: e })
+              filesTemporaryToUpload.value.push({ register: true, file: e });
             }
-          })
+          });
 
-          tabsCustomer.value = filesTemporaryToUpload.value.length > 0 ? 1 : 2
+          tabsCustomer.value = filesTemporaryToUpload.value.length > 0 ? 1 : 2;
+
+          for (var i = 0; i < ubigeous.length; i++) {
+            if (!departamentos.value.includes(ubigeous[i].departamento)) {
+              departamentos.value.push(ubigeous[i].departamento);
+            }
+
+            if (
+              customerLocation.value.departamento ===
+                ubigeous[i].departamento &&
+              !provincias.value.includes(ubigeous[i].provincia)
+            ) {
+              provincias.value.push(ubigeous[i].provincia);
+            }
+
+            if (
+              customerLocation.value.provincia === ubigeous[i].provincia &&
+              !distritos.value.includes(ubigeous[i].distrito)
+            ) {
+              distritos.value.push(ubigeous[i].distrito);
+            }
+          }
         } catch (error) {
           notify({ type: "error", text: error.message });
         }
       } else {
         customerLocation.value.tipo_via = typesOfVia[0].value;
+
         for (let i = 0; i < ubigeous.length; i++) {
           if (!departamentos.value.includes(ubigeous[i].departamento)) {
             departamentos.value.push(ubigeous[i].departamento);
@@ -435,27 +491,26 @@ export default defineComponent({
     };
 
     const deleteImagenTempCustomerLocation = async (register, index) => {
-
-      isLoadingRederImage.value = false
+      isLoadingRederImage.value = false;
       if (!register) {
-        filesTemporaryToUpload.value.splice(index, 1)
+        filesTemporaryToUpload.value.splice(index, 1);
         // eslint-disable-next-line vue/valid-next-tick
-        await nextTick(() => isLoadingRederImage.value = true)
-        if (!filesTemporaryToUpload.value.length) tabsCustomer.value = 2
-        return
+        await nextTick(() => (isLoadingRederImage.value = true));
+        if (!filesTemporaryToUpload.value.length) tabsCustomer.value = 2;
+        return;
       }
 
-      let idImage = index + 1
+      let idImage = index + 1;
 
       if (idImage === 1) customerLocation.value.imagen_uno = "";
       else if (idImage === 2) customerLocation.value.imagen_dos = "";
       else if (idImage === 3) customerLocation.value.imagen_tres = "";
       else if (idImage === 4) customerLocation.value.imagen_cuatro = "";
 
-      filesTemporaryToUpload.value.splice(index, 1)
+      filesTemporaryToUpload.value.splice(index, 1);
       // eslint-disable-next-line vue/valid-next-tick
-      await nextTick(() => isLoadingRederImage.value = true)
-      if (!filesTemporaryToUpload.value.length) tabsCustomer.value = 2
+      await nextTick(() => (isLoadingRederImage.value = true));
+      if (!filesTemporaryToUpload.value.length) tabsCustomer.value = 2;
     };
 
     return {
@@ -475,7 +530,7 @@ export default defineComponent({
       filesTemporaryToUpload,
       deleteImagenTempCustomerLocation,
       isLoading,
-      isLoadingRederImage
+      isLoadingRederImage,
     };
   },
 });

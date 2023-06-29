@@ -8,7 +8,6 @@ export const enviroments = {
   API_ROUTE_OCTOPUS: import.meta.env.VITE_API_ROUTE_OCTOPUS ?? "no_definido",
   API_SECRET_OCTOPUS: import.meta.env.VITE_API_SECRET_OCTOPUS ?? "no_definido",
 };
-
 export const listSegments = [
   {
     name: "Impresion",
@@ -93,7 +92,6 @@ export const listReasonsForEvent = [
     value: "activacion en punto de venta",
   },
 ];
-
 export const listPositionsInCompany = [
   {
     name: "Director ejecutivo",
@@ -136,7 +134,6 @@ export const listPositionsInCompany = [
     value: "gerente de logistica",
   },
 ];
-
 export const listTypesOfTaxpayers = [
   {
     name: "Registro unico de contribuyentes (RUC)",
@@ -155,7 +152,6 @@ export const listTypesOfTaxpayers = [
     value: "PAS",
   },
 ];
-
 export const typesOfVia = [
   {
     name: "Avenida",
@@ -174,98 +170,96 @@ export const typesOfVia = [
     value: "CA",
   },
 ];
-
 export const businessSectorsList = [
   {
-    name: "Banca y seguros",
-    value: "banca y seguros",
+    name: "Distribuidor",
+    value: "distribuidor",
   },
   {
-    name: "Centros fotograficos",
-    value: "centros fotograficos",
-  },
-  {
-    name: "Club wide format",
-    value: "club wide format",
-  },
-  {
-    name: "Comercios minoristas",
-    value: "comercios minoristas",
-  },
-  {
-    name: "Construccion e inmobiliarias",
-    value: "construccion e inmobiliarias",
-  },
-  {
-    name: "Copistas",
-    value: "copistas",
-  },
-  {
-    name: "Cuentas estrategicas",
-    value: "cuentas estrategicas",
-  },
-  {
-    name: "Distribuidor premium",
-    value: "Distribuidor premium",
-  },
-  {
-    name: "Distribuidor top",
-    value: "Distribuidor top",
-  },
-  {
-    name: "Distribuidores",
-    value: "distribuidores",
-  },
-  {
-    name: "Educacion",
-    value: "educacion",
-  },
-  {
-    name: "Gobierno",
-    value: "gobierno",
-  },
-  {
-    name: "Imprentas y servicios de impresion",
-    value: "imprentas y servicios de impresion",
-  },
-  {
-    name: "Logistica",
-    value: "logistica",
-  },
-  {
-    name: "Manufactura y comercio",
-    value: "manufactura y comercio",
-  },
-  {
-    name: "Mayorista",
-    value: "mayorista",
-  },
-  {
-    name: "Mineria, energia y petroleo",
-    value: "mineria, energia y petroleo",
-  },
-  {
-    name: "Notarias, servicios contables y consultoras",
-    value: "notarias, servicios contables y consultoras",
+    name: "Distribuidor coorporativo",
+    value: "distribuidor coorporativo",
   },
   {
     name: "Retail",
     value: "retail",
   },
-  {
-    name: "Salud y farmaceutica",
-    value: "salud y farmaceutica",
-  },
-  {
-    name: "Telecomunicaciones y medios de comunicacion",
-    value: "telecomunicaciones y medios de comunicacion",
-  },
-  {
-    name: "Usuario final",
-    value: "usuario final",
-  },
+  // {
+  //   name: "Banca y seguros",
+  //   value: "banca y seguros",
+  // },
+  // {
+  //   name: "Centros fotograficos",
+  //   value: "centros fotograficos",
+  // },
+  // {
+  //   name: "Club wide format",
+  //   value: "club wide format",
+  // },
+  // {
+  //   name: "Comercios minoristas",
+  //   value: "comercios minoristas",
+  // },
+  // {
+  //   name: "Construccion e inmobiliarias",
+  //   value: "construccion e inmobiliarias",
+  // },
+  // {
+  //   name: "Copistas",
+  //   value: "copistas",
+  // },
+  // {
+  //   name: "Cuentas estrategicas",
+  //   value: "cuentas estrategicas",
+  // },
+  // {
+  //   name: "Distribuidor premium",
+  //   value: "Distribuidor premium",
+  // },
+  // {
+  //   name: "Educacion",
+  //   value: "educacion",
+  // },
+  // {
+  //   name: "Gobierno",
+  //   value: "gobierno",
+  // },
+  // {
+  //   name: "Imprentas y servicios de impresion",
+  //   value: "imprentas y servicios de impresion",
+  // },
+  // {
+  //   name: "Logistica",
+  //   value: "logistica",
+  // },
+  // {
+  //   name: "Manufactura y comercio",
+  //   value: "manufactura y comercio",
+  // },
+  // {
+  //   name: "Mayorista",
+  //   value: "mayorista",
+  // },
+  // {
+  //   name: "Mineria, energia y petroleo",
+  //   value: "mineria, energia y petroleo",
+  // },
+  // {
+  //   name: "Notarias, servicios contables y consultoras",
+  //   value: "notarias, servicios contables y consultoras",
+  // },
+  // {
+  //   name: "Salud y farmaceutica",
+  //   value: "salud y farmaceutica",
+  // },
+  // {
+  //   name: "Telecomunicaciones y medios de comunicacion",
+  //   value: "telecomunicaciones y medios de comunicacion",
+  // },
+  // {
+  //   name: "Usuario final",
+  //   value: "usuario final",
+  // },
 ];
-
 export const ubigeous = [
   {
     ubigeo: "010517",

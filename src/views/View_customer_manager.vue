@@ -37,9 +37,11 @@ v-dialog(
               :value="i.direccion",
               density="compact"
             )
-          .flex-1
+          v-list.py-0(
+            :bg-color="i.direccion === customerMatchInSap?.direccion ? 'primary' : 'background'"
+          )
             v-list-item-title
-              .font-extrabold.text-xs {{ i.codigoCliente }} - {{ i.codigoSapCliente }} - {{ i.descripcionCliente }}
+              .font-extrabold.text-xs {{ i.codigoSapCliente }} - {{ i.descripcionCliente }}
             v-list-item-subtitle
               small.text-xs {{ i.direccion }}
     .flex.pa-4
@@ -130,20 +132,19 @@ v-row(no-gutters)
       )
         v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
         span.font-extrabold.text-white Agregar nuevo cliente
-
     perfect-scrollbar.overflow-y-auto(
       ref="elCustomerList",
       class="h-[calc(100vh-101px)]",
       @ps-y-reach-end="getAllCustomers(true)"
     )
-      v-alert.mx-4.my-2(
-        v-if="!customers.length && !isLoading",
-        variant="tonal",
-        density="compact",
-        color="error"
-      )
-        v-icon(start, size="20", icon="$mdiFolderSearch")
-        small.text-xs.font-bold No existen datos coincidentes para esta busqueda
+      //- v-alert.mx-4.my-2(
+      //-   v-if="!customers.length && !isLoading",
+      //-   variant="tonal",
+      //-   density="compact",
+      //-   color="error"
+      //- )
+      //-   v-icon(start, size="20", icon="$mdiFolderSearch")
+      //-   small.text-xs.font-bold No existen datos coincidentes para esta busqueda
       v-list.mx-2(mandatory, color="primary", nav)
         v-list-item.py-2(
           v-for="(i, index) in customers",
@@ -177,17 +178,17 @@ v-row(no-gutters)
             v-chip(v-if="!i.codigo_sap", label="", color="grey", size="small")
               v-icon.mr-1(icon="$mdiAccountAlert", size="12", color="grey")
               small.text-xs.font-bold Nuevo
-      .flex.mx-6.mb-6.mt-2(v-if="noMore")
-        v-alert(variant="tonal", density="compact", color="error")
-          v-icon(start, size="20", icon="$mdiFolderSearch")
-          small.text-xs.font-bold No existen mas resultados
-      .flex.flex-col.pa-8.items-center(v-if="isLoading && !noMore")
+      .flex.flex-col.pa-2.items-center(v-if="isLoading")
         v-progress-circular.mt-2(
           color="primary",
           indeterminate,
           rounded,
           height="5"
         )
+      .flex.mx-4.mb-6(v-if="noMore && !isLoading")
+        v-alert(variant="tonal", density="compact", color="error")
+          v-icon(start, size="20", icon="$mdiFolderSearch")
+          small.text-xs.font-bold No existen mas resultados para esta busqueda
   v-col(
     cols="12",
     lg="9",
@@ -201,11 +202,12 @@ v-row(no-gutters)
       )
         v-icon.text-slate-300(start, size="90", icon="$mdiAccountArrowLeft")
         small.text-slate-300.text-md.font-semibold.my-2 Seleccione un usuario del panel lateral izquierdo
-    .pa-4(v-if="customer")
-      v-card.pt-4.px-4.d-flex.justify-center.flex-wrap.elevation-1.mb-4(
+    div(v-if="customer")
+      v-card.d-flex.justify-center.flex-wrap.elevation-1(
         :disabled="isLoading",
         color="primary",
-        height="190"
+        height="174",
+        :class="!isMobile ? 'ma-4' : ''"
       )
         v-container.flex
           .flex
@@ -297,7 +299,10 @@ v-row(no-gutters)
           v-tab(:value="2")
             span.font-extrabold(class="text-[10px]") Contactos
               span.ml-1(v-if="contactos.length") ({{ contactos.length }})
-      perfect-scrollbar(v-if="panelActual === 1", class="h-[calc(100vh-241px)]")
+      perfect-scrollbar.overflow-y-auto.px-4.pb-4(
+        v-if="panelActual === 1",
+        class="h-[calc(100vh-208px)]"
+      )
         .items-center.flex.justify-center.h-full(v-if="!ubicaciones.length")
           .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
             class="h-1/3 w-1/2"
@@ -349,13 +354,13 @@ v-row(no-gutters)
                         )
                           v-icon(start="", icon="$mdiMapMarker")
                           span.font-extrabold(class="text-[10px]") Fiscal
-                v-list-item.py-4(
+                v-list-item.py-2(
                   @click="openDialogAddOrUpdateCustomerLocation(l.id)"
                 )
                   v-list-item-title
-                    strong.font-extrabold.text-xs {{ l.direccion }}
+                    strong.font-extrabold.text-md {{ l.titulo }}
                   v-list-item-subtitle
-                    span.font-bold.text-xs {{ l.distrito }} - {{ l.provincia }} - {{ l.departamento }}
+                    span.font-bold.text-md {{ l.direccion }}
                   template(#append="")
                     v-btn(
                       icon,
@@ -364,7 +369,10 @@ v-row(no-gutters)
                       @click="() => {}"
                     )
                       v-icon(icon="$mdiDotsVertical", size="25", color="grey")
-      perfect-scrollbar(v-if="panelActual === 2", class="h-[calc(100vh-241px)]")
+      perfect-scrollbar.overflow-y-auto.px-4.pb-4(
+        v-if="panelActual === 2",
+        class="h-[calc(100vh-208px)]"
+      )
         .items-center.flex.justify-center.h-full(v-if="!contactos.length")
           .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
             class="h-1/3 w-1/2"
@@ -389,7 +397,7 @@ v-row(no-gutters)
                 :elevation="isHovering ? 3 : 1",
                 v-bind="props",
                 height="228",
-                color="white",
+                color="background",
                 :disabled="isLoading"
               )
                 .flex.items-center.justify-center.h-full.flex-col
@@ -413,6 +421,7 @@ import { computed, defineComponent, onMounted, ref } from "vue";
 import { useAppStore, useThemeStore } from "@/store";
 import { useDisplay } from "vuetify";
 import { notify } from "@kyvg/vue3-notification";
+import { useDebounceFn } from "@vueuse/core";
 import SquareAvatarOfTextComponent from "@/components/square_avatar_of_text_component.vue";
 import FormAddOrEditCustomerComponent from "@/components/form_add_edit_customer_component.vue";
 import FormAddOrEditCustomerLocationComponent from "@/components/form_add_edit_customer_location_component.vue";
@@ -473,7 +482,33 @@ export default defineComponent({
       }
     };
 
+    const searchListOfCustomersByTerm = useDebounceFn(
+      async () => {
+        if (!searchValue.value) return getAllCustomers();
+
+        try {
+          isLoading.value = true;
+          customer.value = null;
+          ubicaciones.value = [];
+          contactos.value = [];
+          noMore.value = true;
+          const records = await fetchGetListCustomers({
+            search: searchValue.value,
+          });
+          console.log("records", records);
+          customers.value = records;
+        } catch (error) {
+          notify({ type: "error", text: error.message });
+        } finally {
+          isLoading.value = false;
+        }
+      },
+      300,
+      { maxWait: 5000 }
+    );
+
     const getAllCustomers = async (isScroll = false) => {
+      console.log("entro getAllCustomers...");
       if (!isScroll) {
         customers.value = [];
         ubicaciones.value = [];
@@ -502,18 +537,38 @@ export default defineComponent({
           const element = records[r];
           customers.value.push(element);
         }
+        // try {
+        //   isLoading.value = true;
+        //   let records = [];
+        //   if (searchValue.value) {
+        //     noMore.value = true;
+        //     records = await fetchGetListCustomers({
+        //       search: searchValue.value,
+        //     });
+        //     customers.value = records;
+        //   } else {
+        //     records = await fetchGetListCustomers({
+        //       sort: "DESC",
+        //       sortColumn: "fecha_modificacion",
+        //       countRecords: 20,
+        //       countRecordsShown: customers.value.length,
+        //     });
+        //     if (!records.length) {
+        //       noMore.value = true;
+        //       return;
+        //     }
+
+        //     for (let r = 0; r < records.length; r++) {
+        //       const element = records[r];
+        //       customers.value.push(element);
+        //     }
+        //   }
       } catch (error) {
         notify({ type: "error", text: error.message });
       } finally {
         isLoading.value = false;
-        // isScroll.value = false;
       }
     };
-
-    // const fetchByScroll = (isScroll = false) => {
-    //   isScroll.value = isScroll;
-    //   getAllCustomers();
-    // };
 
     const getListCustomerLocations = async () => {
       try {
@@ -573,8 +628,8 @@ export default defineComponent({
     };
 
     const getListCustomersAndSelected = async (idEmmited) => {
-      // isScroll.value = false;
-      await getAllCustomers();
+      if (searchValue.value) await searchListOfCustomersByTerm();
+      else await getAllCustomers();
       const position = customers.value.findIndex((e) => e.id === idEmmited);
       actionSelectedCustomer(position);
     };
@@ -634,27 +689,10 @@ export default defineComponent({
     const parseDocumentNumberToSapCode = () => {
       let sapcode = `C${customer.value.numero_documento}`;
 
-      if (customer.value.tipo_documento === "DNI") sapcode = `C000${sapcode}`;
+      if (customer.value.tipo_documento === "DNI")
+        sapcode = `C000${customer.value.numero_documento}`;
 
       return sapcode;
-    };
-
-    const searchListOfCustomersByTerm = async () => {
-      if (!searchValue.value) return;
-
-      try {
-        isLoading.value = true;
-        customers.value = [];
-        const records = await fetchGetListCustomers({
-          search: searchValue.value,
-        });
-        console.log("records", records);
-        customers.value = records;
-      } catch (error) {
-        notify({ type: "error", text: error.message });
-      } finally {
-        isLoading.value = false;
-      }
     };
 
     return {

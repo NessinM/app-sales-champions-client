@@ -180,6 +180,7 @@ export default defineComponent({
     const isLoadingGetCustomerToEdit = ref(false);
     const isLoadingGetSunat = ref(false);
     const formRef = ref(null);
+
     const customer = ref({
       tipo_documento: "",
       numero_documento: "",

@@ -14,12 +14,12 @@ v-card-title.flex.items-center.pb-0.pt-4.px-6(
     density="compact",
     align-tabs="end"
   )
-    v-tab(:value="1")
-      span.text-xs.font-bold Acciones
-    v-tab(:value="2")
-      span.text-xs.font-bold Resumen
     v-tab(:value="3")
       span.text-xs.font-bold Detalles
+    v-tab(:value="2")
+      span.text-xs.font-bold Resumen
+    v-tab(:value="1")
+      span.text-xs.font-bold Acciones
 v-card-text(v-if="!isLoadingGetEvent")
   div(v-if="tabEdit === 1")
     v-row.pt-2.mb-4(v-if="eventId")
@@ -53,7 +53,7 @@ v-card-text(v-if="!isLoadingGetEvent")
               v-icon(icon="$mdiRayEndArrow", size="55", color="white")
               span.text-md.font-extrabold.text-white Marcar salida
               span.text-xs.font-normal.text-white {{ fecha_salida }}
-  v-card(v-if="tabEdit === 2" flat :disabled="fecha_salida")
+  v-card(v-if="tabEdit === 2", flat, :disabled="fecha_salida")
     v-form(ref="formRef")
       v-row(no-gutters)
         v-col(cols="12", lg="12", md="12", sm="12")
@@ -125,7 +125,7 @@ v-card-text(v-if="!isLoadingGetEvent")
             row-height="25",
             shaped=""
           )
-  v-card(v-if="tabEdit === 3" flat :disabled="fecha_salida")
+  v-card(v-if="tabEdit === 3", flat, :disabled="fecha_salida")
     v-row(no-gutters)
       v-col(cols="12", lg="6", md="6", sm="12")
         v-autocomplete.mx-2.text-slate-500.my-2(
@@ -196,7 +196,7 @@ v-divider
   v-btn.ml-2.font-bold(
     color="success",
     :rounded="5",
-    :disabled="fecha_salida"
+    :disabled="fecha_salida",
     @click="validateAndCreateCustomer()"
   )
     small.text-xs.font-bold.text-white {{ eventId ? "Guardar cambios" : "Crear evento" }}
@@ -215,7 +215,7 @@ v-divider
   v-btn.ml-2.font-bold(
     color="success",
     :rounded="5",
-    :disabled="fecha_salida"
+    :disabled="fecha_salida",
     @click="guardarSegmentos()"
   )
     small.text-xs.font-bold.text-white Guardar detalles
@@ -329,15 +329,15 @@ export default defineComponent({
         };
         const event = await fetchUpdateEvent(eventId.value, objEvent[type]);
 
-        if (type === 'llegada') {
+        if (type === "llegada") {
           fecha_llegada.value = moment(event.fecha_llegada).format(
             "DD/MM/YYYY HH:mm"
           );
-        } else if (type === 'salida') {
+        } else if (type === "salida") {
           fecha_salida.value = moment(event.fecha_salida).format(
             "DD/MM/YYYY HH:mm"
           );
-          emit('close')
+          emit("close");
         }
         console.log("event", event);
         notify({ type: "success", text: "La accion se marco correctamente" });

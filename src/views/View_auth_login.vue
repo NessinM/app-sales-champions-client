@@ -113,11 +113,19 @@ export default defineComponent({
 
     const registerUser = async () => {
       try {
+        // const values = {
+        //   nombre: "Pedro Osorio Soliz",
+        //   email: "psoliz@datacont.com",
+        //   password: "12345678",
+        //   passwordConfirm: "12345678",
+        //   perfil: "jefe",
+        // };
         const values = {
-          nombre: "Nesyn Alvarado Bedoya",
+          nombre: "Nesyn Meomer Alvarado Bedoya",
           email: "nalvarado@datacont.com",
           password: "12345678",
           passwordConfirm: "12345678",
+          perfil: "jefe",
         };
         await fetchHandleUserRegister(values);
       } catch (error) {
