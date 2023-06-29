@@ -146,13 +146,15 @@ v-row(no-gutters)
           @click="actionSelectedCustomer(index)"
         )
           template(#prepend)
-            v-avatar(v-if="i.logo_corporativo", color="background", :size="32")
+            v-avatar(v-if="i.logo_corporativo", color="background", :size="35")
               v-img(:src="i.logo_corporativo")
             v-square-avatar-of-text(
               v-else,
               :text="i.razon_social",
               text-size="xs",
-              :avatar-size="32"
+              :avatar-size="35",
+              variant="tonal",
+              text-color="primary"
             )
           v-list-item-title
             small.font-extrabold {{ i.razon_social }}
@@ -200,7 +202,7 @@ v-row(no-gutters)
         color="primary",
         :class="!isMobile ? 'ma-4 rounded-0' : 'rounded-lg'"
       )
-        .flex.w-full.pa-4
+        .flex.w-full.pa-3
           .flex
             v-list-item.px-2
               template(#prepend)
@@ -225,7 +227,7 @@ v-row(no-gutters)
                 span.text-md {{ customer.numero_documento }} -
                 span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
               template(#append)
-                v-btn(
+                v-btn.mx-4(
                   icon="$mdiPencil",
                   @click="openDialogAddOrUpdateCustomer(customer?.id)"
                 )
@@ -236,8 +238,8 @@ v-row(no-gutters)
               cols="auto"
             )
               v-card.mr-4(
-                width="120",
-                height="105",
+                width="110",
+                height="90",
                 color="white",
                 @click="openDialogValidCustomerInSAP()"
               )
@@ -250,8 +252,8 @@ v-row(no-gutters)
                   span.text-xs.font-extrabold Buscar en SAP
             v-col.text-center(v-if="panelActual === 1", cols="auto")
               v-card(
-                width="120",
-                height="105",
+                width="110",
+                height="90",
                 color="white",
                 @click="openDialogAddOrUpdateCustomerLocation()"
               )
@@ -264,8 +266,8 @@ v-row(no-gutters)
                   span.text-xs.font-extrabold Nueva ubicacion
             v-col.text-center(v-if="panelActual === 2", cols="auto")
               v-card(
-                width="120",
-                height="105",
+                width="110",
+                height="90",
                 color="white",
                 @click="openDialogAddOrUpdateCustomerContact()"
               )
@@ -305,8 +307,8 @@ v-row(no-gutters)
             v-for="(l, index) in ubicaciones",
             :key="index",
             cols="12",
-            lg="4",
-            md="6",
+            lg="3",
+            md="4",
             sm="12"
           )
             v-hover(v-slot="{ isHovering, props }")
@@ -316,7 +318,7 @@ v-row(no-gutters)
                 :disabled="isLoading"
               )
                 v-carousel(
-                  height="180",
+                  height="150",
                   :hide-delimiters="false",
                   hide-delimiter-background,
                   :show-arrows="false",
@@ -334,32 +336,39 @@ v-row(no-gutters)
                       @click="openDialogAddOrUpdateCustomerLocation(l.id)"
                     )
                       v-img.align-start.text-white.text-end(
-                        height="180",
+                        height="150",
                         :src="slide",
                         gradient="to bottom, rgba(0,0,0,.1), #fff",
                         cover=""
                       )
                         v-btn.ma-4(
                           v-if="l.id === customer.ubicacionId",
-                          color="primary"
+                          color="primary",
+                          rounded,
+                          size="small"
                         )
                           v-icon(start="", icon="$mdiMapMarker")
                           span.font-extrabold(class="text-[10px]") Fiscal
-                v-list-item.py-2(
-                  @click="openDialogAddOrUpdateCustomerLocation(l.id)"
-                )
-                  v-list-item-title
-                    strong.font-extrabold.text-md {{ l.titulo }}
-                  v-list-item-subtitle
-                    span.font-bold.text-md {{ l.direccion }}
-                  template(#append="")
-                    v-btn(
-                      icon,
-                      variant="text",
-                      density="comfortable",
-                      @click="() => {}"
-                    )
-                      v-icon(icon="$mdiDotsVertical", size="25", color="grey")
+                v-list.py-0
+                  v-list-item.py-3(
+                    @click="openDialogAddOrUpdateCustomerLocation(l.id)"
+                  )
+                    v-list-item-title
+                      strong.font-extrabold.text-xs {{ l.titulo }}
+                    v-list-item-subtitle
+                      span.font-bold.text-xs {{ l.direccion }}
+                    template(#append="")
+                      v-btn(
+                        icon,
+                        variant="text",
+                        density="comfortable",
+                        @click="() => {}"
+                      )
+                        v-icon(
+                          icon="$mdiDotsVertical",
+                          size="25",
+                          color="grey"
+                        )
       perfect-scrollbar.overflow-y-auto.px-4.pb-4(
         v-if="panelActual === 2",
         class="h-[calc(100vh-208px)]"
@@ -379,8 +388,8 @@ v-row(no-gutters)
             v-for="(c, index) in contactos",
             :key="index",
             cols="12",
-            lg="4",
-            md="6",
+            lg="3",
+            md="4",
             sm="12"
           )
             v-hover(v-slot="{ isHovering, props }")
@@ -637,7 +646,7 @@ export default defineComponent({
       if (imagen_cuatro) slides.push(imagen_cuatro);
 
       if (!slides.length)
-        slides.push("/public/assets/placeholder-location-image.jpg");
+        slides.push("/public/assets/placeholder-location-image.png");
       return slides;
     };
 

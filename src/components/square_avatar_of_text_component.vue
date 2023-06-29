@@ -1,5 +1,10 @@
 <template lang="pug">
-v-avatar(:color="bgColor", density="compact", :size="avatarSize")
+v-avatar(
+  :color="bgColor",
+  density="compact",
+  :variant="variant",
+  :size="avatarSize"
+)
   span.font-extrabold(:class="`text-${textColor} text-${textSize}`") {{ valueAvatar }}
 </template>
 
@@ -28,6 +33,20 @@ export default defineComponent({
     bgColor: {
       type: String,
       default: "primary",
+    },
+    variant: {
+      type: String,
+      default: "elevated",
+      validator(value) {
+        return [
+          "text",
+          "flat",
+          "elevated",
+          "tonal",
+          "outlined",
+          "plain",
+        ].includes(value);
+      },
     },
   },
   setup(props) {
