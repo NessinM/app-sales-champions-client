@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { createTokenOctopus } from "@/helps/process";
 import http from "@/plugins/axios";
-// import jwt from "jsonwebtoken";
 
 export const useAppStore = defineStore("app-store", {
   state: () => ({
