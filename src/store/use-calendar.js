@@ -13,6 +13,7 @@ export const useCalendarStore = defineStore("calendar-store", {
     format: "DD/MM/YYYY",
     events: [],
     isLoadingGetEvents: false,
+    showNonWorkingDays: true,
   }),
   getters: {},
   actions: {
@@ -52,23 +53,25 @@ export const useCalendarStore = defineStore("calendar-store", {
         }
       } else {
         this.startDate = moment(this.date, this.format)
-          .startOf(this.type)
-          .format(this.format);
+        .startOf(this.type)
+        .format(this.format);
         this.endDate = moment(this.startDate, this.format)
-          .endOf(this.type)
-          .format(this.format);
+        .endOf(this.type)
+        .format(this.format);
 
         const startDatePrevMonth = moment(this.startDate, this.format).subtract(
           1,
           "month"
-        );
+          );
 
-        const firstDayOfMonth = moment(this.startDate, this.format).day();
-        const lastDateOfLastMonth = startDatePrevMonth.daysInMonth();
+          const firstDayOfMonth = moment(this.startDate, this.format).day();
+          const lastDateOfLastMonth = startDatePrevMonth.daysInMonth();
 
-        for (let i = firstDayOfMonth; i > 0; i--) {
-          const day = lastDateOfLastMonth - i + 1;
-          this.pushDateToDates(
+          for (let i = firstDayOfMonth; i > 0; i--) {
+            const day = lastDateOfLastMonth - i + 1;
+                // let dayOfWeek = startMoment.weekday()
+                // if (!this.showNonWorkingDays && (dayOfWeek !== 0  && dayOfWeek !== 6))
+            this.pushDateToDates(
             `${day}/${startDatePrevMonth.format("MM/YYYY")}`,
             true
           );

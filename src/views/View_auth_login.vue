@@ -95,7 +95,7 @@ export default defineComponent({
     const isTypePassword = ref(true);
     const isLoading = ref(false);
     const form = ref({
-      email: "nalvarado@datacont.com",
+      email: "psoliz@datacont.com",
       password: "12345678",
     });
 
