@@ -13,7 +13,8 @@ export const useCalendarStore = defineStore("calendar-store", {
     format: "DD/MM/YYYY",
     events: [],
     isLoadingGetEvents: false,
-    showNonWorkingDays: true,
+    showSundayAndSaturday: true,
+    titleForDate: "",
   }),
   getters: {},
   actions: {
@@ -30,7 +31,7 @@ export const useCalendarStore = defineStore("calendar-store", {
       };
       this.dates.push(newDate);
     },
-    setDatesByTypeCalendary() {
+    async setDatesByTypeCalendary() {
       this.dates = [];
 
       if (this.type === "day") {
@@ -48,39 +49,53 @@ export const useCalendarStore = defineStore("calendar-store", {
         let startMoment = moment(this.startDate, this.format);
 
         while (startMoment <= moment(this.endDate, this.format)) {
-          this.pushDateToDates(startMoment.format(this.format), false);
+          let dayOfWeek = startMoment.weekday();
+          if (
+            this.showSundayAndSaturday ||
+            (!this.showSundayAndSaturday && dayOfWeek !== 0 && dayOfWeek !== 6)
+          ) {
+            this.pushDateToDates(startMoment.format(this.format), false);
+          }
           startMoment.add(1, "day");
         }
       } else {
         this.startDate = moment(this.date, this.format)
-        .startOf(this.type)
-        .format(this.format);
+          .startOf(this.type)
+          .format(this.format);
         this.endDate = moment(this.startDate, this.format)
-        .endOf(this.type)
-        .format(this.format);
+          .endOf(this.type)
+          .format(this.format);
 
         const startDatePrevMonth = moment(this.startDate, this.format).subtract(
           1,
           "month"
-          );
+        );
 
-          const firstDayOfMonth = moment(this.startDate, this.format).day();
-          const lastDateOfLastMonth = startDatePrevMonth.daysInMonth();
+        const firstDayOfMonth = moment(this.startDate, this.format).day();
+        const lastDateOfLastMonth = startDatePrevMonth.daysInMonth();
 
-          for (let i = firstDayOfMonth; i > 0; i--) {
-            const day = lastDateOfLastMonth - i + 1;
-                // let dayOfWeek = startMoment.weekday()
-                // if (!this.showNonWorkingDays && (dayOfWeek !== 0  && dayOfWeek !== 6))
-            this.pushDateToDates(
-            `${day}/${startDatePrevMonth.format("MM/YYYY")}`,
-            true
-          );
+        for (let i = firstDayOfMonth; i > 0; i--) {
+          const day = lastDateOfLastMonth - i + 1;
+          const dateLt = `${day}/${startDatePrevMonth.format("MM/YYYY")}`;
+          let dayOfWeek = moment(dateLt, this.format).weekday();
+          if (
+            this.showSundayAndSaturday ||
+            (!this.showSundayAndSaturday && dayOfWeek !== 0 && dayOfWeek !== 6)
+          ) {
+            this.pushDateToDates(dateLt, true);
+          }
         }
 
         let startMoment = moment(this.startDate, this.format);
 
         while (startMoment <= moment(this.endDate, this.format)) {
-          this.pushDateToDates(startMoment.format(this.format), false);
+          let dayOfWeek = startMoment.weekday();
+          if (
+            this.showSundayAndSaturday ||
+            (!this.showSundayAndSaturday && dayOfWeek !== 0 && dayOfWeek !== 6)
+          ) {
+            this.pushDateToDates(startMoment.format(this.format), false);
+          }
           startMoment.add(1, "day");
         }
 
@@ -92,14 +107,19 @@ export const useCalendarStore = defineStore("calendar-store", {
 
         for (let i = firstDayOfCurrentMonth; i < 6; i++) {
           const day = i - firstDayOfCurrentMonth + 1;
-          this.pushDateToDates(
-            `${day}/${startDateNextMonth.format("MM/YYYY")}`,
-            true
-          );
+          const dateLt = `${day}/${startDateNextMonth.format("MM/YYYY")}`;
+          let dayOfWeek = moment(dateLt, this.format).weekday();
+
+          if (
+            this.showSundayAndSaturday ||
+            (!this.showSundayAndSaturday && dayOfWeek !== 0 && dayOfWeek !== 6)
+          ) {
+            this.pushDateToDates(dateLt, true);
+          }
         }
       }
-
-      this.fetchGetListEvents({
+      this.setTitleForDate();
+      await this.fetchGetListEvents({
         startDate: this.startDate,
         endDate: this.endDate,
       });
@@ -144,6 +164,20 @@ export const useCalendarStore = defineStore("calendar-store", {
       }
 
       this.isLoadingGetEvents = false;
+    },
+    setTitleForDate() {
+      let text = "";
+      const dateMoment = moment(this.date, this.format);
+      if (this.type === "day") text = dateMoment.format("ddd  DD' MMMM, YYYY ");
+      else if (this.type === "week") {
+        const startWeekMoment = moment(this.startDate, this.format);
+        const endWeekMoment = moment(this.endDate, this.format);
+        text = `${startWeekMoment.format("DD' MMM")} - ${endWeekMoment.format(
+          "DD' MMM YYYY"
+        )}`;
+      } else text = dateMoment.format("MMMM, YYYY");
+
+      this.titleForDate = text;
     },
   },
 });

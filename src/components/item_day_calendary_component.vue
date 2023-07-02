@@ -1,30 +1,27 @@
 <template lang="pug">
-v-hover(v-slot="{ isHovering, props }")
-  v-card.relative.flex.flex-col.group.relative(
-    v-bind="props",
-    rounded="0"
-    :class="{ 'bg-background': day.inactive }",
-    :color="day.isToday ? 'primary' : ''",
-    :variant="day.isToday ? 'tonal' : 'elevated'",
-    :height="type === 'month' ? '130' : '100%'",
-    flat
-  )
-    v-btn.ma-1(color="white", icon, flat, size="x-small", @click="() => {}")
-      span.mx-2.my-1.text-xs.font-extrabold(
-        :class="{ 'text-primary': !day.inactive, '!text-slate-400': day.inactive }"
-      ) {{ day.day }}
-    .flex.flex-col.px-1.py-1.overflow-auto
-      v-card.flex.items-center.flex-shrink-0.pa-2.mb-1.elevation-1(
-        v-for="(e, index2) in day.events",
-        :key="index2",
-        :color="day.inactive ? 'white' : 'background'",
-        class="text-[10px]",
-        @click="() => {}"
-      )
-        .flex
-          span.ml-2.font-medium.leading-none {{ parseTimeByDateStartEvent(e.fecha_inicio) }}
-          span.ml-2.font-extrabold.leading-none.truncate.uppercase {{isHovering}} {{ e.asunto }}
-        span.ml-2.font-bold.leading-none.truncate.uppercase.text-primary COMPAÑIA FOOD RETAIL S.A.C.
+v-card.relative.flex.flex-col.group.relative(
+  rounded="0",
+  :class="{ 'bg-background': day.inactive }",
+  :color="day.isToday ? 'primary' : ''",
+  :variant="day.isToday ? 'tonal' : 'elevated'",
+  flat
+)
+  v-btn.ma-1(color="white", icon, size="small", flat, @click="() => {}")
+    span.mx-2.my-1.text-sm.font-extrabold(
+      :class="{ 'text-primary': !day.inactive, '!text-slate-400': day.inactive }"
+    ) {{ day.day }}
+  .flex.flex-col.px-1.py-1.overflow-auto
+    v-card.flex.items-center.flex-shrink-0.pa-2.mb-1.elevation-1(
+      v-for="(e, index2) in day.events",
+      :key="index2",
+      :color="day.inactive ? 'white' : 'background'",
+      class="text-[10px]",
+      @click="() => {}"
+    )
+      .flex
+        span.ml-2.font-medium.leading-none {{ parseTimeByDateStartEvent(e.fecha_inicio) }}
+        span.ml-2.font-extrabold.leading-none.truncate.uppercase {{ e.asunto }}
+      span.ml-2.font-bold.leading-none.truncate.uppercase.text-primary COMPAÑIA FOOD RETAIL S.A.C.
 </template>
 <script>
 import { storeToRefs } from "pinia";
@@ -50,6 +47,7 @@ export default defineComponent({
     return {
       parseTimeByDateStartEvent,
       type,
+      // events,
     };
   },
 });
