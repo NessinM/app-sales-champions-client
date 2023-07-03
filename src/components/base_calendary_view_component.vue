@@ -88,5 +88,5 @@
       span.flex.items-center.justify-center.w-10.h-10.text-gray-700.rounded-lg
         | 6
       span.flex.items-center.justify-center.w-10.h-10.text-gray-700.rounded-lg
-        | 7
+        | 7.
 </template>

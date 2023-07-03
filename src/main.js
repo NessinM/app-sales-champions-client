@@ -26,8 +26,17 @@ mapboxgl.accessToken =
 
 moment.locale("es", es);
 moment.updateLocale("es", {
+  // weekdays: [
+  //   "Monday",
+  //   "Tuesday",
+  //   "Wednesday",
+  //   "Thursday",
+  //   "Friday",
+  //   "Saturday",
+  //   "Sunday",
+  // ],
   week: {
-    dow: 7,
+    dow: 1,
   },
 });
 

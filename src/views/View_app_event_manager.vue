@@ -1,80 +1,99 @@
 <template lang="pug">
-v-row.h-full(no-gutters)
-  v-col(cols="12", lg="2", md="3", sm="12")
-    base-calendary-view
-  v-col(cols="12", lg="10", md="9", sm="12")
-    .flex.flex-grow.overflow-auto.h-full
-      perfect-scrollbar.flex.flex-col.flex-grow.overflow-y-auto
-        .sticky.top-0.z-10.bg-white.pb-2.elevation-2
-          .flex.items-center.py-2
-            .flex.ml-2
-              v-btn.mx-1(
-                icon="$mdiChevronLeft",
-                size="small",
-                @click="moveDirectionCalendary('prev')"
-              )
-              v-btn.mx-1(
-                icon="$mdiChevronRight",
-                size="small",
-                @click="moveDirectionCalendary('next')"
-              )
-            h2.ml-2.text-xl.font-extrabold.leading-none {{ titleForDate }}
-            v-spacer
-            //- v-switch(
-            //-   v-model="showSundayAndSaturday",
-            //-   color="primary",
-            //-   label="Mostrar sabados y domingos",
-            //-   @change="setDatesByTypeCalendary"
-            //- )
-            v-btn-toggle.mx-4.elevation-1(
-              v-model="type",
-              rounded="xl",
-              color="primary",
-              variant="elevated",
-              bg-color="background",
-              group="",
-              density="compact",
-              @click="setDatesByTypeCalendary()"
-            )
-              v-btn(value="day")
-                span.font-extrabold.text-xs Dia
-              v-btn(value="week")
-                span.font-extrabold.text-xs Semana
-              v-btn(value="month")
-                span.font-extrabold.text-xs Mes
-          .grid.grid-cols-7.mt-1.text-center(
-            :class="{ '!grid-cols-5': !showSundayAndSaturday }"
-          )
-            .pl-1.text-md.font-extrabold(v-if="showSundayAndSaturday") Domingo
-            .pl-1.text-md.font-extrabold Lunes
-            .pl-1.text-md.font-extrabold Martes
-            .pl-1.text-md.font-extrabold Miercoles
-            .pl-1.text-md.font-extrabold Jueves
-            .pl-1.text-md.font-extrabold Viernes
-            .pl-1.text-md.font-extrabold(v-if="showSundayAndSaturday") Sabado
-        .grid.flex-grow.w-full.grid-cols-7.grid-rows-7.gap-px.pt-px.bg-slate-200(
-          :class="{ '!grid-cols-5': !showSundayAndSaturday }"
+perfect-scrollbar.flex.flex-col.overflow-y-auto(
+  :class="isMobile ? 'h-[calc(100vh-56px)]' : 'h-screen'"
+)
+  .sticky.top-0.z-10(:class="{ 'bg-primary elevation-3': isMobile }")
+    .flex.items-center.py-2.justify-center
+      .flex.ml-2
+        v-btn.mx-1(
+          icon="$mdiChevronLeft",
+          size="small",
+          @click="moveDirectionCalendary('prev')"
         )
-          item-day-of-calendary(
-            v-for="(i, index) in dates",
-            :key="index",
-            :day="i"
-          )
+        v-btn.mx-1(
+          icon="$mdiChevronRight",
+          size="small",
+          @click="moveDirectionCalendary('next')"
+        )
+      h2.ml-2.text-xl.font-extrabold.leading-none(
+        :class="{ '!text-sm': isMobile }"
+      ) {{ titleForDate }}
+      v-spacer
+      v-autocomplete.mx-2(
+        v-if="isMobile",
+        v-model="type",
+        :items="types",
+        label="",
+        variant="outlined",
+        density="compact",
+        color="white",
+        item-title="nombre",
+        item-value="value",
+        hide-details,
+        @update:model-value="setDatesByTypeCalendary()"
+      )
+      v-btn-toggle.mx-2.elevation-1(
+        v-else,
+        v-model="type",
+        rounded="xl",
+        color="primary",
+        variant="elevated",
+        bg-color="background",
+        group="",
+        density="compact",
+        @click="setDatesByTypeCalendary()"
+      )
+        v-btn(
+          v-for="(t, index) in types",
+          :key="index",
+          :value="t.value",
+          size="small"
+        )
+          span.font-extrabold.text-xs {{ t.nombre }}
+    .grid.grid-cols-7.text-center.py-4(
+      v-if="type === 'month' || type === 'week'",
+      :class="{ '!grid-cols-5': !showSundayAndSaturday }"
+    )
+      .pl-1.text-md.font-extrabold(
+        v-if="showSundayAndSaturday && type === 'month'",
+        :class="{ '!text-xs': isMobile }"
+      ) {{ isMobile ? "Dom." : "Domingo" }}
+      .pl-1.text-md.font-extrabold(:class="{ '!text-xs': isMobile }") {{ isMobile ? "Lun." : "Lunes" }}
+      .pl-1.text-md.font-extrabold(:class="{ '!text-xs': isMobile }") {{ isMobile ? "Mar." : "Martes" }}
+      .pl-1.text-md.font-extrabold(:class="{ '!text-xs': isMobile }") {{ isMobile ? "Mie." : "Miercoles" }}
+      .pl-1.text-md.font-extrabold(:class="{ '!text-xs': isMobile }") {{ isMobile ? "Jue." : "Jueves" }}
+      .pl-1.text-md.font-extrabold(:class="{ '!text-xs': isMobile }") {{ isMobile ? "Vie." : "Viernes" }}
+      .pl-1.text-md.font-extrabold(
+        v-if="showSundayAndSaturday",
+        :class="{ '!text-xs': isMobile }"
+      )
+        | {{ isMobile ? "Sab." : "Sabado" }}
+      .pl-1.text-md.font-extrabold(
+        v-if="showSundayAndSaturday && type === 'week'",
+        :class="{ '!text-xs': isMobile }"
+      )
+        | {{ isMobile ? "Dom." : "Domingo" }}
+  .grid.flex-grow.w-full.gap-px.pt-px(
+    :class="{ 'grid-cols-5 bg-slate-200': !showSundayAndSaturday, 'grid-cols-7 bg-slate-200': showSundayAndSaturday, '!grid-cols-1': type === 'day' }"
+  )
+    item-day-of-calendary(v-for="(i, index) in dates", :key="index", :day="i")
 </template>
 <script>
-import { defineComponent, onMounted } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { useCalendarStore } from "@/store";
 import { storeToRefs } from "pinia";
 // import moment from "moment";
 import ItemDayOfCalendary from "@/components/item_day_calendary_component.vue";
-import BaseCalendaryView from "@/components/base_calendary_view_component.vue";
+import { useDisplay } from "vuetify/lib/framework.mjs";
+// import BaseCalendaryView from "@/components/base_calendary_view_component.vue";
 export default defineComponent({
   name: "ViewAppEventManager",
   components: {
     "item-day-of-calendary": ItemDayOfCalendary,
-    "base-calendary-view": BaseCalendaryView,
+    // "base-calendary-view": BaseCalendaryView,
   },
   setup() {
+    const { mobile } = useDisplay();
     const storeCalendar = useCalendarStore();
     const { setDatesByTypeCalendary, moveDirectionCalendary } = storeCalendar;
     const {
@@ -83,12 +102,14 @@ export default defineComponent({
       startDate,
       endDate,
       type,
-      events,
       showSundayAndSaturday,
       titleForDate,
+      types,
     } = storeToRefs(storeCalendar);
 
     onMounted(() => setDatesByTypeCalendary());
+
+    const isMobile = computed(() => mobile.value);
 
     return {
       dates,
@@ -98,9 +119,10 @@ export default defineComponent({
       type,
       setDatesByTypeCalendary,
       moveDirectionCalendary,
-      events,
       showSundayAndSaturday,
       titleForDate,
+      isMobile,
+      types,
     };
   },
 });

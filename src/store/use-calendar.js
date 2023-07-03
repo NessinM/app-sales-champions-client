@@ -9,7 +9,20 @@ export const useCalendarStore = defineStore("calendar-store", {
     startDate: "",
     endDate: "",
     dates: [],
-    types: ["day", "week", "month"],
+    types: [
+      {
+        nombre: "Dia",
+        value: "day",
+      },
+      {
+        nombre: "Semana",
+        value: "week",
+      },
+      {
+        nombre: "Mes",
+        value: "month",
+      },
+    ],
     format: "DD/MM/YYYY",
     events: [],
     isLoadingGetEvents: false,
@@ -36,8 +49,8 @@ export const useCalendarStore = defineStore("calendar-store", {
 
       if (this.type === "day") {
         this.pushDateToDates(this.date);
-        this.startDate = "";
-        this.endDate = "";
+        this.startDate = moment(this.date, this.format).format(this.format);
+        this.endDate = moment(this.date, this.format).format(this.format);
       } else if (this.type === "week") {
         this.startDate = moment(this.date, this.format)
           .startOf(this.type)
@@ -52,7 +65,7 @@ export const useCalendarStore = defineStore("calendar-store", {
           let dayOfWeek = startMoment.weekday();
           if (
             this.showSundayAndSaturday ||
-            (!this.showSundayAndSaturday && dayOfWeek !== 0 && dayOfWeek !== 6)
+            (!this.showSundayAndSaturday && dayOfWeek !== 5 && dayOfWeek !== 6)
           ) {
             this.pushDateToDates(startMoment.format(this.format), false);
           }
@@ -80,7 +93,7 @@ export const useCalendarStore = defineStore("calendar-store", {
           let dayOfWeek = moment(dateLt, this.format).weekday();
           if (
             this.showSundayAndSaturday ||
-            (!this.showSundayAndSaturday && dayOfWeek !== 0 && dayOfWeek !== 6)
+            (!this.showSundayAndSaturday && dayOfWeek !== 5 && dayOfWeek !== 6)
           ) {
             this.pushDateToDates(dateLt, true);
           }
@@ -92,7 +105,7 @@ export const useCalendarStore = defineStore("calendar-store", {
           let dayOfWeek = startMoment.weekday();
           if (
             this.showSundayAndSaturday ||
-            (!this.showSundayAndSaturday && dayOfWeek !== 0 && dayOfWeek !== 6)
+            (!this.showSundayAndSaturday && dayOfWeek !== 5 && dayOfWeek !== 6)
           ) {
             this.pushDateToDates(startMoment.format(this.format), false);
           }
@@ -112,7 +125,7 @@ export const useCalendarStore = defineStore("calendar-store", {
 
           if (
             this.showSundayAndSaturday ||
-            (!this.showSundayAndSaturday && dayOfWeek !== 0 && dayOfWeek !== 6)
+            (!this.showSundayAndSaturday && dayOfWeek !== 5 && dayOfWeek !== 6)
           ) {
             this.pushDateToDates(dateLt, true);
           }
