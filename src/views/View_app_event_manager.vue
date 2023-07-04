@@ -83,7 +83,7 @@ import { computed, defineComponent, onMounted } from "vue";
 import { useCalendarStore } from "@/store";
 import { storeToRefs } from "pinia";
 // import moment from "moment";
-import ItemDayOfCalendary from "@/components/item_day_calendary_component.vue";
+import ItemDayOfCalendary from "@/components/calendary_day_container_component.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 // import BaseCalendaryView from "@/components/base_calendary_view_component.vue";
 export default defineComponent({

@@ -23,7 +23,7 @@ v-autocomplete.mx-2.text-slate-500(
       color="primary",
       @click:close="onClickRemoveFromChip(item.raw.id, index)"
     )
-      small.font-extrabold {{ item.raw.razon_social }}
+      span.font-extrabold.text-xs {{ item.raw.razon_social }}
   template(#item="{ item, index }")
     v-list-item.py-2(
       :active="list[index].active",
@@ -96,13 +96,6 @@ export default defineComponent({
         } else {
           console.log("customerId.value", customerId.value);
           selected.value.push(customerId.value);
-          // if (customerId.value) {
-          //   const positionCustomer = list.value.findIndex(
-          //     (e) => e.id === customerId.value
-          //   );
-          //   console.log("positionCustomer", positionCustomer);
-          //   if (positionCustomer === -1) return;
-          // }
         }
       } catch (error) {
         notify({ type: "error", text: error.message });

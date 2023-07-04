@@ -43,6 +43,7 @@ v-hover(v-slot="{ isHovering, props }")
         v-icon(icon="$mdiPlus", color="white", size="20")
 
     .flex.flex-col.px-2.overflow-auto.absolute.top-15.w-full(v-if="!isMobile")
+      v-list-events-by-day(:date='day.full ')
       v-card.flex.items-center.flex-shrink-0.mb-1.elevation-1(
         v-for="(e, index) in day.events",
         :key="index",
@@ -54,16 +55,15 @@ v-hover(v-slot="{ isHovering, props }")
             template(#prepend="")
               v-avatar(
                 :color="e.fecha_salida ? 'success' : 'warning'",
-                ,
-                size="18"
+                size="17"
               )
             v-list-item-title
               .flex(class="text-[10px]")
                 span.leading-none.font-extrabold {{ parseTimeByDateStartEvent(e.fecha_inicio) }}
-                span.ml-2.font-bold.leading-none.truncate.uppercase COMPAÑIA FOOD RETAIL S.A.C.
+                span.ml-2.font-bold.leading-none.truncate.uppercase {{  e.cliente.razon_social }}
             v-list-item-subtitle
-              span.font-normal.text-xs
-                | {{ e.asunto }}
+              span.font-medium.text-xs
+                | {{ e.autor.nombre }}
     .pa-2.bottom-0.w-full.flex.justify-center.items-center(
       v-if="day.events.length > 1",
       class="!absolute"
@@ -96,10 +96,12 @@ import { useCalendarStore } from "@/store";
 import moment from "moment";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import FormAddOrEditEventComponent from "@/components/form_add_edit_event_component.vue";
+import CalendaryListEventsByDay from "@/components/calendary_list_events_by_day_component.vue";
 export default defineComponent({
   name: "ItemDayCalendaryComponent",
   components: {
     "v-form-add-edit-event": FormAddOrEditEventComponent,
+    "v-list-events-by-day": CalendaryListEventsByDay,
   },
   props: {
     day: {

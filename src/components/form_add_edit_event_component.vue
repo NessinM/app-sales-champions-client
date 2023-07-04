@@ -610,9 +610,9 @@ export default defineComponent({
               "DD/MM/YYYY HH:mm"
             );
           }
-          event.value.clienteId = response.clienteId;
-          event.value.contactoId = response.contactoId;
-          event.value.ubicacionId = response.ubicacionId;
+          event.value.clienteId = response.cliente.id;
+          event.value.contactoId = response.contacto.id;
+          event.value.ubicacionId = response.ubicacion.id;
           event.value.fecha_inicio = moment(response.fecha_inicio).format(
             "YYYY-MM-DDTHH:mm"
           );
