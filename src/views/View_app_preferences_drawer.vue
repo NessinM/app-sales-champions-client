@@ -2,23 +2,19 @@
 v-navigation-drawer.elevation-6(
   key="navigation-theme-settings",
   v-model="is_active_drawer_theme_settings",
-  width="350",
+  width="400",
   location="right",
   temporary,
   floating,
   :color="isThemeDark ? 'background' : 'white'"
 )
   //- :scrim="false"
-  v-card.pa-1.elevation-4(
+  v-card.pa-1.elevation-4.mb-2(
     rounded="0",
-    flat,
     :height="getThemePreference.height_navbar_app",
     color="primary"
   )
-    v-list-item(
-      title="PERSONALIZADOR DE TEMA",
-      subtitle="Personalizar y previsualizar en tiempo real"
-    )
+    v-list-item
       template(#append)
         v-btn(
           variant="text",
@@ -27,10 +23,11 @@ v-navigation-drawer.elevation-6(
           icon="$mdiClose",
           @click="toggleDrawerPreference()"
         )
-  //- perfect-scrollbar( class="h-[calc(100vh-70px)]" )
-  //- perfect-scrollbar
+      v-list-item-title
+        span.font-bold.text-lg Preferencias
+
   v-list.pa-2(:bg-color="isThemeDark ? 'background' : 'white'")
-    v-list-item.mb-2
+    v-list-item
       v-list-item-title
         | Temas
       v-item-group.p-1.mt-2.flex(
@@ -120,39 +117,38 @@ v-navigation-drawer.elevation-6(
           density="comfortable",
           :class="isThemeDark ? '' : 'text-slate-400'"
         )
-
     v-list-item
       v-list-item-title
-        | Transición en paginas
-      v-select.my-4.m-1(
-        v-model="getThemePreference.router_transition",
-        density="compact",
-        :class="isThemeDark ? '' : 'text-slate-400'",
-        color="primary",
-        variant="solo",
-        item-title="name",
-        item-value="value",
-        :items="getTransitionsRouterView",
-        label
-      )
+        | Sabados y domingos en la agenda
+      template(#append)
+        v-switch(
+          v-model="showSundayAndSaturday",
+          color="primary",
+          hide-details,
+          density="comfortable",
+          :class="isThemeDark ? '' : 'text-slate-400'",
+          @update:model-value="setDatesByTypeCalendary"
+        )
 </template>
 <script>
 import { defineComponent, computed } from "vue";
-import { useThemeStore } from "@/store";
+import { useThemeStore, useCalendarStore } from "@/store";
 import { storeToRefs } from "pinia";
 import { useTheme } from "vuetify/lib/framework.mjs";
 export default defineComponent({
   name: "ViewAppPreferences",
   setup() {
     const storeThemeApp = useThemeStore();
+    const storeCalendary = useCalendarStore();
+    const { setDatesByTypeCalendary } = storeCalendary;
 
     const {
       is_active_drawer_theme_settings,
       getThemePreference,
       geThemesDark,
       geThemesLight,
-      getTransitionsRouterView,
     } = storeToRefs(storeThemeApp);
+    const { showSundayAndSaturday } = storeToRefs(storeCalendary);
 
     const theme = useTheme();
 
@@ -172,8 +168,9 @@ export default defineComponent({
       geThemesDark,
       geThemesLight,
       setNameCurrentTheme,
-      getTransitionsRouterView,
       isThemeDark,
+      showSundayAndSaturday,
+      setDatesByTypeCalendary,
     };
   },
 });

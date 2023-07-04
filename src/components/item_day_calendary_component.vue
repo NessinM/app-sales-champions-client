@@ -3,7 +3,7 @@ v-dialog(
   v-model="isShowDialogAddOrUpdateEvent",
   :fullscreen="isMobile",
   scrollable,
-  :width="isMobile ? '100%' : '500'"
+  :width="isMobile ? '100%' : '50%'"
 )
   v-card(:rounded="isMobile ? 0 : 5")
     v-form-add-edit-event(
@@ -23,7 +23,7 @@ v-hover(v-slot="{ isHovering, props }")
     v-bind="props",
     @click="openDialogListEvents(day.events)"
   )
-    .ma-2.flex.items.items-center
+    .ma-1.flex.items.items-center
       v-btn(color="white", icon, size="small", flat, @click="() => {}")
         span.ma-2.font-extrabold(
           :class="{ 'text-primary': !day.inactive, '!text-slate-400': day.inactive, 'text-sm': !isMobile, 'text-xs': isMobile }"
@@ -41,27 +41,57 @@ v-hover(v-slot="{ isHovering, props }")
         @click="openDialogAddEvent('')"
       )
         v-icon(icon="$mdiPlus", color="white", size="20")
-    .flex.flex-col.px-2.py-1.overflow-auto(v-if="!isMobile")
-      v-card.flex.items-center.flex-shrink-0.pa-2.mb-1.elevation-1(
+
+    .flex.flex-col.px-2.overflow-auto.absolute.top-15.w-full(v-if="!isMobile")
+      v-card.flex.items-center.flex-shrink-0.mb-1.elevation-1(
         v-for="(e, index) in day.events",
         :key="index",
         :color="day.inactive ? 'white' : 'background'",
-        class="text-[10px]",
         @click="openDialogAddEvent(e.id)"
       )
-        .flex
-          span.ml-2.font-medium.leading-none {{ parseTimeByDateStartEvent(e.fecha_inicio) }}
-          span.ml-2.font-extrabold.leading-none.truncate.uppercase {{ e.asunto }}
-        span.ml-2.font-bold.leading-none.truncate.uppercase.text-primary COMPAÑIA FOOD RETAIL S.A.C.
-    .flex.flex-col.px-2.py-1.overflow-auto(v-else)
-      small.text-slate-400.text-blue.font-extrabold(
-        v-if="day.events.length",
-        class="text-[11px]"
-      ) {{ day.events.length }} items
+        v-list.py-0
+          v-list-item.px-2
+            template(#prepend="")
+              v-avatar(
+                :color="e.fecha_salida ? 'success' : 'warning'",
+                ,
+                size="18"
+              )
+            v-list-item-title
+              .flex(class="text-[10px]")
+                span.leading-none.font-extrabold {{ parseTimeByDateStartEvent(e.fecha_inicio) }}
+                span.ml-2.font-bold.leading-none.truncate.uppercase COMPAÑIA FOOD RETAIL S.A.C.
+            v-list-item-subtitle
+              span.font-normal.text-xs
+                | {{ e.asunto }}
+    .pa-2.bottom-0.w-full.flex.justify-center.items-center(
+      v-if="day.events.length > 1",
+      class="!absolute"
+    )
+      .text-center
+        v-menu(
+          :close-on-content-click="false",
+          location="end",
+          transition="slide-x-transition"
+        )
+          template(#activator="{ props: menu }")
+            v-tooltip(location="top")
+              template(#activator="{ props: tooltip }")
+                v-btn.elevation-3(
+                  size="small",
+                  theme="blue",
+                  color="primary",
+                  v-bind="mergeProps(menu, tooltip)"
+                )
+                  small.font-extrabold(class="text-[10px]") • • •
+              span.text-xs.font-bold {{ day.events.length }} eventos mas - {{ day.full }}
+          v-list
+            v-list-item
+              v-list-item-title Prueba opcion
 </template>
 <script>
 import { storeToRefs } from "pinia";
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, ref, mergeProps } from "vue";
 import { useCalendarStore } from "@/store";
 import moment from "moment";
 import { useDisplay } from "vuetify/lib/framework.mjs";
@@ -114,6 +144,7 @@ export default defineComponent({
       eventIdUpdate,
       getListCustomerAndSelected,
       openDialogListEvents,
+      mergeProps,
     };
   },
 });
