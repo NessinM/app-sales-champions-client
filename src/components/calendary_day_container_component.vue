@@ -1,17 +1,4 @@
 <template lang="pug">
-v-dialog(
-  v-model="isShowDialogAddOrUpdateEvent",
-  :fullscreen="isMobile",
-  scrollable,
-  :width="isMobile ? '100%' : '50%'"
-)
-  v-card(:rounded="isMobile ? 0 : 5")
-    v-form-add-edit-event(
-      :event-id="eventIdUpdate",
-      @created="getListCustomerAndSelected",
-      @updated="getListCustomerAndSelected",
-      @close="closeDialogAddCustomer"
-    )
 
 v-hover(v-slot="{ isHovering, props }")
   v-card.relative.flex.flex-col.group(
@@ -21,7 +8,6 @@ v-hover(v-slot="{ isHovering, props }")
     :variant="day.isToday ? 'tonal' : 'elevated'",
     flat,
     v-bind="props",
-    @click="openDialogListEvents(day.events)"
   )
     .ma-1.flex.items.items-center
       v-btn(color="white", icon, size="small", flat, @click="() => {}")
@@ -43,65 +29,39 @@ v-hover(v-slot="{ isHovering, props }")
         v-icon(icon="$mdiPlus", color="white", size="20")
 
     .flex.flex-col.px-2.overflow-auto.absolute.top-15.w-full(v-if="!isMobile")
-      v-list-events-by-day(:date='day.full ')
-      v-card.flex.items-center.flex-shrink-0.mb-1.elevation-1(
-        v-for="(e, index) in day.events",
-        :key="index",
-        :color="day.inactive ? 'white' : 'background'",
-        @click="openDialogAddEvent(e.id)"
+      v-item-event-in-day(
+        v-for="(e, i) in day.events",
+        :key="i",
+        :event="e"
       )
-        v-list.py-0
-          v-list-item.px-2
-            template(#prepend="")
-              v-avatar(
-                :color="e.fecha_salida ? 'success' : 'warning'",
-                size="17"
-              )
-            v-list-item-title
-              .flex(class="text-[10px]")
-                span.leading-none.font-extrabold {{ parseTimeByDateStartEvent(e.fecha_inicio) }}
-                span.ml-2.font-bold.leading-none.truncate.uppercase {{  e.cliente.razon_social }}
-            v-list-item-subtitle
-              span.font-medium.text-xs
-                | {{ e.autor.nombre }}
+
     .pa-2.bottom-0.w-full.flex.justify-center.items-center(
       v-if="day.events.length > 1",
       class="!absolute"
     )
-      .text-center
-        v-menu(
-          :close-on-content-click="false",
-          location="end",
-          transition="slide-x-transition"
-        )
-          template(#activator="{ props: menu }")
-            v-tooltip(location="top")
-              template(#activator="{ props: tooltip }")
-                v-btn.elevation-3(
-                  size="small",
-                  theme="blue",
-                  color="primary",
-                  v-bind="mergeProps(menu, tooltip)"
-                )
-                  small.font-extrabold(class="text-[10px]") • • •
-              span.text-xs.font-bold {{ day.events.length }} eventos mas - {{ day.full }}
-          v-list
-            v-list-item
-              v-list-item-title Prueba opcion
+      v-tooltip(location="top")
+        template(#activator="{ props : tooltip }")
+          v-btn.elevation-3(
+            size="small",
+            theme="blue",
+            color="primary",
+            v-bind="tooltip"
+            @click="openDialogListEvents()"
+          )
+            small.font-extrabold(class="text-[10px]") • • •
+        span.text-xs.font-bold {{ day.events.length }} eventos mas - {{ day.full }}
 </template>
 <script>
 import { storeToRefs } from "pinia";
-import { computed, defineComponent, ref, mergeProps } from "vue";
+import { computed, defineComponent, mergeProps } from "vue";
 import { useCalendarStore } from "@/store";
 import moment from "moment";
 import { useDisplay } from "vuetify/lib/framework.mjs";
-import FormAddOrEditEventComponent from "@/components/form_add_edit_event_component.vue";
-import CalendaryListEventsByDay from "@/components/calendary_list_events_by_day_component.vue";
+import CalendaryItemEventInDay from "@/components/calendary_item_event_in_day_component.vue";
 export default defineComponent({
   name: "ItemDayCalendaryComponent",
   components: {
-    "v-form-add-edit-event": FormAddOrEditEventComponent,
-    "v-list-events-by-day": CalendaryListEventsByDay,
+    "v-item-event-in-day": CalendaryItemEventInDay,
   },
   props: {
     day: {
@@ -114,36 +74,23 @@ export default defineComponent({
     const { type } = storeToRefs(storeCalendar);
     const { mobile } = useDisplay();
 
-    const isShowDialogAddOrUpdateEvent = ref(false);
-    const eventIdUpdate = ref("");
     const parseTimeByDateStartEvent = (startDate) =>
       moment(startDate.fecha_inicio).format("HH:mm");
 
     const isMobile = computed(() => mobile.value);
-
-    const closeDialogAddCustomer = () =>
-      (isShowDialogAddOrUpdateEvent.value = false);
-    const openDialogAddEvent = (eventId) => {
-      eventIdUpdate.value = eventId || "";
-      isShowDialogAddOrUpdateEvent.value = true;
-    };
 
     const getListCustomerAndSelected = () => {};
 
     const openDialogListEvents = (events) => {
       if (!isMobile.value) return;
 
-      console.log("Abrir detalle de eventos", events);
+      console.log(events)
     };
 
     return {
       parseTimeByDateStartEvent,
       type,
       isMobile,
-      isShowDialogAddOrUpdateEvent,
-      closeDialogAddCustomer,
-      openDialogAddEvent,
-      eventIdUpdate,
       getListCustomerAndSelected,
       openDialogListEvents,
       mergeProps,
