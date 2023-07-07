@@ -10,8 +10,9 @@ v-app-bar.elevation-2.rounded-0(
       color="white",
       @click="getThemePreference.drawer = !getThemePreference.drawer"
     )
+      v-icon(icon="$mdiMenu", size="25")
   v-app-bar-title(v-if="getThemePreference.callapsed_menu")
-    strong.text-sm.font-bold {{ enviroments.APP_NAME }}
+    strong.text-sm.font-extrabold {{ enviroments.APP_NAME }}
   v-spacer
   v-menu(rounded)
     template(#activator="{ props }")

@@ -1,6 +1,14 @@
 <template lang="pug">
-v-card-title.flex.items-center.py-4.mx-2
-  span.font-extrabold.text-lg {{ customerId ? "Editar cliente" : "Nuevo cliente" }}
+v-card-title.flex.items-center.py-2.bg-primary(v-if="isMobile")
+  v-btn.mr-3(
+    icon="",
+    size="small",
+    flat,
+    color="primary",
+    @click="emitCloseComponent()"
+  )
+    v-icon(icon="$mdiArrowLeft", size="25 ")
+  span.font-extrabold.text-sm {{ customerId ? "Editar cliente" : "Nuevo cliente" }}
 v-card-text
   v-form(ref="formRef")
     v-row(no-gutters)
@@ -126,23 +134,40 @@ v-card-text
           density="compact",
           color="primary"
         )
-.flex.pa-1.px-6.pb-6.mx-2(
-  :class="{ 'flex-col': isMobile, 'justify-end': !isMobile }"
-)
+v-divider(v-if="isMobile")
+.flex.px-7.pb-6.justify-end(:class="{ 'pt-6': isMobile }")
   v-btn.ml-2.font-bold(
+    v-if="!isMobile",
     color="error",
     :rounded="5",
-    variant="text",
-    :class="{ 'mb-3': isMobile }",
+    variant="tonal",
     @click="emitCloseComponent"
   )
     span.text-xs.font-bold cancelar
   v-btn.ml-2.font-bold(
     color="success",
     :rounded="5",
+    :class="{ 'flex-1': isMobile }",
     @click="validateAndCreateCustomer()"
   )
-    small.text-xs.font-bold.text-white {{ customerId ? "Guardar cambios" : "Crear cliente" }}
+    small.text-xs.font-bold.text-white {{ eventId ? "Guardar cambios" : "Crear cliente" }}
+//- .flex.pa-1.px-6.pb-6.mx-2(
+//-   :class="{ 'flex-col': isMobile, 'justify-end': !isMobile }"
+//- )
+//-   v-btn.ml-2.font-bold(
+//-     color="error",
+//-     :rounded="5",
+//-     variant="text",
+//-     :class="{ 'mb-3': isMobile }",
+//-     @click="emitCloseComponent"
+//-   )
+//-     span.text-xs.font-bold cancelar
+//-   v-btn.ml-2.font-bold(
+//-     color="success",
+//-     :rounded="5",
+//-     @click="validateAndCreateCustomer()"
+//-   )
+//-     small.text-xs.font-bold.text-white {{ customerId ? "Guardar cambios" : "Crear cliente" }}
 </template>
 <script>
 import { computed, defineComponent, onMounted, ref, toRefs } from "vue";

@@ -167,11 +167,13 @@ v-row(no-gutters)
               color="success",
               size="small"
             )
-              v-icon.mr-1(icon="$mdiAccountCheck", size="12", color="success")
-              small.text-xs.font-bold Cliente
-            v-chip(v-if="!i.codigo_sap", label="", color="grey", size="small")
-              v-icon.mr-1(icon="$mdiAccountAlert", size="12", color="grey")
-              small.text-xs.font-bold Nuevo
+              v-icon.mr-1(
+                :icon="!i.codigo_sap ? '$mdiAccountAlert' : '$mdiAccountCheck'",
+                size="12",
+                :color="!i.codigo_sap ? 'grey' : 'success'"
+              )
+              small.text-xs.font-bold {{ i.codigo_sap ? "Cliente" : "Nuevo" }}
+
       .flex.flex-col.pa-2.items-center(v-if="isLoading")
         v-progress-circular.mt-2(
           color="primary",
@@ -196,113 +198,167 @@ v-row(no-gutters)
       )
         v-icon.text-slate-300(start, size="90", icon="$mdiAccountArrowLeft")
         small.text-slate-300.text-md.font-semibold.my-2 Seleccione un usuario del panel lateral izquierdo
-    div(v-if="customer")
+    perfect-scrollbar.overflow-y-auto.bg-white(
+      v-if="customer",
+      :class="isMobile ? 'h-[calc(100vh-56px)]' : 'h-screen'"
+    )
+      //- v-card-title.flex.items-center.py-2.bg-primary(v-if="isMobile")
+      //-   v-btn.mr-3(
+      //-     icon="",
+      //-     size="small",
+      //-     flat,
+      //-     color="primary",
+      //-     @click="emitCloseComponent()"
+      //-   )
+      //-     v-icon(icon="$mdiArrowLeft", size="25 ")
+
       v-card.d-flex.justify-center.flex-wrap.elevation-1(
         :disabled="isLoading",
         color="primary",
-        :class="!isMobile ? 'ma-4 rounded-0' : 'rounded-lg'"
+        :flat="isMobile",
+        :rounded="isMobile ? 0 : 20",
+        :class="!isMobile ? 'pa-4 pb-0 ma-4' : ''"
       )
-        .flex.w-full.pa-3
-          .flex
-            v-list-item.px-2
-              template(#prepend)
-                v-avatar(
-                  v-if="customer.logo_corporativo",
-                  color="background",
-                  density="compact",
-                  size="65"
-                )
-                  v-img(:src="customer.logo_corporativo")
-                v-square-avatar-of-text(
-                  v-else,
-                  :text="customer.razon_social",
-                  :avatar-size="65",
-                  text-size="2xl",
-                  bg-color="white",
-                  text-color="primary"
-                )
-              v-list-item-title
-                span.text-lg.font-extrabold {{ customer.razon_social }}
-              v-list-item-subtitle
-                span.text-md {{ customer.numero_documento }} -
-                span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
-              template(#append)
-                v-btn.mx-4(
-                  icon="$mdiPencil",
-                  @click="openDialogAddOrUpdateCustomer(customer?.id)"
-                )
-          v-spacer
-          v-row(justify="end", no-gutters)
-            v-col.text-center(
-              v-if="!customer.codigo_sap && (customer.tipo_documento === 'DNI' || customer.tipo_documento === 'RUC')",
-              cols="auto"
-            )
-              v-card.mr-4(
-                width="110",
-                height="90",
-                color="white",
-                @click="openDialogValidCustomerInSAP()"
+        v-list(bg-color="primary")
+          v-list-item.px-2
+            template(#prepend)
+              v-btn.mr-2(
+                v-if="isMobile",
+                icon="",
+                size="small",
+                flat,
+                color="primary",
+                @click="removeCustomerSelected()"
               )
-                .flex.items-center.justify-center.flex-col.h-full
-                  v-avatar.mb-1(
-                    icon="$mdiDatabaseSearch",
-                    color="primary",
-                    variant="tonal"
-                  )
-                  span.text-xs.font-extrabold Buscar en SAP
-            v-col.text-center(v-if="panelActual === 1", cols="auto")
-              v-card(
-                width="110",
-                height="90",
-                color="white",
-                @click="openDialogAddOrUpdateCustomerLocation()"
+                v-icon(icon="$mdiArrowLeft", size="25 ")
+              v-avatar(
+                v-if="customer.logo_corporativo",
+                color="background",
+                density="compact",
+                :size="!isMobile ? 60 : 45"
               )
-                .flex.items-center.justify-center.flex-col.h-full
-                  v-avatar.mb-1(
-                    icon="$mdiOfficeBuildingPlus",
-                    color="primary",
-                    variant="tonal"
-                  )
-                  span.text-xs.font-extrabold Nueva ubicacion
-            v-col.text-center(v-if="panelActual === 2", cols="auto")
-              v-card(
-                width="110",
-                height="90",
-                color="white",
-                @click="openDialogAddOrUpdateCustomerContact()"
+                v-img(:src="customer.logo_corporativo")
+              v-square-avatar-of-text(
+                v-else,
+                :text="customer.razon_social",
+                :avatar-size="!isMobile ? 60 : 45",
+                :text-size="isMobile ? 'lg' : '2xl'",
+                bg-color="white",
+                text-color="primary"
               )
-                .flex.items-center.justify-center.flex-col.h-full
-                  v-avatar.mb-1(
-                    icon="$mdiAccountMultiplePlus",
-                    color="primary",
-                    variant="tonal"
-                  )
-                  span.text-xs.font-extrabold Nuevo contacto
-        v-tabs.w-full(
-          v-model="panelActual",
-          :disabled="isLoading",
-          align-tabs="start",
-          density="compact",
-          color="white",
-          bg-color="primary"
-        )
-          v-tab(:value="1")
-            span.font-extrabold(class="text-[10px]") Ubicaciones
-              span.ml-1(v-if="ubicaciones.length") ({{ ubicaciones.length }})
-          v-tab(:value="2")
-            span.font-extrabold(class="text-[10px]") Contactos
-              span.ml-1(v-if="contactos.length") ({{ contactos.length }})
-      perfect-scrollbar.overflow-y-auto.px-4.pb-4(
-        v-if="panelActual === 1",
-        class="h-[calc(100vh-208px)]"
-      )
-        .items-center.flex.justify-center.h-full(v-if="!ubicaciones.length")
-          .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
-            class="h-1/3 w-1/2"
+            v-list-item-title
+              span.font-extrabold(:class="isMobile ? 'text-md' : 'text-lg'") {{ customer.razon_social }}
+            v-list-item-subtitle
+              span.text-md {{ customer.numero_documento }} -
+              span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
+            template(#append)
+              v-btn.mx-2(
+                icon="$mdiPencil",
+                @click="openDialogAddOrUpdateCustomer(customer?.id)"
+              )
+        //- .flex.w-full.pa-4
+          //- .flex
+          //-   v-list-item.px-2
+          //-     template(#prepend)
+          //-       v-avatar(
+          //-         v-if="customer.logo_corporativo",
+          //-         color="background",
+          //-         density="compact",
+          //-         :size="!isMobile ? 65 : 40"
+          //-       )
+          //-         v-img(:src="customer.logo_corporativo")
+          //-       v-square-avatar-of-text(
+          //-         v-else,
+          //-         :text="customer.razon_social",
+          //-         :avatar-size="!isMobile ? 65 : 40",
+          //-         :text-size="isMobile ? 'lg' : '2xl'",
+          //-         bg-color="white",
+          //-         text-color="primary"
+          //-       )
+          //-     v-list-item-title
+          //-       span.font-extrabold(:class="isMobile ? 'text-md' : 'text-lg'") {{ customer.razon_social }}
+          //-     v-list-item-subtitle
+          //-       span.text-md {{ customer.numero_documento }} -
+          //-       span.text-md.mx-1 {{ customer.sub_sector || "Seleccione un sector" }}
+          //-     template(#append)
+          //-       v-btn.mx-4(
+          //-         icon="$mdiPencil",
+          //-         @click="openDialogAddOrUpdateCustomer(customer?.id)"
+          //-       )
+        v-spacer
+        v-row(justify="end", no-gutters)
+          v-col.text-center(
+            v-if="!customer.codigo_sap && (customer.tipo_documento === 'DNI' || customer.tipo_documento === 'RUC')",
+            cols="auto"
           )
-            v-icon.text-slate-300(start, size="90", icon="$mdiDomain")
-            small.text-slate-300.text-md.font-semibold.mx-2 No se encontró ninguna ubicacion registrado para el cliente seleccionado
-        v-row(v-else)
+            v-card.mr-4(
+              width="110",
+              height="90",
+              color="white",
+              @click="openDialogValidCustomerInSAP()"
+            )
+              .flex.items-center.justify-center.flex-col.h-full
+                v-avatar.mb-1(
+                  icon="$mdiDatabaseSearch",
+                  color="primary",
+                  variant="tonal"
+                )
+                span.text-xs.font-extrabold Buscar en SAP
+          v-col.text-center(v-if="panelActual === 1 && !isMobile", cols="auto")
+            v-card(
+              width="110",
+              height="90",
+              color="white",
+              @click="openDialogAddOrUpdateCustomerLocation()"
+            )
+              .flex.items-center.justify-center.flex-col.h-full
+                v-avatar.mb-1(
+                  icon="$mdiOfficeBuildingPlus",
+                  color="primary",
+                  variant="tonal"
+                )
+                span.text-xs.font-extrabold Nueva ubicacion
+          v-col.text-center(v-if="panelActual === 2 && !isMobile", cols="auto")
+            v-card(
+              width="110",
+              height="90",
+              color="white",
+              @click="openDialogAddOrUpdateCustomerContact()"
+            )
+              .flex.items-center.justify-center.flex-col.h-full
+                v-avatar.mb-1(
+                  icon="$mdiAccountMultiplePlus",
+                  color="primary",
+                  variant="tonal"
+                )
+                span.text-xs.font-extrabold Nuevo contacto
+        .w-full.pt-4
+          v-tabs(
+            v-model="panelActual",
+            :disabled="isLoading",
+            align-tabs="end",
+            :density="isMobile ? 'comfortable' : 'compact'",
+            color="white",
+            bg-color="primary"
+          )
+            v-tab(:value="1")
+              span.font-extrabold(class="text-[10px]") Ubicaciones
+                span.ml-1(v-if="ubicaciones.length") ({{ ubicaciones.length }})
+            v-tab(:value="2")
+              span.font-extrabold(class="text-[10px]") Contactos
+                span.ml-1(v-if="contactos.length") ({{ contactos.length }})
+      .pa-4(v-if="panelActual === 1")
+        .items-center.flex.justify-center(v-if="!ubicaciones.length")
+          .flex-col.items-center.flex.justify-center.bg-background.rounded-full.mt-20.h-56.pa-8.text-xs.text-center(
+            class="w-[50vh]"
+          )
+            v-icon.text-slate-300(
+              start,
+              :size="isMobile ? 60 : 90",
+              icon="$mdiDomain"
+            )
+            span.text-slate-300.font-semibold.mx-2 No se encontró ninguna ubicacion registrado
+        v-row(v-if="ubicaciones.length")
           v-col(
             v-for="(l, index) in ubicaciones",
             :key="index",
@@ -369,20 +425,27 @@ v-row(no-gutters)
                           size="25",
                           color="grey"
                         )
-      perfect-scrollbar.overflow-y-auto.px-4.pb-4(
-        v-if="panelActual === 2",
-        class="h-[calc(100vh-208px)]"
-      )
-        .items-center.flex.justify-center.h-full(v-if="!contactos.length")
-          .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
-            class="h-1/3 w-1/2"
+      div(v-if="panelActual === 2")
+        .items-center.flex.justify-center(v-if="!contactos.length")
+          .flex-col.items-center.flex.justify-center.bg-background.rounded-full.mt-20.h-56.pa-8.text-xs.text-center(
+            class="w-[50vh]"
           )
             v-icon.text-slate-300(
               start,
-              size="90",
-              icon="$mdiAccountMultipleRemoveOutline"
+              :size="isMobile ? 60 : 90",
+              icon="$mdiAccountGroup"
             )
-            small.text-slate-300.text-md.font-semibold.my-2 No se encontró ningun contacto registrado para el cliente seleccionado
+            span.text-slate-300.font-semibold.mx-2 No se encontró ningun contacto registrado
+        //- .items-center.flex.justify-center.h-full(v-if="!contactos.length")
+        //-   .flex-col.items-center.flex.justify-center.bg-background.pa-4.rounded-full(
+        //-     class="h-1/3 w-1/2"
+        //-   )
+        //-     v-icon.text-slate-300(
+        //-       start,
+        //-       size="90",
+        //-       icon="$mdiAccountMultipleRemoveOutline"
+        //-     )
+        //-     small.text-slate-300.text-md.font-semibold.my-2 No se encontró ningun contacto registrado para el cliente seleccionado
         v-row(v-else)
           v-col(
             v-for="(c, index) in contactos",
@@ -694,6 +757,12 @@ export default defineComponent({
       return sapcode;
     };
 
+    const removeCustomerSelected = () => {
+      customer.value = "";
+      ubicaciones.value = [];
+      contactos.value = [];
+    };
+
     return {
       searchListOfCustomersByTerm,
       parseDocumentNumberToSapCode,
@@ -732,6 +801,7 @@ export default defineComponent({
       getCustomerOfSap,
       customersInSap,
       customerMatchInSap,
+      removeCustomerSelected,
     };
   },
 });

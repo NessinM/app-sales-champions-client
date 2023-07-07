@@ -1,4 +1,16 @@
 <template lang="pug">
+v-dialog(
+  v-model="isShowDialogAddOrUpdateEvent",
+  :fullscreen="isMobile",
+  scrollable,
+  :width="isMobile ? '100%' : '50%'"
+)
+  v-card(:rounded="isMobile ? 0 : 5")
+    v-form-add-edit-event(
+      @created="getListCustomerAndSelected",
+      @updated="getListCustomerAndSelected",
+      @close="closeDialogAddCustomer"
+    )
 
 v-hover(v-slot="{ isHovering, props }")
   v-card.relative.flex.flex-col.group(
@@ -7,7 +19,7 @@ v-hover(v-slot="{ isHovering, props }")
     :color="day.isToday ? 'primary' : ''",
     :variant="day.isToday ? 'tonal' : 'elevated'",
     flat,
-    v-bind="props",
+    v-bind="props"
   )
     .ma-1.flex.items.items-center
       v-btn(color="white", icon, size="small", flat, @click="() => {}")
@@ -29,23 +41,19 @@ v-hover(v-slot="{ isHovering, props }")
         v-icon(icon="$mdiPlus", color="white", size="20")
 
     .flex.flex-col.px-2.overflow-auto.absolute.top-15.w-full(v-if="!isMobile")
-      v-item-event-in-day(
-        v-for="(e, i) in day.events",
-        :key="i",
-        :event="e"
-      )
+      v-item-event-in-day(v-for="(e, i) in day.events", :key="i", :event="e")
 
     .pa-2.bottom-0.w-full.flex.justify-center.items-center(
       v-if="day.events.length > 1",
       class="!absolute"
     )
       v-tooltip(location="top")
-        template(#activator="{ props : tooltip }")
+        template(#activator="{ props: tooltip }")
           v-btn.elevation-3(
             size="small",
             theme="blue",
             color="primary",
-            v-bind="tooltip"
+            v-bind="tooltip",
             @click="openDialogListEvents()"
           )
             small.font-extrabold(class="text-[10px]") • • •
@@ -53,15 +61,17 @@ v-hover(v-slot="{ isHovering, props }")
 </template>
 <script>
 import { storeToRefs } from "pinia";
-import { computed, defineComponent, mergeProps } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useCalendarStore } from "@/store";
 import moment from "moment";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import CalendaryItemEventInDay from "@/components/calendary_item_event_in_day_component.vue";
+import FormAddOrEditEventComponent from "@/components/form_add_edit_event_component.vue";
 export default defineComponent({
   name: "ItemDayCalendaryComponent",
   components: {
     "v-item-event-in-day": CalendaryItemEventInDay,
+    "v-form-add-edit-event": FormAddOrEditEventComponent,
   },
   props: {
     day: {
@@ -74,6 +84,8 @@ export default defineComponent({
     const { type } = storeToRefs(storeCalendar);
     const { mobile } = useDisplay();
 
+    const isShowDialogAddOrUpdateEvent = ref(false);
+
     const parseTimeByDateStartEvent = (startDate) =>
       moment(startDate.fecha_inicio).format("HH:mm");
 
@@ -84,7 +96,11 @@ export default defineComponent({
     const openDialogListEvents = (events) => {
       if (!isMobile.value) return;
 
-      console.log(events)
+      console.log(events);
+    };
+
+    const openDialogAddEvent = () => {
+      isShowDialogAddOrUpdateEvent.value = true;
     };
 
     return {
@@ -93,7 +109,8 @@ export default defineComponent({
       isMobile,
       getListCustomerAndSelected,
       openDialogListEvents,
-      mergeProps,
+      isShowDialogAddOrUpdateEvent,
+      openDialogAddEvent,
     };
   },
 });
