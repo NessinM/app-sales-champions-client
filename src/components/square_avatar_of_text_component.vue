@@ -9,7 +9,7 @@ v-avatar(
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, toRefs, watch } from "vue";
 import { avatarWithInitials } from "@/helps/converts";
 export default defineComponent({
   name: "SquareAvatarOfTextComponent",
@@ -50,8 +50,15 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { text } = toRefs(props);
     const valueAvatar = ref("");
-    onMounted(() => (valueAvatar.value = avatarWithInitials(props.text)));
+
+    onMounted(() => (valueAvatar.value = avatarWithInitials(text.value)));
+
+    watch(text, () => {
+      console.log("cambio", props.text);
+      valueAvatar.value = avatarWithInitials(text.value);
+    });
 
     return {
       valueAvatar,

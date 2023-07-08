@@ -1,6 +1,9 @@
 <template lang="pug">
-v-card-title.flex.items-center.py-2.bg-primary(v-if="isMobile")
+v-card-title.flex.items-center.py-2(
+  :class="{ 'bg-primary elevation-3': isMobile }"
+)
   v-btn.mr-3(
+    v-if="isMobile",
     icon="",
     size="small",
     flat,
@@ -9,7 +12,7 @@ v-card-title.flex.items-center.py-2.bg-primary(v-if="isMobile")
   )
     v-icon(icon="$mdiArrowLeft", size="25 ")
   span.font-extrabold.text-sm {{ customerId ? "Editar cliente" : "Nuevo cliente" }}
-v-card-text
+v-card-text.pa-6
   v-form(ref="formRef")
     v-row(no-gutters)
       v-col(v-if="!customerId", cols="12", lg="12", md="12", sm="12")
@@ -134,7 +137,6 @@ v-card-text
           density="compact",
           color="primary"
         )
-v-divider(v-if="isMobile")
 .flex.px-7.pb-6.justify-end(:class="{ 'pt-6': isMobile }")
   v-btn.ml-2.font-bold(
     v-if="!isMobile",
@@ -150,24 +152,7 @@ v-divider(v-if="isMobile")
     :class="{ 'flex-1': isMobile }",
     @click="validateAndCreateCustomer()"
   )
-    small.text-xs.font-bold.text-white {{ eventId ? "Guardar cambios" : "Crear cliente" }}
-//- .flex.pa-1.px-6.pb-6.mx-2(
-//-   :class="{ 'flex-col': isMobile, 'justify-end': !isMobile }"
-//- )
-//-   v-btn.ml-2.font-bold(
-//-     color="error",
-//-     :rounded="5",
-//-     variant="text",
-//-     :class="{ 'mb-3': isMobile }",
-//-     @click="emitCloseComponent"
-//-   )
-//-     span.text-xs.font-bold cancelar
-//-   v-btn.ml-2.font-bold(
-//-     color="success",
-//-     :rounded="5",
-//-     @click="validateAndCreateCustomer()"
-//-   )
-//-     small.text-xs.font-bold.text-white {{ customerId ? "Guardar cambios" : "Crear cliente" }}
+    small.text-xs.font-bold.text-white {{ customerId ? "Guardar cambios" : "Crear cliente" }}
 </template>
 <script>
 import { computed, defineComponent, onMounted, ref, toRefs } from "vue";

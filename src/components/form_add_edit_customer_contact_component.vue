@@ -1,7 +1,17 @@
 <template lang="pug">
-v-card-title.flex.items-center.py-4.px-6
-  span.font-extrabold.text-lg {{ customerContactId ? "Editar contacto" : "Nuevo contacto" }}
-v-divider(v-if="isMobile")
+v-card-title.flex.items-center.py-2(
+  :class="{ 'bg-primary elevation-3': isMobile }"
+)
+  v-btn.mr-3(
+    v-if="isMobile",
+    icon="",
+    size="small",
+    flat,
+    color="primary",
+    @click="emitCloseComponent()"
+  )
+    v-icon(icon="$mdiArrowLeft", size="25 ")
+  span.font-extrabold.text-sm {{ customerContactId ? "Editar contacto" : "Nuevo contacto" }}
 v-card-text
   v-form(ref="formRef", :disabled="isLoading")
     v-row(no-gutters)
@@ -15,7 +25,7 @@ v-card-text
           color="primary"
         )
       v-col(cols="12", lg="12", md="6", sm="12")
-        v-autocomplete.mx-2.text-slate-500(
+        v-autocomplete.mx-2.text-slate-500.mt-2(
           v-model="customerContact.tipo_documento",
           label="Tipo de documento",
           :items="listTypesOfTaxpayers",
@@ -68,11 +78,11 @@ v-card-text
           color="primary"
         )
 
-v-divider(v-if="isMobile")
 .flex.justify-end.px-6.py-6.mx-2
   v-btn(
+    v-if="!isMobile",
     color="error",
-    variant="text",
+    variant="tonal",
     :rounded="5",
     :disabled="isLoading",
     @click="emitCloseComponent()"
@@ -83,6 +93,7 @@ v-divider(v-if="isMobile")
     :rounded="5",
     :disabled="isLoading",
     :loading="isLoading",
+    :class="isMobile ? 'flex-1' : 'ml-4'",
     @click="validateAndCreateCustomerContact()"
   )
     span.font-bold.text-xs.text-white {{ customerContactId ? "Guardar cambios" : "Crear contacto" }}

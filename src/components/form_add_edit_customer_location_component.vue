@@ -1,16 +1,17 @@
 <template lang="pug">
-v-card-title.flex.items-center.px-6(
-  :class="{ 'bg-primary elevation-4 py-1': isMobile, 'py-5': !isMobile }"
+v-card-title.flex.items-center.py-2(
+  :class="{ 'bg-primary elevation-3': isMobile }"
 )
   v-btn.mr-3(
     v-if="isMobile",
     icon="",
+    size="small",
     flat,
     color="primary",
     @click="emitCloseComponent()"
   )
     v-icon(icon="$mdiArrowLeft", size="25 ")
-  span.font-extrabold.text-lg {{ customerLocationId ? "Editar ubicación" : "Nueva ubicación" }}
+  span.font-extrabold.text-sm {{ customerLocationId ? "Editar ubicación" : "Nueva ubicación" }}
 v-card-text(:class="isMobile ? '' : 'py-0'")
   v-form.mt-2(ref="formRef", :disabled="isLoading")
     v-row(no-gutters)
@@ -185,12 +186,11 @@ v-card-text(:class="isMobile ? '' : 'py-0'")
           )
             v-icon.mx-1(icon="$mdiTrashCanOutline", size="20")
             small.font-extrabold Eliminar
-v-divider(v-if="isMobile")
 .flex.justify-end.px-6.py-6.mx-2
   v-btn(
     v-if="!isMobile",
     color="error",
-    variant="text",
+    variant="tonal",
     :rounded="5",
     :disabled="isLoading",
     @click="emitCloseComponent()"
@@ -204,7 +204,7 @@ v-divider(v-if="isMobile")
     :loading="isLoading",
     @click="validateAndCreateCustomerLocation()"
   )
-    span.font-bold.text-xs.text-white {{ customerLocationId ? "Guardar cambios" : "Crear ubicación" }}
+    span.font-extrabold.text-xs.text-white {{ customerLocationId ? "Guardar cambios" : "Crear ubicación" }}
 </template>
 
 <script>
@@ -490,12 +490,11 @@ export default defineComponent({
       }
     };
 
-    const deleteImagenTempCustomerLocation = async (register, index) => {
+    const deleteImagenTempCustomerLocation = (register, index) => {
       isLoadingRederImage.value = false;
       if (!register) {
         filesTemporaryToUpload.value.splice(index, 1);
-        // eslint-disable-next-line vue/valid-next-tick
-        await nextTick(() => (isLoadingRederImage.value = true));
+        nextTick(() => (isLoadingRederImage.value = true));
         if (!filesTemporaryToUpload.value.length) tabsCustomer.value = 2;
         return;
       }
@@ -508,8 +507,7 @@ export default defineComponent({
       else if (idImage === 4) customerLocation.value.imagen_cuatro = "";
 
       filesTemporaryToUpload.value.splice(index, 1);
-      // eslint-disable-next-line vue/valid-next-tick
-      await nextTick(() => (isLoadingRederImage.value = true));
+      nextTick(() => (isLoadingRederImage.value = true));
       if (!filesTemporaryToUpload.value.length) tabsCustomer.value = 2;
     };
 
