@@ -211,17 +211,17 @@ v-row(no-gutters)
       v-if="customer",
       :class="{ 'h-[calc(100vh-56px)]': isMobile, 'h-screen': !isMobile, 'bg-white': !isThemeDark, 'bg-background': isThemeDark }"
     )
-      v-sheet.elevation-1.overflow-hidden(
+      v-sheet.overflow-hidden.sticky.top-0.z-10(
         :disabled="isLoading",
         color="primary",
-        :class="!isMobile ? 'ma-4 mb-0 rounded-lg' : 'rounded-0'"
+        :class="!isMobile ? 'ma-4 mb-0 rounded-lg elevation-1' : 'rounded-0 1elevation-4'"
       )
         v-list.py-0(bg-color="primary")
-          v-list-item.pa-4(
+          v-list-item.pa-2(
             @click="openDialogAddOrUpdateCustomer(customer?.id)"
           )
             template(#prepend)
-              v-btn.mr-2(
+              v-btn.mr-1(
                 v-if="isMobile",
                 icon="",
                 size="small",
@@ -314,6 +314,15 @@ v-row(no-gutters)
               span.font-extrabold(class="text-[10px]") Contactos
                 span.ml-1(v-if="contactos.length") ({{ contactos.length }})
       .pa-4(v-if="panelActual === 1")
+        v-card.pb-4.w-full(v-if="isMobile", flat rounded="0")
+          v-btn.w-full(
+            color="success",
+            rounded="3",
+            variant="elevated",
+            @click="openDialogAddOrUpdateCustomerLocation()"
+          )
+            v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
+            span.font-extrabold.text-white Agregar nueva ubicación
         .items-center.flex.justify-center(v-if="!ubicaciones.length")
           .flex-col.items-center.flex.justify-center.rounded-full.mt-20.h-56.pa-8.text-xs.text-center(
             class="w-[50vh]",
@@ -441,8 +450,16 @@ v-row(no-gutters)
                             v-list-item-title
                               span.font-md.font-extrabold.text-error Desactivar localización
                             v-list-item-subtitle No se mostrará mas esta localización
-
       .pa-4(v-if="panelActual === 2")
+        v-card.pb-4.w-full(v-if="isMobile", flat rounded="0")
+          v-btn.w-full(
+            color="success",
+            rounded="3",
+            variant="elevated",
+            @click="openDialogAddOrUpdateCustomerContact()"
+          )
+            v-icon.mr-1(icon="$mdiPlus", color="white", size="27")
+            span.font-extrabold.text-white Agregar nuevo contacto
         .items-center.flex.justify-center(v-if="!contactos.length")
           .flex-col.items-center.flex.justify-center.bg-background.rounded-full.mt-20.h-56.pa-8.text-xs.text-center(
             class="w-[50vh]"
@@ -453,7 +470,8 @@ v-row(no-gutters)
               icon="$mdiAccountGroup"
             )
             span.text-slate-300.font-semibold.mx-2 No se encontró ningun contacto registrado
-        v-row(v-else)
+
+        v-row(v-if="contactos.length")
           v-col(
             v-for="(c, index) in contactos",
             :key="index",
