@@ -214,7 +214,7 @@ v-row(no-gutters)
       v-sheet.overflow-hidden.sticky.top-0.z-10(
         :disabled="isLoading",
         color="primary",
-        :class="!isMobile ? 'ma-4 mb-0 rounded-lg elevation-1' : 'rounded-0 1elevation-4'"
+        :class="!isMobile ? 'ma-4 mb-0 rounded-lg elevation-1' : 'rounded-0 elevation-4'"
       )
         v-list.py-0(bg-color="primary")
           v-list-item.pa-2(
